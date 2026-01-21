@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #FFFFFF;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.header-bar {
+  position: absolute;
+  left: 0; top: 0;
+  width: 720pt; height: 60pt;
+  background: #181B24;
+}
+.header-title {
+  position: absolute;
+  left: 40pt; top: 18pt;
+  color: #FFFFFF;
+  font-size: 22pt;
+  font-weight: bold;
+  margin: 0;
+}
+.accent {
+  position: absolute;
+  left: 0; top: 60pt;
+  width: 8pt; height: 345pt;
+  background: #40695B;
+}
+.content {
+  margin-left: 50pt;
+  margin-top: 85pt;
+  margin-right: 40pt;
+  margin-bottom: 65pt;
+}
+.section {
+  margin-bottom: 12pt;
+}
+.section-title {
+  color: #40695B;
+  font-size: 18pt;
+  font-weight: bold;
+  margin: 0 0 10pt 0;
+}
+.info-item {
+  background: #F8F9FA;
+  padding: 12pt 15pt;
+  margin-bottom: 10pt;
+  border-radius: 4pt;
+}
+.label {
+  color: #181B24;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 0 0 5pt 0;
+}
+.value {
+  color: #666666;
+  font-size: 11pt;
+  margin: 0;
+  font-family: Courier New, monospace;
+}
+.highlight {
+  color: #B165FB;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="header-bar"></div>
+<p class="header-title">数据获取流程</p>
+<div class="accent"></div>
+<div class="content">
+  <div class="section">
+    <p class="section-title">📍 位置</p>
+    <div class="info-item">
+      <p class="label">文件</p>
+      <p class="value">frontend/aigc-frontend/services/agentService.ts</p>
+      <p class="label" style="margin-top: 8pt;">行号</p>
+      <p class="value highlight">390-458</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">🔗 API 接口</p>
+    <div class="info-item">
+      <p class="value highlight">GET /api/v1/session/${sessionId}/conversation</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">🔄 调用时机</p>
+    <div class="info-item">
+      <ul style="margin: 0; padding-left: 20pt; font-size: 11pt; color: #333;">
+        <li>初始化时（从 localStorage 恢复 sessionId）</li>
+        <li>切换会话时（SessionHistory 组件）</li>
+        <li>外部会话切换（storage 事件）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>

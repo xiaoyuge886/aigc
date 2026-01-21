@@ -1,0 +1,65 @@
+# 环境变量文件（重要：不要打包到镜像）
+.env
+.env.local
+.env.*.local
+backend/.env
+deploy/.env
+
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志
+*.log
+logs/
+
+# 数据库
+*.db
+*.sqlite
+*.sqlite3
+
+# 测试
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 临时文件
+*.tmp
+*.bak
+.DS_Store
+*.pid
+
+# 前端
+frontend/node_modules/
+frontend/dist/
+
+# 文档
+*.md
+!README.md
+claude_docs/
+
+# 工作目录和数据
+work_dir/
+data/sessions.db
+data/sessions.db.backup_*
+
+# 脚本（可选）
+scripts/

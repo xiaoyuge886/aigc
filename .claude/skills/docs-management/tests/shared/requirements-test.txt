@@ -1,0 +1,29 @@
+# Test dependencies for claude-docs skill
+
+# Core testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+
+# HTTP mocking
+responses>=0.22.0
+
+# Time mocking for date/time tests
+freezegun>=1.2.0
+
+# Additional testing utilities
+pytest-xdist>=3.0.0  # For parallel test execution
+pytest-timeout>=2.1.0  # For test timeouts
+
+# Code quality
+pytest-flake8>=1.1.0  # Linting in tests
+pytest-mypy>=0.10.0  # Type checking in tests
+
+# Coverage reporting
+coverage[toml]>=7.0.0
+
+# Dependencies that are being tested (must match main requirements)
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+PyYAML>=6.0
+lxml>=4.9.0  # For better HTML parsing performance

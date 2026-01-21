@@ -1,0 +1,121 @@
+{
+  "timestamp": "2025-12-25",
+  "total_pages": 23,
+  "pages": [
+    {
+      "name": "概览",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/overview",
+      "file": "agent_sdk_docs/00_概览.md"
+    },
+    {
+      "name": "快速入门",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/quickstart",
+      "file": "agent_sdk_docs/01_快速入门.md"
+    },
+    {
+      "name": "TypeScript_SDK",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/typescript",
+      "file": "agent_sdk_docs/02_TypeScript_SDK.md"
+    },
+    {
+      "name": "Python_SDK",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/python",
+      "file": "agent_sdk_docs/03_Python_SDK.md"
+    },
+    {
+      "name": "TypeScript_V2_预览版",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/typescript-v2-preview",
+      "file": "agent_sdk_docs/04_TypeScript_V2_预览版.md"
+    },
+    {
+      "name": "迁移指南",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/migration-guide",
+      "file": "agent_sdk_docs/05_迁移指南.md"
+    },
+    {
+      "name": "流式输入",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/streaming-vs-single-mode",
+      "file": "agent_sdk_docs/06_流式输入.md"
+    },
+    {
+      "name": "处理权限",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/permissions",
+      "file": "agent_sdk_docs/07_处理权限.md"
+    },
+    {
+      "name": "使用钩子控制执行",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/hooks",
+      "file": "agent_sdk_docs/08_使用钩子控制执行.md"
+    },
+    {
+      "name": "会话管理",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/sessions",
+      "file": "agent_sdk_docs/09_会话管理.md"
+    },
+    {
+      "name": "文件检查点",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/file-checkpointing",
+      "file": "agent_sdk_docs/10_文件检查点.md"
+    },
+    {
+      "name": "SDK_中的结构化输出",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/structured-outputs",
+      "file": "agent_sdk_docs/11_SDK_中的结构化输出.md"
+    },
+    {
+      "name": "托管_Agent_SDK",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/hosting",
+      "file": "agent_sdk_docs/12_托管_Agent_SDK.md"
+    },
+    {
+      "name": "安全部署_AI_代理",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/secure-deployment",
+      "file": "agent_sdk_docs/13_安全部署_AI_代理.md"
+    },
+    {
+      "name": "修改系统提示词",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/modifying-system-prompts",
+      "file": "agent_sdk_docs/14_修改系统提示词.md"
+    },
+    {
+      "name": "SDK_中的_MCP",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/mcp",
+      "file": "agent_sdk_docs/15_SDK_中的_MCP.md"
+    },
+    {
+      "name": "自定义工具",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/custom-tools",
+      "file": "agent_sdk_docs/16_自定义工具.md"
+    },
+    {
+      "name": "SDK_中的子代理",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/subagents",
+      "file": "agent_sdk_docs/17_SDK_中的子代理.md"
+    },
+    {
+      "name": "SDK_中的斜杠命令",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/slash-commands",
+      "file": "agent_sdk_docs/18_SDK_中的斜杠命令.md"
+    },
+    {
+      "name": "SDK_中的_Agent_Skills",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/skills",
+      "file": "agent_sdk_docs/19_SDK_中的_Agent_Skills.md"
+    },
+    {
+      "name": "跟踪成本和使用情况",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/cost-tracking",
+      "file": "agent_sdk_docs/20_跟踪成本和使用情况.md"
+    },
+    {
+      "name": "待办事项列表",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/todo-tracking",
+      "file": "agent_sdk_docs/21_待办事项列表.md"
+    },
+    {
+      "name": "SDK_中的插件",
+      "url": "https://platform.claude.com/docs/zh-CN/agent-sdk/plugins",
+      "file": "agent_sdk_docs/22_SDK_中的插件.md"
+    }
+  ]
+}

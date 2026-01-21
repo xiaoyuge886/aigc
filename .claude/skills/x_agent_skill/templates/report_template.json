@@ -1,0 +1,382 @@
+{
+  "report_template": {
+    "version": "1.0.0",
+    "description": "XAgent标准报告模板，用于格式化四阶段数据分析结果",
+    "structure": {
+      "title": {
+        "type": "string",
+        "description": "报告标题",
+        "template": "{{analysis_type}}分析报告"
+      },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "报告生成时间"
+          },
+          "analysis_type": {
+            "type": "string",
+            "description": "分析类型",
+            "enum": ["销售分析", "客户分析", "市场分析", "财务分析", "运营分析", "综合分析"]
+          },
+          "data_source": {
+            "type": "string",
+            "description": "数据来源"
+          },
+          "time_period": {
+            "type": "string",
+            "description": "分析时间范围"
+          },
+          "analyzer": {
+            "type": "string",
+            "default": "JoyAgent v1.0.0",
+            "description": "分析工具版本"
+          }
+        }
+      },
+      "executive_summary": {
+        "type": "object",
+        "description": "执行摘要",
+        "properties": {
+          "key_findings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "关键发现"
+          },
+          "main_insights": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "主要洞察"
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "priority": {
+                  "type": "string",
+                  "enum": ["高", "中", "低"]
+                },
+                "action": {
+                  "type": "string",
+                  "description": "建议行动"
+                },
+                "impact": {
+                  "type": "string",
+                  "description": "预期影响"
+                },
+                "timeline": {
+                  "type": "string",
+                  "description": "建议实施时间"
+                }
+              }
+            },
+            "description": "行动建议"
+          }
+        }
+      },
+      "analysis_sections": {
+        "type": "array",
+        "description": "分析章节",
+        "items": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "type": "string",
+              "enum": ["descriptive", "anomaly", "correlation", "predictive"],
+              "description": "分析阶段"
+            },
+            "title": {
+              "type": "string",
+              "description": "章节标题"
+            },
+            "content": {
+              "type": "string",
+              "description": "章节内容"
+            },
+            "charts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["line", "bar", "pie", "scatter", "heatmap", "histogram", "box"]
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "图表标题"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "图表说明"
+                  },
+                  "data": {
+                    "type": "object",
+                    "description": "图表数据"
+                  }
+                }
+              },
+              "description": "相关图表"
+            },
+            "tables": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "表格标题"
+                  },
+                  "headers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "表头"
+                  },
+                  "rows": {
+                    "type": "array",
+                    "items": {
+                      "type": "array"
+                    },
+                    "description": "表格数据"
+                  }
+                }
+              },
+              "description": "数据表格"
+            }
+          }
+        }
+      },
+      "detailed_findings": {
+        "type": "object",
+        "description": "详细发现",
+        "properties": {
+          "descriptive_analysis": {
+            "type": "object",
+            "properties": {
+              "summary_statistics": {
+                "type": "object",
+                "description": "描述性统计"
+              },
+              "trends": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "metric": {
+                      "type": "string"
+                    },
+                    "trend": {
+                      "type": "string",
+                      "enum": ["上升", "下降", "稳定", "波动"]
+                    },
+                    "change_rate": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "description": "趋势分析"
+              }
+            }
+          },
+          "anomaly_detection": {
+            "type": "object",
+            "properties": {
+              "anomalies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["outlier", "trend_break", "pattern_change"]
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": ["低", "中", "高"]
+                    },
+                    "potential_causes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "description": "检测到的异常"
+              }
+            }
+          },
+          "correlation_analysis": {
+            "type": "object",
+            "properties": {
+              "correlations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "variables": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "coefficient": {
+                      "type": "number"
+                    },
+                    "significance": {
+                      "type": "string"
+                    },
+                    "interpretation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "description": "相关性发现"
+              }
+            }
+          },
+          "predictive_analysis": {
+            "type": "object",
+            "properties": {
+              "forecasts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "metric": {
+                      "type": "string"
+                    },
+                    "period": {
+                      "type": "string"
+                    },
+                    "predicted_value": {
+                      "type": "number"
+                    },
+                    "confidence_interval": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "accuracy_score": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "description": "预测结果"
+              }
+            }
+          }
+        }
+      },
+      "limitations": {
+        "type": "object",
+        "description": "分析限制",
+        "properties": {
+          "data_limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "数据限制"
+          },
+          "methodology_limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "方法论限制"
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "分析假设"
+          }
+        }
+      },
+      "appendix": {
+        "type": "object",
+        "description": "附录",
+        "properties": {
+          "technical_details": {
+            "type": "string",
+            "description": "技术细节"
+          },
+          "data_processing_steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "数据处理步骤"
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "参考文献"
+          }
+        }
+      }
+    },
+    "output_formats": {
+      "markdown": {
+        "extension": ".md",
+        "template_file": "templates/markdown_report_template.md"
+      },
+      "html": {
+        "extension": ".html",
+        "template_file": "templates/html_report_template.html"
+      },
+      "pdf": {
+        "extension": ".pdf",
+        "template_file": "templates/pdf_report_template.html",
+        "requires": ["weasyprint"]
+      }
+    }
+  },
+  "chart_templates": {
+    "line_chart": {
+      "description": "趋势线图",
+      "best_for": ["时间序列数据", "趋势展示"]
+    },
+    "bar_chart": {
+      "description": "柱状图",
+      "best_for": ["分类比较", "排名展示"]
+    },
+    "pie_chart": {
+      "description": "饼图",
+      "best_for": ["占比分析", "构成展示"]
+    },
+    "scatter_plot": {
+      "description": "散点图",
+      "best_for": ["相关性分析", "分布展示"]
+    },
+    "heatmap": {
+      "description": "热力图",
+      "best_for": ["相关性矩阵", "密度展示"]
+    },
+    "histogram": {
+      "description": "直方图",
+      "best_for": ["频率分布", "数据分布分析"]
+    },
+    "box_plot": {
+      "description": "箱线图",
+      "best_for": ["异常值检测", "分布比较"]
+    }
+  }
+}

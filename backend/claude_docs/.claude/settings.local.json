@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//usr/local/Homebrew/Library/Taps/homebrew/**)",
+      "Bash(export:*)",
+      "Bash(export HOMEBREW_CORE_GIT_REMOTE=https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git:*)",
+      "Bash(HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles HOMEBREW_CORE_GIT_REMOTE=https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git brew install:*)",
+      "Bash(brew:*)",
+      "Bash(git clone:*)",
+      "Bash(pip install:*)",
+      "Bash(HOMEBREW_NO_INSTALL_FROM_API=1 HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles brew install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

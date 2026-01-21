@@ -1,0 +1,42 @@
+# Python dependencies for claude-docs skill
+# Install with: pip install -r requirements.txt
+#
+# For agentic tools (Claude Code, etc.):
+#   python .claude/skills/claude-docs/scripts/setup_dependencies.py --install-required
+#
+# Or install manually:
+#   pip install -r .claude/skills/claude-docs/requirements.txt
+
+# Core dependencies (required)
+pyyaml>=6.0
+requests>=2.28.0
+beautifulsoup4>=4.11.0
+markdownify>=0.11.6
+
+# NLP libraries (optional but recommended)
+# spaCy: Install model after installing package
+#   Recommended: python -m spacy download en_core_web_sm
+#   For specific version: python -m spacy download en_core_web_sm-3.7.1
+#   Check version: python -m spacy info en_core_web_sm
+# Note: Model version affects stop word lists - use consistent versions across environments
+spacy>=3.7.0
+yake>=0.4.8
+
+# File format support (for docx and pdf parsing)
+python-docx>=1.1.0  # For .docx file parsing
+pdfplumber>=0.10.0  # For .pdf file parsing (recommended, better than PyPDF2)
+PyPDF2>=3.0.0  # Alternative PDF parser (fallback if pdfplumber not available)
+
+# Notes:
+# - If spaCy is not available, scripts fall back to basic stop words
+# - If YAKE is not available, keyword extraction uses heading/content analysis only
+# - All scripts work without optional dependencies (with reduced functionality)
+# - For docx/pdf support: Install python-docx and pdfplumber (or PyPDF2)
+#
+# Installation Notes:
+# - Pre-built wheels are preferred (no compiler needed) - auto-installation tries these first
+# - If wheels aren't available for your Python version, source install may require C++ build tools
+# - Python 3.11/3.12 have better pre-built wheel support than newer versions
+# - On Windows without build tools: scripts work fine with fallbacks (no action needed)
+# - pdfplumber may require additional system dependencies (poppler-utils) on Linux
+

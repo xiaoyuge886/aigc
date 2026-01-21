@@ -1,0 +1,40 @@
+# runtime.yaml - Global runtime configuration for docs-management scripts
+# This file contains ONLY shared settings that apply to ALL scripts.
+# Script-specific settings belong in their respective configs or defaults.yaml.
+
+# Logging Configuration
+# Controls observability features across all docs-management scripts
+logging:
+  # Enable file-based logging to .claude/skills/docs-management/logs/
+  # Set to true to persist logs for debugging and auditing
+  # Default: true (provides audit trail for observability)
+  enable_file_logging: true
+
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  # DEBUG: Verbose output including HTTP timings, detailed operations
+  # INFO: Standard progress and status messages (recommended default)
+  # WARNING: Only warnings and errors
+  # ERROR: Only errors
+  level: INFO
+
+  # Use JSON format for log files (machine-readable)
+  # When false, uses human-readable text format with timestamps
+  json_format: false
+
+  # Log rotation settings (only applies when enable_file_logging is true)
+  rotation:
+    # Maximum log file size in MB before rotation
+    max_size_mb: 10
+    # Number of backup files to keep
+    backup_count: 5
+
+# Diagnostics Configuration
+# Controls diagnostic output and performance tracking
+diagnostics:
+  # Write detailed diagnostics JSON files after script execution
+  # Files saved to logs/diagnostics/{script}_{timestamp}_diagnostics.json
+  # Default: false (enable only when troubleshooting performance)
+  write_diagnostics_files: false
+
+  # Track HTTP request timings (adds overhead but useful for debugging)
+  track_http_timings: false

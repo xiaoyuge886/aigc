@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志
+*.log
+logs/
+
+# 数据库
+*.db
+*.sqlite
+*.sqlite3
+data/sessions.db
+
+# 测试
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 文档
+*.md
+!README.md
+claude_docs/
+
+# 临时文件
+*.tmp
+*.bak
+.DS_Store
+
+# 工作目录（可选，根据需求决定是否包含）
+work_dir/
+
+# Git
+.git/
+.gitignore
+
+# 环境变量文件（应该通过环境变量或 secrets 传递）
+.env
+.env.local
+
+# 前端（只构建后端）
+frontend/
+
+# 其他
+excute_prompt/
+scripts/
+*.pid

@@ -1,0 +1,282 @@
+# Default Configuration Values for docs-management Skill
+# All hardcoded values extracted from scripts into this single source of truth
+# Values can be overridden via environment variables (see config_registry.py)
+
+# HTTP and Network Configuration
+http:
+  # Default timeout for HTTP requests (seconds)
+  default_timeout: 30
+  
+  # Maximum timeout for long-running operations (seconds)
+  max_timeout: 1800
+  
+  # Default number of retry attempts for transient failures
+  default_max_retries: 3
+  
+  # Initial delay for exponential backoff (seconds)
+  initial_retry_delay: 1.0
+  
+  # Backoff multiplier for exponential backoff
+  backoff_factor: 2.0
+  
+  # Retryable HTTP status codes
+  retryable_status_codes:
+    - 429  # Too Many Requests (rate limit)
+    - 500  # Internal Server Error
+    - 502  # Bad Gateway
+    - 503  # Service Unavailable
+    - 504  # Gateway Timeout
+  
+  # User agent string for HTTP requests
+  user_agent: "Claude-Docs-Scraper/1.0 (Educational purposes)"
+  
+  # Timeout for HEAD requests (seconds)
+  head_request_timeout: 10
+  
+  # Timeout for markdown URL requests (seconds)
+  markdown_request_timeout: 30
+
+# Scraping Configuration
+scraping:
+  # Delay between requests (seconds) - rate limiting
+  rate_limit: 0.5
+
+  # Delay between HEAD requests (seconds)
+  header_rate_limit: 0.3
+
+  # Legacy names (for backward compatibility)
+  rate_limit_delay: 0.5
+  header_rate_limit_delay: 0.3
+  
+  # Maximum parallel workers for URL processing
+  max_workers: 8
+
+  # Maximum parallel workers for multi-source scraping
+  max_source_workers: 8
+  
+  # Default timeout for scraping operations (seconds)
+  default_timeout: 1800
+  
+  # Default timeout for source scraping operations (used when sources.json doesn't specify timeout)
+  sources_default_timeout: 1800
+  
+  # Lock acquisition timeout (seconds)
+  lock_timeout: 30.0
+  
+  # Index update lock timeout (seconds)
+  # Increased to 120s to handle high-concurrency parallel scraping
+  # where multiple workers finish simultaneously
+  index_lock_timeout: 120.0
+
+  # Progress lock timeout (seconds)
+  progress_lock_timeout: 30.0
+  
+  # Maximum content age in days (for filtering old content)
+  max_content_age_days: 0  # 0 = no age filtering
+  
+  # Skip existing files by default
+  skip_existing: true
+  
+  # Progress reporting intervals
+  progress_interval: 30  # Report progress every N seconds
+  progress_url_interval: 10  # Report progress every N URLs
+
+# Index Management Configuration
+index:
+  # Chunk size for reading large YAML files (lines per chunk)
+  chunk_size: 1000
+  
+  # Token estimate threshold - files smaller than this are loaded all at once
+  # Rough estimate: 1 token ≈ 4 characters
+  token_estimate_threshold: 20000
+  
+  # Lock timeout for index operations (seconds)
+  lock_timeout: 30.0
+  
+  # Lock retry delay (seconds) - delay between lock acquisition attempts
+  lock_retry_delay: 0.1
+  
+  # Lock retry backoff delay (seconds) - delay after failed lock acquisition
+  lock_retry_backoff: 0.5
+  
+  # File operation retry delay (seconds) - delay for atomic file operations
+  file_retry_delay: 0.2
+  
+  # Maximum retries for file operations (atomic writes, renames)
+  file_max_retries: 5
+
+# Path Configuration (Single Source of Truth)
+# NOTE: All relative paths are resolved from the SKILL directory (not CWD or repo root)
+# This ensures portable plugin operation regardless of where the skill is invoked from
+paths:
+  # Base directory for canonical documentation storage (relative to skill dir)
+  base_dir: "canonical"
+
+  # Index filename
+  index_filename: "index.yaml"
+
+  # Temporary directory (relative to project root when starting with .claude/)
+  # Uses project-standard .claude/temp/ location (already gitignored)
+  temp_dir: ".claude/temp"
+  
+  # Output directory mappings (domain -> output subdirectory)
+  # OPTIONAL: Explicit mappings for domains (only needed for custom overrides)
+  # Smart fallback applies automatically: strips "www.", replaces "." with "-"
+  # Examples of automatic mappings:
+  #   docs.claude.com → docs-claude-com
+  #   www.anthropic.com → anthropic-com
+  #   raw.githubusercontent.com → raw-githubusercontent-com
+  # Add entries here only if you need custom mappings (e.g., "example.com: custom-name")
+  output_dirs: {}
+
+# File System Configuration (deprecated - use paths section)
+# Kept for backward compatibility - now uses skill-relative paths
+filesystem:
+  # Default base directory for references (relative to skill dir)
+  default_base_dir: "canonical"
+
+  # Default index filename
+  default_index_filename: "index.yaml"
+
+# Validation Configuration
+validation:
+  # Timeout for validation operations (seconds)
+  timeout: 60
+  
+  # Maximum retries for validation operations
+  max_retries: 1
+
+# Drift Detection Configuration
+drift:
+  # Maximum parallel workers for drift detection (404 checks, hash comparisons)
+  max_workers: 5
+  
+  # Timeout for drift detection operations (seconds)
+  timeout: 300
+
+# Subprocess Configuration
+subprocess:
+  # Default timeout for subprocess operations (seconds)
+  default_timeout: 10
+  
+  # Timeout for quick subprocess checks (seconds)
+  quick_timeout: 5
+  
+  # Timeout for package installation operations (seconds)
+  install_timeout: 300
+  
+  # Timeout for long-running subprocess operations (seconds)
+  long_timeout: 600
+  
+  # Timeout for build tool operations (seconds)
+  build_timeout: 600
+
+# Performance Configuration
+performance:
+  # Enable parallel processing by default
+  parallel_enabled: true
+  
+  # Minimum number of URLs to trigger parallel processing
+  parallel_min_urls: 2
+
+# Search and Relevance Configuration
+search:
+  # Default maximum number of results to return
+  # Use --no-limit to return all results, or --limit N to override
+  default_limit: 25
+
+  # Default minimum score threshold (null = no threshold)
+  # Results below this score are filtered out before applying limit
+  # Use --min-score N to override
+  min_score_default: null
+
+  # Domain priority weights for relevance ranking
+  # Higher weights prioritize specific domains in search results
+  # Use case: code.claude.com should rank higher than news articles for technical queries
+  domain_weights:
+    code.claude.com: 10.0      # Claude Code docs (highest priority)
+    platform.claude.com: 9.0   # API reference, SDK docs, build guides (high priority)
+    docs.claude.com: 8.0       # Legacy API docs (high priority)
+    anthropic.com/engineering: 5.0  # Engineering blog posts (medium)
+    anthropic.com/news: 2.0    # News and announcements (low)
+    anthropic.com/research: 3.0  # Research papers (medium-low)
+    anthropic.com: 2.0         # Fallback for anthropic.com (lowest)
+
+# Keyword Extraction Configuration
+keyword_extraction:
+  # Limits for keyword extraction from various sources
+  # These balance recall (finding all relevant keywords) with precision (avoiding noise)
+  limits:
+    # Maximum file tokens (e.g., claude.md, config.yaml) extracted from headings
+    # Rationale: File references are useful for discoverability but should not dominate keyword list
+    max_file_tokens: 4
+    
+    # Maximum heading phrases (multi-word terms from headings)
+    # Rationale: Heading phrases are high-signal (structural importance) but need limits for diversity
+    max_heading_phrases: 10
+    
+    # Maximum single keywords from headings
+    # Rationale: Balance heading keywords with other sources (title, YAKE, body)
+    max_heading_keywords: 8
+    
+    # Maximum keywords from body content (frequency-based)
+    # Rationale: Body keywords are last resort, limit to avoid overwhelming more reliable sources
+    max_body_keywords: 6
+    
+    # Maximum total keywords returned
+    # Rationale: Balance recall (finding relevant docs) with precision (reducing noise)
+    # 12 keywords provides good coverage without diluting search relevance
+    # Note: This is duplicated in filtering.yaml for backward compatibility
+    max_total_keywords: 12
+  
+  # YAKE automatic keyword extraction configuration
+  # YAKE (Yet Another Keyword Extractor) uses unsupervised learning to extract keywords
+  # Only used if yake library is installed (pip install yake)
+  yake:
+    # Language for extraction
+    language: 'en'
+    
+    # Maximum n-gram size (1=unigrams, 2=bigrams, 3=trigrams)
+    # Rationale: 3 allows extraction of multi-word technical terms like "context window management"
+    max_ngram_size: 3
+    
+    # Deduplication threshold (0.0-1.0)
+    # Rationale: 0.7 removes near-duplicates while preserving semantic variations
+    dedup_threshold: 0.7
+    
+    # Number of top keywords to extract
+    # Rationale: Extract 15, filter down to max_total_keywords after combining with other sources
+    top_keywords: 15
+    
+    # Minimum text length for YAKE extraction (characters)
+    # Rationale: YAKE needs sufficient context; very short docs use fallback extraction
+    min_text_length: 50
+
+# File Pattern Configuration
+files:
+  # Markdown file extension
+  markdown_extension: ".md"
+  
+  # YAML file extension
+  yaml_extension: ".yaml"
+  
+  # JSON file extension
+  json_extension: ".json"
+
+# User Agent Configuration (for scripts that need different user agents)
+user_agents:
+  # Default user agent for HTTP requests
+  default: "Claude-Docs-Scraper/1.0 (Educational purposes)"
+  
+  # User agent for management/cleanup operations
+  management: "Claude-Docs-Management-Bot/1.0"
+  
+  # User agent for scraping operations
+  scraper: "Claude-Docs-Scraper/1.0 (Educational purposes)"
+
+# Environment Variable Override Prefix
+# All values can be overridden by setting environment variables with prefix:
+# CLAUDE_DOCS_<SECTION>_<KEY>
+# Example: CLAUDE_DOCS_HTTP_DEFAULT_TIMEOUT=60
+# Example: CLAUDE_DOCS_SCRAPING_MAX_WORKERS=5
+

@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="中国未来十年黄金走势深度分析报告 - 2025-2035">
+    <title>中国未来十年黄金走势报告 2025-2035</title>
+    <style>
+        /* Apple Design System - 完整实现 */
+        :root {
+            --color-primary: #0071e3;
+            --color-primary-hover: #0077ed;
+            --color-text: #1d1d1f;
+            --color-text-secondary: #86868b;
+            --color-background: #ffffff;
+            --color-background-secondary: #f5f5f7;
+            --color-border: #d2d2d7;
+            --color-gold: #b8860b;
+            --color-gold-light: #daa520;
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --spacing-unit: 8px;
+            --border-radius: 12px;
+            --border-radius-large: 18px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+            color: var(--color-text);
+            background: var(--color-background);
+            font-size: 17px;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏 - Apple风格 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 980px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 22px;
+        }
+
+        .navbar-logo {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .navbar-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .navbar-links a:hover {
+            color: #fff;
+        }
+
+        /* Hero Section - 全屏渐变 */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 22px 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .hero-label {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 72px);
+            line-height: 1.05;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h2 {
+            font-size: clamp(24px, 4vw, 36px);
+            line-height: 1.2;
+            font-weight: 400;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 30px;
+            border-radius: 980px;
+            font-size: 17px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 113, 227, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Section 通用样式 */
+        .section {
+            padding: 100px 22px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            color: var(--color-text);
+        }
+
+        .section-description {
+            font-size: 21px;
+            line-height: 1.5;
+            color: var(--color-text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 数据卡片网格 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 60px;
+        }
+
+        .card {
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-large);
+            padding: 40px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-border);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 24px;
+        }
+
+        .card-value {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #5ac8fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .card-desc {
+            font-size: 17px;
+            line-height: 1.5;
+            color: var(--color-text-secondary);
+        }
+
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+            margin: 60px 0;
+            border-radius: var(--border-radius-large);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: var(--color-background-secondary);
+        }
+
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            padding: 20px 24px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        td {
+            font-size: 17px;
+            padding: 24px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--color-background-secondary);
+        }
+
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--color-primary) 0%, #5ac8fa 100%);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 80px;
+            width: 50%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 60px;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 60px;
+            text-align: left;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border: 4px solid var(--color-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -12px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -12px;
+        }
+
+        .timeline-year {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--color-primary);
+        }
+
+        .timeline-title {
+            font-size: 21px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .timeline-desc {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--color-text-secondary);
+        }
+
+        /* Feature Section */
+        .feature-section {
+            background: var(--color-background-secondary);
+            padding: 100px 22px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 60px auto 0;
+        }
+
+        .feature-item {
+            background: white;
+            border-radius: var(--border-radius-large);
+            padding: 48px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #5ac8fa 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+        }
+
+        /* 引用标记 */
+        .citation {
+            color: var(--color-primary);
+            font-size: 0.7em;
+            font-weight: 600;
+            vertical-align: super;
+            margin-left: 2px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-background-secondary);
+            padding: 80px 22px 40px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-text);
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* 动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .navbar-links {
+                display: none;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 60px !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-dot,
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: 8px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-background-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#hero" class="navbar-logo">🏆 黄金走势报告</a>
+            <div class="navbar-links">
+                <a href="#overview">概览</a>
+                <a href="#factors">核心因素</a>
+                <a href="#prediction">价格预测</a>
+                <a href="#china">中国市场</a>
+                <a href="#strategy">投资策略</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-label">2025-2035 深度分析</div>
+            <h1>中国未来十年<br>黄金走势报告</h1>
+            <h2>基于权威数据与专业预测</h2>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">67%</div>
+                    <div class="stat-label">2025年涨幅<span class="citation">[4]</span></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">13个月</div>
+                    <div class="stat-label">央行增持<span class="citation">[1]</span></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2200亿</div>
+                    <div class="stat-label">ETF规模(元)<span class="citation">[3]</span></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">8000+</div>
+                    <div class="stat-label">2035预测($)<span class="citation">[10]</span></div>
+                </div>
+            </div>
+
+            <div class="hero-cta">
+                <a href="#overview" class="btn btn-primary">阅读报告</a>
+                <a href="#prediction" class="btn btn-secondary">查看预测</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 概览 Section -->
+    <section class="section" id="overview">
+        <div class="section-header">
+            <div class="section-label">Overview</div>
+            <h2 class="section-title">报告概览</h2>
+            <p class="section-description">
+                本报告基于2025年最新市场数据和各大权威机构预测，深度分析中国未来十年黄金市场的发展趋势、价格走势和投资机会。2025年黄金市场创下历史最佳表现，全年涨幅超60%<span class="citation">[4]</span>，为未来十年奠定了坚实的基础。
+            </p>
+        </div>
+
+        <div class="grid">
+            <div class="card fade-in">
+                <div class="card-icon">📈</div>
+                <div class="card-title">历史性突破</div>
+                <div class="card-desc">
+                    2025年COMEX黄金从年初约2,650美元/盎司起步，年内最高触及4,381美元/盎司，涨幅达67%，创下1979年以来最佳年度表现<span class="citation">[4]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🏦</div>
+                <div class="card-title">央行持续增持</div>
+                <div class="card-desc">
+                    截至2025年11月末，中国央行黄金储备达7,412万盎司（约2,305.39吨），连续13个月增持黄金，彰显央行对黄金的战略重视<span class="citation">[1]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">💰</div>
+                <div class="card-title">ETF规模爆发</div>
+                <div class="card-desc">
+                    华安黄金ETF规模突破1,000亿元，成为国内首只千亿级黄金ETF。全行业黄金ETF总规模达2,200亿元，资金流入创历史纪录<span class="citation">[3]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-icon">🌍</div>
+                <div class="card-title">全球需求强劲</div>
+                <div class="card-desc">
+                    2025年全球央行净购金254吨，ETF流入超700吨，创历史纪录。各国央行寻求分散对美元资产的购买，推升黄金价格<span class="citation">[1]</span>。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心因素 Section -->
+    <section class="section" id="factors">
+        <div class="section-header">
+            <div class="section-label">Key Factors</div>
+            <h2 class="section-title">核心影响因素</h2>
+            <p class="section-description">
+                多重因素共同推动黄金价格走强，形成前所未有的牛市行情
+            </p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>因素类别</th>
+                        <th>具体表现</th>
+                        <th>影响程度</th>
+                        <th>来源</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>美联储政策</strong></td>
+                        <td>2025年重新启动降息周期，利率下行降低持有黄金的机会成本<span class="citation">[5]</span></td>
+                        <td>⭐⭐⭐⭐⭐</td>
+                        <td><span class="citation">[5]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>美元信用</strong></td>
+                        <td>美国债务超34万亿美元，去美元化趋势加速<span class="citation">[6]</span></td>
+                        <td>⭐⭐⭐⭐⭐</td>
+                        <td><span class="citation">[6]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>央行购金</strong></td>
+                        <td>2025年全球央行净购金254吨，新兴市场储备多元化<span class="citation">[1]</span></td>
+                        <td>⭐⭐⭐⭐⭐</td>
+                        <td><span class="citation">[1]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>地缘政治</strong></td>
+                        <td>全球不确定性上升，避险需求持续旺盛<span class="citation">[5]</span></td>
+                        <td>⭐⭐⭐⭐☆</td>
+                        <td><span class="citation">[5]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>通胀预期</strong></td>
+                        <td>全球财政刺激推升通胀，黄金抗通胀价值凸显<span class="citation">[2]</span></td>
+                        <td>⭐⭐⭐⭐☆</td>
+                        <td><span class="citation">[2]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>供需格局</strong></td>
+                        <td>全球黄金年产量约3,661吨，供需偏紧支撑价格<span class="citation">[10]</span></td>
+                        <td>⭐⭐⭐⭐☆</td>
+                        <td><span class="citation">[10]</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Feature Section -->
+    <section class="feature-section">
+        <div class="section-header">
+            <div class="section-label">Why Gold</div>
+            <h2 class="section-title">为什么选择黄金</h2>
+            <p class="section-description">
+                黄金作为终极避险资产，在当前全球环境下具有不可替代的价值
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item fade-in">
+                <div class="feature-icon">🛡️</div>
+                <h3 style="font-size: 24px; margin-bottom: 16px; font-weight: 600;">避险保值</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    在全球经济不确定性加剧的背景下，黄金作为传统避险资产，为投资者提供有效的风险对冲工具。
+                </p>
+            </div>
+
+            <div class="feature-item fade-in">
+                <div class="feature-icon">📊</div>
+                <h3 style="font-size: 24px; margin-bottom: 16px; font-weight: 600;">抗通胀</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    在全球债务高企、通胀预期升温的环境下，黄金作为抗通胀工具的价值得到重新认可<span class="citation">[2]</span>。
+                </p>
+            </div>
+
+            <div class="feature-item fade-in">
+                <div class="feature-icon">🌐</div>
+                <h3 style="font-size: 24px; margin-bottom: 16px; font-weight: 600;">去美元化</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    全球央行持续增持黄金，储备多元化趋势不可逆，黄金是核心受益者<span class="citation">[6]</span>。
+                </p>
+            </div>
+
+            <div class="feature-item fade-in">
+                <div class="feature-icon">💎</div>
+                <h3 style="font-size: 24px; margin-bottom: 16px; font-weight: 600;">稀缺性</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    全球黄金年产量有限，新矿发现减少，供应弹性不足支撑价格长期趋势<span class="citation">[2]</span>。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 价格预测 Section -->
+    <section class="section" id="prediction">
+        <div class="section-header">
+            <div class="section-label">Price Prediction</div>
+            <h2 class="section-title">未来十年价格预测</h2>
+            <p class="section-description">
+                基于权威机构分析和市场趋势，分阶段预测黄金价格走势
+            </p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">2026-2027</div>
+                <h3 class="timeline-title">短期预测：稳步上行</h3>
+                <div class="timeline-desc">
+                    <strong>高盛预测4,900美元<span class="citation">[3]</span>，摩根大通预测5,055美元<span class="citation">[1]</span></strong><br><br>
+                    美联储降息周期延续、央行购金需求维持高位（预计年购金750-900吨）、地缘政治风险持续、美元信用边际走弱。年底有望挑战5,000美元关口。
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">2028-2030</div>
+                <h3 class="timeline-title">中期预测：加速上涨</h3>
+                <div class="timeline-desc">
+                    <strong>基本情境：5,500-6,500美元/盎司<span class="citation">[8]</span></strong><br>
+                    <strong>乐观情境：突破7,000美元/盎司<span class="citation">[8]</span></strong><br><br>
+                    全球货币体系重构进入加速期、地缘政治风险维持高位、央行储备结构持续优化。黄金的抗通胀属性得到重新认可。
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">2031-2035</div>
+                <h3 class="timeline-title">长期预测：持续繁荣</h3>
+                <div class="timeline-desc">
+                    <strong>保守估计：8,000-10,000美元/盎司<span class="citation">[10]</span></strong><br>
+                    <strong>中性估计：10,000-12,000美元/盎司<span class="citation">[10]</span></strong><br>
+                    <strong>乐观估计：突破15,000美元/盎司<span class="citation">[10]</span></strong><br><br>
+                    支撑黄金长期走强的五大逻辑：货币贬值、地缘动荡、债务危机、储备需求、通胀压力。
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 80px;">
+            <a href="#china" class="btn btn-primary">了解中国市场机遇</a>
+        </div>
+    </section>
+
+    <!-- 中国市场 Section -->
+    <section class="section" id="china">
+        <div class="section-header">
+            <div class="section-label">China Market</div>
+            <h2 class="section-title">中国黄金市场</h2>
+            <p class="section-description">
+                作为全球最大的黄金生产国和消费国，中国市场将显著影响全球黄金定价<span class="citation">[3]</span>
+            </p>
+        </div>
+
+        <div class="grid">
+            <div class="card fade-in">
+                <div class="card-value">377吨</div>
+                <div class="card-title">产量全球第一</div>
+                <div class="card-desc">
+                    2024年中国黄金产量377吨，位居世界首位。完整的黄金产业链（开采-冶炼-加工-交易），上海黄金交易所成为全球重要的定价中心<span class="citation">[3]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-value">985吨</div>
+                <div class="card-title">消费全球第一</div>
+                <div class="card-desc">
+                    2024年中国黄金消费量985吨，供需缺口超过600吨，需大量进口。中国的黄金政策和需求将显著影响全球价格<span class="citation">[3]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-value">8.0%</div>
+                <div class="card-title">储备占比</div>
+                <div class="card-desc">
+                    中国黄金储备占外汇储备比例约8.0%，仍低于全球平均15%水平，未来增持空间巨大<span class="citation">[6]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-value">1000亿+</div>
+                <div class="card-title">ETF规模</div>
+                <div class="card-desc">
+                    华安黄金ETF规模突破1,000亿元，成为国内首只千亿级黄金ETF。投资产品丰富：实物黄金、黄金ETF、黄金期货、黄金股票等<span class="citation">[3]</span>。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 投资策略 Section -->
+    <section class="feature-section" id="strategy">
+        <div class="section-header">
+            <div class="section-label">Investment Strategy</div>
+            <h2 class="section-title">投资策略建议</h2>
+            <p class="section-description">
+                根据不同投资者类型，提供差异化的黄金配置建议
+            </p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>投资者类型</th>
+                        <th>配置比例</th>
+                        <th>产品选择</th>
+                        <th>投资期限</th>
+                        <th>来源</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>保守型</strong></td>
+                        <td><span style="color: var(--color-primary); font-weight: 600;">5%-10%</span></td>
+                        <td>实物黄金、黄金ETF</td>
+                        <td>长期持有(3年以上)</td>
+                        <td><span class="citation">[3][8]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>平衡型</strong></td>
+                        <td><span style="color: var(--color-primary); font-weight: 600;">10%-15%</span></td>
+                        <td>黄金ETF+黄金股票</td>
+                        <td>中长期(1-3年)</td>
+                        <td><span class="citation">[3][8]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>进取型</strong></td>
+                        <td><span style="color: var(--color-primary); font-weight: 600;">15%-25%</span></td>
+                        <td>黄金期货+黄金ETF</td>
+                        <td>灵活配置(1年以内)</td>
+                        <td><span class="citation">[8]</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>机构投资者</strong></td>
+                        <td><span style="color: var(--color-primary); font-weight: 600;">5%-20%</span></td>
+                        <td>多元化组合</td>
+                        <td>动态调整</td>
+                        <td><span class="citation">[8]</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="feature-grid" style="margin-top: 80px;">
+            <div class="feature-item fade-in">
+                <h3 style="font-size: 24px; margin-bottom: 16px; font-weight: 600;">📅 布局阶段（2026-2027）</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                    <strong>策略：</strong>逢低分批建仓
+                </p>
+                <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                    <strong>产品：</strong>黄金ETF为主，实物黄金为辅
+                </p>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    <strong>预期收益：</strong>10%-20%/年<span class="citation">[5]</span>
+                </p>
+            </div>
+
+            <div class="feature-item fade-in">
+                <h3 style="font-size: 24px; margin-bottom: 16px; font-weight: 600;">📅 持有阶段（2028-2030）</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                    <strong>策略：</strong>长期持有，减少交易
+                </p>
+                <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                    <strong>产品：</strong>多元化配置（ETF+股票+实物）
+                </p>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    <strong>预期收益：</strong>15%-25%/年<span class="citation">[8]</span>
+                </p>
+            </div>
+
+            <div class="feature-item fade-in">
+                <h3 style="font-size: 24px; margin-bottom: 16px; font-weight: 600;">📅 优化阶段（2031-2035）</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                    <strong>策略：</strong>动态调整，获利了结
+                </p>
+                <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                    <strong>产品：</strong>根据市场情况灵活配置
+                </p>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    <strong>预期收益：</strong>视市场环境而定<span class="citation">[10]</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 风险提示 Section -->
+    <section class="section" id="risks">
+        <div class="section-header">
+            <div class="section-label">Risk Warning</div>
+            <h2 class="section-title">风险提示</h2>
+            <p class="section-description">
+                黄金投资存在风险，投资者需充分了解并做好风险管理
+            </p>
+        </div>
+
+        <div class="grid">
+            <div class="card fade-in" style="border-left: 4px solid #ff3b30;">
+                <div class="card-title">⚠️ 价格波动风险</div>
+                <div class="card-desc">
+                    黄金价格短期波动可能超过20%，历史上曾出现单日跌幅超10%的情况。杠杆投资会放大风险<span class="citation">[5]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in" style="border-left: 4px solid #ff9500;">
+                <div class="card-title">📜 政策风险</div>
+                <div class="card-desc">
+                    各国黄金政策可能调整，税收政策变化会影响投资收益。进出口管制措施也可能影响市场流动性<span class="citation">[9]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in" style="border-left: 4px solid #ffcc00;">
+                <div class="card-title">💹 市场风险</div>
+                <div class="card-desc">
+                    流动性风险（如黄金ETF暂停申购）、交易对手风险、汇率风险（美元计价转人民币）等需要密切关注<span class="citation">[9]</span>。
+                </div>
+            </div>
+
+            <div class="card fade-in" style="border-left: 4px solid #5856d6;">
+                <div class="card-title">🔄 替代品风险</div>
+                <div class="card-desc">
+                    数字货币可能分流部分投资需求，其他避险资产竞争，新型价值存储工具的出现可能影响黄金需求<span class="citation">[4]</span>。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心结论 Section -->
+    <section class="section" id="conclusions">
+        <div class="section-header">
+            <div class="section-label">Key Takeaways</div>
+            <h2 class="section-title">核心结论</h2>
+            <p class="section-description">
+                基于深度分析，我们得出以下核心结论
+            </p>
+        </div>
+
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 40px; padding: 32px; background: var(--color-background-secondary); border-radius: var(--border-radius-large); border-left: 4px solid var(--color-primary);">
+                <h3 style="font-size: 28px; margin-bottom: 16px; font-weight: 700;">1. 黄金进入新牛市周期</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    2025年开启的黄金牛市预计将持续十年以上。在美联储降息周期、央行购金需求、地缘政治风险等多重因素推动下，黄金进入长期上涨通道<span class="citation">[4][10]</span>。
+                </p>
+            </div>
+
+            <div style="margin-bottom: 40px; padding: 32px; background: var(--color-background-secondary); border-radius: var(--border-radius-large); border-left: 4px solid var(--color-primary);">
+                <h3 style="font-size: 28px; margin-bottom: 16px; font-weight: 700;">2. 价格中枢持续上移</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    未来十年金价有望从当前4,500美元升至8,000-12,000美元。保守估计2035年达到8,000-10,000美元/盎司，中性估计达到10,000-12,000美元/盎司<span class="citation">[10]</span>。
+                </p>
+            </div>
+
+            <div style="margin-bottom: 40px; padding: 32px; background: var(--color-background-secondary); border-radius: var(--border-radius-large); border-left: 4px solid var(--color-primary);">
+                <h3 style="font-size: 28px; margin-bottom: 16px; font-weight: 700;">3. 央行购金长期化</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    央行购金不再是短期策略，而是长期战略配置。中国央行连续13个月增持黄金，全球央行储备多元化趋势不可逆<span class="citation">[1][4]</span>。
+                </p>
+            </div>
+
+            <div style="margin-bottom: 40px; padding: 32px; background: var(--color-background-secondary); border-radius: var(--border-radius-large); border-left: 4px solid var(--color-primary);">
+                <h3 style="font-size: 28px; margin-bottom: 16px; font-weight: 700;">4. 去美元化加速</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    全球储备多元化趋势不可逆，黄金是核心受益者。美国债务规模持续攀升，美元"武器化"使用促使各国加速去美元化进程<span class="citation">[6]</span>。
+                </p>
+            </div>
+
+            <div style="padding: 32px; background: var(--color-background-secondary); border-radius: var(--border-radius-large); border-left: 4px solid var(--color-primary);">
+                <h3 style="font-size: 28px; margin-bottom: 16px; font-weight: 700;">5. 中国角色日益重要</h3>
+                <p style="color: var(--color-text-secondary); line-height: 1.6;">
+                    中国作为最大生产国和消费国，将显著影响全球定价。2024年中国黄金消费量985吨，但产量仅377吨，供需缺口超过600吨<span class="citation">[3]</span>。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据来源 Section -->
+    <section class="section" id="references">
+        <div class="section-header">
+            <div class="section-label">Data Sources</div>
+            <h2 class="section-title">数据来源</h2>
+            <p class="section-description">
+                本报告数据来源于以下权威机构和公开市场信息
+            </p>
+        </div>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[1] 世界黄金协会</div>
+                <div style="color: var(--color-text-secondary);">2025年全球黄金市场年中展望、2026年全球黄金市场展望</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[2] 中国黄金报</div>
+                <div style="color: var(--color-text-secondary);">2025黄金投资年度盘点及未来金价展望</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[3] 证券时报/新浪财经</div>
+                <div style="color: var(--color-text-secondary);">金价攀升驱动资金涌入，国内首只千亿级黄金ETF诞生</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[4] 华尔街见闻</div>
+                <div style="color: var(--color-text-secondary);">黄金"狂想曲"——五种极端情形下的金价推演</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[5] 南方+/中金公司</div>
+                <div style="color: var(--color-text-secondary);">金价一路狂飙，黄金估值是否偏贵甚至存在泡沫</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[6] 人民网/CEIC数据</div>
+                <div style="color: var(--color-text-secondary);">央行黄金储备"十二连增"、中国外汇储备创十年新高</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[7] 财经号/中金在线</div>
+                <div style="color: var(--color-text-secondary);">全球11家投行最新黄金价格预测汇总（2025–2026年）</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[8] 道富环球 (SSGA)</div>
+                <div style="color: var(--color-text-secondary);">2025年黄金中期展望：长期高企的金价格局</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[9] 东方财富期货/乐天证券</div>
+                <div style="color: var(--color-text-secondary);">黄金价格影响因素分析、专业技术分析</div>
+            </div>
+
+            <div class="card" style="font-size: 14px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: var(--color-primary);">[10] Axi/Trading Economics</div>
+                <div style="color: var(--color-text-secondary);">2024、2025、2030、2040、2050年黄金价格预测</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#overview">报告概览</a>
+                <a href="#factors">核心因素</a>
+                <a href="#prediction">价格预测</a>
+                <a href="#china">中国市场</a>
+                <a href="#strategy">投资策略</a>
+                <a href="#risks">风险提示</a>
+            </div>
+
+            <div class="footer-copyright">
+                <p style="margin-bottom: 16px; font-size: 14px;">
+                    <strong>中国未来十年黄金走势报告 (2025-2035)</strong>
+                </p>
+                <p style="margin-bottom: 16px;">
+                    报告生成时间：2025年1月 | 报告有效期：2025-2026年 | 更新频率：季度更新
+                </p>
+                <p style="margin-bottom: 24px;">
+                    本报告基于公开信息和市场研究，仅供参考，不构成投资建议。黄金投资存在风险，历史表现不代表未来收益。投资者应根据自身风险承受能力和投资目标，谨慎决策。
+                </p>
+                <p style="font-size: 11px; opacity: 0.8;">
+                    本报告由智能数据分析助手生成，所有数据来源于各大权威机构和公开市场信息。每个关键数据点均已标注溯源角标，方便读者查阅和验证。
+                </p>
+                <p style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--color-border);">
+                    Copyright © 2025. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 导航栏背景变化
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(0, 0, 0, 0.95)';
+            } else {
+                navbar.style.background = 'rgba(0, 0, 0, 0.8)';
+            }
+        });
+
+        // Hero 视差效果
+        window.addEventListener('scroll', () => {
+            const hero = document.querySelector('.hero');
+            const scrolled = window.pageYOffset;
+            if (scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>

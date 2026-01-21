@@ -1,0 +1,471 @@
+tags:
+  api:
+    terms:
+    - authentication
+    - authorization
+    - oauth
+    - api key
+    - api endpoint
+    - rest api
+    - api reference
+    - http request
+    - api response
+    # REMOVED: 'token' - too generic (appears in context window discussions)
+    # REMOVED: 'endpoint' - too generic without 'api' prefix
+    min_mentions: 8
+  skills:
+    terms:
+    - skill
+    - skills
+    - agent skill
+    - claude skill
+    - personal skill
+    - project skill
+    min_mentions: 4
+  hooks:
+    terms:
+    - hook
+    - hooks
+    - pretooluse
+    - posttooluse
+    - precompact
+    - sessionstart
+    - sessionend
+    - permissionrequest
+    - userpromptsubmit
+    # REMOVED: 'stop' - too generic (appears in API streaming as stop_reason, content_block_stop, etc.)
+    - subagentstop
+    # REMOVED: 'notification' - too generic (appears in push notifications, system notifications, etc.)
+    min_mentions: 5
+  mcp:
+    terms:
+    - mcp
+    - model context protocol
+    - mcp server
+    - mcp tool
+    min_mentions: 5
+  subagents:
+    terms:
+    - subagent
+    - subagents
+    - sub-agent
+    - sub-agents
+    min_mentions: 5
+  memory:
+    terms:
+    - memory
+    - memories
+    - persistent memory
+    - memory management
+    min_mentions: 6
+  plugins:
+    terms:
+    - plugin
+    - plugins
+    - extension
+    - extensions
+    - claude plugin
+    min_mentions: 5
+  troubleshooting:
+    terms:
+    - troubleshoot
+    - troubleshooting
+    - fix error
+    - error handling
+    - debug
+    - debugging
+    min_mentions: 3
+    additional_terms:
+    - issue
+    - problem
+    additional_min_mentions: 3
+  security:
+    terms:
+    - security
+    - secure
+    - permission
+    - permissions
+    - access control
+    - authentication
+    - authorization
+    min_mentions: 4
+  deployment:
+    terms:
+    - deploy
+    - deployment
+    - production
+    - hosting
+    - infrastructure
+    - ci/cd
+    min_mentions: 4
+  reference: null
+  installation:
+    terms:
+    - install
+    - installation
+    - setup
+    - prerequisites
+    - dependencies
+    - getting started
+    - quickstart
+    - first steps
+    min_mentions: 5
+  configuration:
+    terms:
+    - configuration
+    - config
+    - settings
+    - environment variable
+    - configure
+    - env var
+    - config file
+    - .env
+    min_mentions: 6
+  monitoring:
+    terms:
+    - monitoring
+    - telemetry
+    - analytics
+    - observability
+    - metrics
+    - usage tracking
+    min_mentions: 5
+  ci-cd:
+    terms:
+    - github actions
+    - gitlab ci
+    - ci/cd
+    - continuous integration
+    - continuous deployment
+    - automation pipeline
+    min_mentions: 5
+  testing:
+    terms:
+    - test
+    - testing
+    - evaluation
+    - eval
+    - evaluate
+    - test suite
+    - test cases
+    # Increased from 4 to 8 (2025-11-25 audit) - "test" appears incidentally in many docs
+    min_mentions: 8
+  prompt-engineering:
+    terms:
+    - prompt engineering
+    - system prompt
+    - prompting
+    - prompt design
+    - prompt template
+    min_mentions: 5
+  context:
+    terms:
+    - context window
+    - context management
+    - long context
+    - context caching
+    - context editing
+    min_mentions: 5
+  tools:
+    terms:
+    - tool use
+    - tool calling
+    - custom tool
+    - bash tool
+    - code execution
+    - computer use
+    min_mentions: 5
+  streaming:
+    terms:
+    - streaming
+    - stream
+    - server-sent events
+    - sse
+    - streaming response
+    min_mentions: 4
+  files:
+    terms:
+    - file upload
+    - file handling
+    - pdf
+    - document processing
+    - file support
+    - vision
+    min_mentions: 5
+  agents:
+    terms:
+    - agent
+    - agents
+    - agentic
+    - agent framework
+    - agent system
+    min_mentions: 7
+  models:
+    terms:
+    - model
+    - models
+    - claude 4
+    - claude 3
+    - opus
+    - sonnet
+    - haiku
+    - model selection
+    min_mentions: 8
+  authentication:
+    terms:
+    - authentication
+    - auth
+    - api key
+    - credentials
+    - oauth
+    - api token
+    min_mentions: 6
+  sdk:
+    terms:
+    - sdk
+    - client library
+    - python sdk
+    - typescript sdk
+    - agent sdk
+    min_mentions: 4
+  performance:
+    terms:
+    - performance
+    - optimization
+    - latency
+    - cost optimization
+    - efficiency
+    min_mentions: 4
+  caching:
+    terms:
+    - caching
+    - cache
+    - prompt caching
+    - prompt cache
+    - cached
+    min_mentions: 4
+  batch:
+    terms:
+    - batch
+    - batch processing
+    - batch api
+    - message batch
+    min_mentions: 5
+  compliance:
+    terms:
+    - compliance
+    - legal
+    - privacy
+    - data usage
+    - fedramp
+    - soc 2
+    min_mentions: 5
+  changelog:
+    terms:
+    - changelog
+    - release notes
+    - version history
+    - what's new
+    - updates
+    - recent changes
+    - latest version
+    - breaking changes
+    - new features
+    min_mentions: 3
+categories:
+  api:
+    path_patterns:
+    - api
+    - /api/
+    tag_mapping:
+    - api
+    content_terms:
+    - api
+    - endpoint
+    - authentication
+    - authorization
+    - rest api
+  skills:
+    path_patterns:
+    - skill
+    tag_mapping:
+    - skills
+    content_terms:
+    - skill
+    - agent skill
+    - claude skill
+  guides:
+    path_patterns:
+    - guide
+    - tutorial
+    - checkpointing
+    tag_mapping:
+    - guides
+    content_terms:
+    - guide
+    - tutorial
+    - how to
+    - getting started
+    - checkpointing
+    - checkpoint
+    - rewind
+  research:
+    path_patterns:
+    - research
+    tag_mapping:
+    - research
+    content_terms:
+    - research
+    - study
+    - paper
+    - analysis
+  engineering:
+    path_patterns:
+    - engineering
+    tag_mapping:
+    - engineering
+    content_terms:
+    - engineering
+    - architecture
+    - system design
+    - implementation
+  news:
+    path_patterns:
+    - news
+    tag_mapping: []
+    content_terms:
+    - news
+    - announcement
+    - update
+    - release
+  installation:
+    path_patterns:
+    - setup
+    - install
+    - quickstart
+    tag_mapping:
+    - installation
+    content_terms:
+    - install
+    - installation
+    - setup
+    - prerequisites
+    - getting started
+  configuration:
+    path_patterns:
+    - config
+    - settings
+    - memory
+    tag_mapping:
+    - configuration
+    content_terms:
+    - configuration
+    - config
+    - settings
+    - environment variable
+  monitoring:
+    path_patterns:
+    - monitoring
+    - analytics
+    - telemetry
+    tag_mapping:
+    - monitoring
+    content_terms:
+    - monitoring
+    - telemetry
+    - analytics
+    - observability
+    - metrics
+  testing:
+    path_patterns:
+    - test
+    - evaluate
+    - eval
+    tag_mapping:
+    - testing
+    content_terms:
+    - test
+    - testing
+    - evaluation
+    - eval
+  prompt-engineering:
+    path_patterns:
+    - prompt-engineering
+    - prompting
+    - prompt-library
+    tag_mapping:
+    - prompt-engineering
+    content_terms:
+    - prompt engineering
+    - prompting
+    - system prompt
+    - prompt library
+  tools:
+    path_patterns:
+    - tool-use
+    - tools
+    tag_mapping:
+    - tools
+    content_terms:
+    - tool use
+    - tool calling
+    - custom tool
+  models:
+    path_patterns:
+    - models
+    - model
+    tag_mapping:
+    - models
+    content_terms:
+    - model
+    - models
+    - opus
+    - sonnet
+    - haiku
+  agents:
+    path_patterns:
+    - agent
+    - agentic
+    tag_mapping:
+    - agents
+    content_terms:
+    - agent
+    - agents
+    - agentic
+  sdk:
+    path_patterns:
+    - sdk
+    tag_mapping:
+    - sdk
+    content_terms:
+    - sdk
+    - client library
+  compliance:
+    path_patterns:
+    - legal
+    - compliance
+    tag_mapping:
+    - compliance
+    content_terms:
+    - compliance
+    - legal
+    - privacy
+    - baa
+    - hipaa
+  changelog:
+    path_patterns:
+    - changelog
+    - release-notes
+    - releases
+    - whats-new
+    tag_mapping:
+    - changelog
+    content_terms:
+    - changelog
+    - release notes
+    - version history
+    - what's new
+    - breaking changes
+    - new features
+    - bug fixes
+    - improvements

@@ -1,0 +1,258 @@
+name: 银行业专业知识
+domain: finance
+subdomain: banking
+description: 银行业务分析的专业知识和最佳实践
+last_updated: 2024-12-14
+
+# 关键指标定义
+key_metrics:
+  profitability:
+    - name: "净息差 (NIM)"
+      description: "净利息收入除以平均生息资产"
+      calculation: "净利息收入 / 平均生息资产"
+      benchmark: "2.0% - 4.0%"
+      importance: "高"
+    - name: "成本收入比 (CIR)"
+      description: "营业费用除以营业收入"
+      calculation: "营业费用 / 营业收入"
+      benchmark: "< 45%"
+      importance: "高"
+    - name: "资产收益率 (ROA)"
+      description: "净利润除以平均总资产"
+      calculation: "净利润 / 平均总资产"
+      benchmark: "> 1.0%"
+      importance: "高"
+    - name: "资本收益率 (ROE)"
+      description: "净利润除以平均股东权益"
+      calculation: "净利润 / 平均股东权益"
+      benchmark: "> 12%"
+      importance: "高"
+
+  asset_quality:
+    - name: "不良贷款率 (NPL)"
+      description: "不良贷款除以总贷款"
+      calculation: "不良贷款 / 总贷款"
+      benchmark: "< 2.0%"
+      importance: "极高"
+    - name: "拨备覆盖率"
+      description: "贷款减值准备除以不良贷款"
+      calculation: "贷款减值准备 / 不良贷款"
+      benchmark: "> 150%"
+      importance: "高"
+    - name: "贷款拨备率"
+      description: "贷款减值准备除以总贷款"
+      calculation: "贷款减值准备 / 总贷款"
+      benchmark: "> 2.5%"
+      importance: "中"
+
+  capital_adequacy:
+    - name: "资本充足率 (CAR)"
+      description: "合格资本除以风险加权资产"
+      calculation: "合格资本 / 风险加权资产"
+      benchmark: "> 10.5%"
+      importance: "极高"
+    - name: "一级资本充足率 (CET1)"
+      description: "一级资本除以风险加权资产"
+      calculation: "一级资本 / 风险加权资产"
+      benchmark: "> 7.0%"
+      importance: "极高"
+
+  liquidity:
+    - name: "流动性覆盖率 (LCR)"
+      description: "高质量流动性资产除以30天内净现金流出"
+      calculation: "高质量流动性资产 / 30天内净现金流出"
+      benchmark: "> 100%"
+      importance: "高"
+    - name: "净稳定资金比率 (NSFR)"
+      description: "可用稳定资金除以所需稳定资金"
+      calculation: "可用稳定资金 / 所需稳定资金"
+      benchmark: "> 100%"
+      importance: "中"
+
+# 风险因素识别
+risk_factors:
+  credit_risk:
+    indicators:
+      - "不良贷款率上升"
+      - "拨备覆盖率下降"
+      - "贷款集中度过高"
+      - "行业风险敞口增加"
+    mitigation_strategies:
+      - "加强贷前审查"
+      - "完善贷后管理"
+      - "分散贷款组合"
+      - "提高拨备水平"
+
+  market_risk:
+    indicators:
+      - "利率敏感性过高"
+      - "汇率敞口过大"
+      - "债券投资损失"
+    mitigation_strategies:
+      - "利率风险对冲"
+      - "汇率风险管理"
+      - "投资组合多元化"
+
+  operational_risk:
+    indicators:
+      - "系统故障频发"
+      - "内部控制缺陷"
+      - "员工违规操作"
+    mitigation_strategies:
+      - "加强系统建设"
+      - "完善内控制度"
+      - "员工培训监督"
+
+  compliance_risk:
+    indicators:
+      - "监管处罚增加"
+      - "合规成本上升"
+      - "政策变化影响"
+    mitigation_strategies:
+      - "加强合规管理"
+      - "及时政策响应"
+      - "合规文化建设"
+
+# 分析框架
+analysis_frameworks:
+  performance_analysis:
+    steps:
+      1. "收集3-5年财务数据"
+      2. "计算关键财务指标"
+      3. "进行同业对比分析"
+      4. "识别趋势和异常"
+      5. "评估业绩表现"
+    focus_areas:
+      - "盈利能力分析"
+      - "资产质量评估"
+      - "资本充足性检查"
+      - "流动性状况分析"
+
+  risk_assessment:
+    steps:
+      1. "识别主要风险类型"
+      2. "量化风险暴露程度"
+      3. "评估风险控制措施"
+      4. "进行压力测试"
+      5. "制定风险缓解计划"
+    methodologies:
+      - "风险矩阵分析"
+      - "情景分析"
+      - "敏感性分析"
+      - "蒙特卡洛模拟"
+
+  valuation_analysis:
+    approaches:
+      - "市净率法 (P/B)"
+      - "市盈率法 (P/E)"
+      - "股利贴现模型 (DDM)"
+      - "剩余收益模型 (RIM)"
+    key_factors:
+      - "资产质量"
+      - "盈利能力"
+      - "成长性"
+      - "风险水平"
+      - "管理质量"
+
+# 行业基准
+industry_benchmarks:
+  source: "银保监会、同业银行年报、Wind数据库"
+  update_frequency: "季度"
+  peer_groups:
+    large_state_banks:
+      - "工商银行"
+      - "建设银行"
+      - "农业银行"
+      - "中国银行"
+    joint_stock_banks:
+      - "招商银行"
+      - "兴业银行"
+      - "浦发银行"
+      - "民生银行"
+    city_commercial_banks:
+      - "北京银行"
+      - "上海银行"
+      - "江苏银行"
+
+# 监管要求
+regulatory_requirements:
+  capital_adequacy:
+    - "巴塞尔协议III实施要求"
+    - "国内资本管理办法"
+    - "系统重要性银行额外要求"
+  risk_management:
+    - "全面风险管理指引"
+    - "杠杆率监管要求"
+    - "流动性风险管理办法"
+  disclosure:
+    - "信息披露管理办法"
+    - "关联交易管理办法"
+    - "公司治理准则"
+
+# 常见分析场景
+common_scenarios:
+  loan_portfolio_analysis:
+    description: "贷款组合质量和效益分析"
+    data_requirements:
+      - "贷款分类明细"
+      - "行业分布数据"
+      - "期限结构分析"
+      - "担保方式统计"
+    key_metrics:
+      - "不良贷款率"
+      - "拨备覆盖率"
+      - "贷款收益率"
+      - "集中度指标"
+
+  profitability_analysis:
+    description: "银行盈利能力分析"
+    data_requirements:
+      - "收入结构明细"
+      - "支出结构分析"
+      - "净息收入趋势"
+      - "非息收入占比"
+    key_metrics:
+      - "净息差"
+      - "成本收入比"
+      - "ROA"
+      - "ROE"
+
+  stress_testing:
+    description: "压力测试和情景分析"
+    scenarios:
+      - "宏观经济下行"
+      - "利率大幅变动"
+      - "房地产市场调整"
+      - "股市大幅波动"
+    methodologies:
+      - "敏感性分析"
+      - "情景分析"
+      - "蒙特卡洛模拟"
+
+# 报告模板建议
+report_templates:
+  executive_summary:
+    sections:
+      - "关键财务指标概览"
+      - "主要发现和结论"
+      - "风险状况总结"
+      - "核心建议"
+    length: "1-2页"
+
+  detailed_analysis:
+    sections:
+      - "业绩分析"
+      - "风险分析"
+      - "同业对比"
+      - "趋势预测"
+      - "改进建议"
+    length: "15-20页"
+
+  board_presentation:
+    sections:
+      - "业绩亮点"
+      - "风险关注点"
+      - "战略建议"
+      - "行动计划"
+    format: "PPT"
+    slides: "10-15页"

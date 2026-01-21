@@ -1,0 +1,83 @@
+[
+  {
+    "name": "docs.claude.com /en/docs/",
+    "type": "sitemap",
+    "url": "https://docs.claude.com/sitemap.xml",
+    "filter": "/en/docs/",
+    "skip_existing": true,
+    "expected_count": 95,
+    "timeout": 1800
+  },
+  {
+    "name": "docs.claude.com /en/api/",
+    "type": "sitemap",
+    "url": "https://docs.claude.com/sitemap.xml",
+    "filter": "/en/api/",
+    "skip_existing": true,
+    "expected_count": 62,
+    "timeout": 1800
+  },
+  {
+    "name": "docs.claude.com /en/resources/",
+    "type": "sitemap",
+    "url": "https://docs.claude.com/sitemap.xml",
+    "filter": "/en/resources/",
+    "skip_existing": true,
+    "expected_count": 66,
+    "timeout": 1800
+  },
+  {
+    "name": "docs.claude.com /en/release-notes/",
+    "type": "sitemap",
+    "url": "https://docs.claude.com/sitemap.xml",
+    "filter": "/en/release-notes/",
+    "skip_existing": true,
+    "expected_count": 2,
+    "timeout": 1800
+  },
+  {
+    "name": "code.claude.com",
+    "type": "docs-map",
+    "url": "https://code.claude.com/docs/en/claude_code_docs_map.md",
+    "skip_existing": true,
+    "expected_count": 43,
+    "timeout": 1800,
+    "expected_errors": [
+      {
+        "url": "https://code.claude.com/docs/en/migration-guide.md",
+        "type": "404",
+        "reason": "Page removed from site"
+      }
+    ]
+  },
+  {
+    "name": "anthropic.com /engineering/",
+    "type": "sitemap",
+    "url": "https://www.anthropic.com/sitemap.xml",
+    "filter": "/engineering/",
+    "skip_existing": true,
+    "max_age_days": 180,
+    "expected_count": 14,
+    "timeout": 1800
+  },
+  {
+    "name": "anthropic.com /news/",
+    "type": "sitemap",
+    "url": "https://www.anthropic.com/sitemap.xml",
+    "filter": "/news/",
+    "skip_existing": true,
+    "max_age_days": 180,
+    "expected_count": 150,
+    "timeout": 1800
+  },
+  {
+    "name": "anthropic.com /research/",
+    "type": "sitemap",
+    "url": "https://www.anthropic.com/sitemap.xml",
+    "filter": "/research/",
+    "skip_existing": true,
+    "max_age_days": 180,
+    "expected_count": 79,
+    "timeout": 1800
+  }
+]
