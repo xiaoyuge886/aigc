@@ -1,0 +1,950 @@
+<!DOCTYPE html><html><head>
+      <title>PRESENTATION_OUTLINE</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////Users/hehe/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.8.20/crossnote/dependencies/katex/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h2 id="项目文档">项目文档 </h2>
+<blockquote>
+<p><strong>业务背景</strong>：我们是一家 ToB 智能化解决方案提供商，服务于企业级客户（金融、制造、政务、医疗等行业）。当前核心痛点是交付成本高、定制化需求多、知识资产难以沉淀。</p>
+</blockquote>
+<hr>
+<h3 id="一-背景与目标why---业务价值与市场机会">一、背景与目标（Why - 业务价值与市场机会） </h3>
+<ul>
+<li>
+<p><strong>1.1 当前 ToB 业务痛点与挑战</strong></p>
+<ul>
+<li><strong>交付成本居高不下</strong>：每个客户项目需要从零开发定制化 workflow，团队陷入"项目制"泥潭，难以规模化复用。</li>
+<li><strong>客户期望升级</strong>：企业客户对 AI 的认知从"流程自动化"升级到"智能自主决策"，不再满足于固定规则的工作流编排，期待具备理解、规划、执行能力的 Agent 形态。</li>
+<li><strong>行业场景差异巨大</strong>：
+<ul>
+<li><strong>水利规划局</strong>：关注水利工程设计、档案数据问答、通用水工建筑物详细报告</li>
+<li><strong>宁夏交建（交通建设）</strong>：关注工程标书制作、施工方案优化、招投标文档生成</li>
+<li><strong>标书写作场景</strong>：关注技术方案撰写、商务报价生成、资质文件整理、合规性检查、多格式文档输出</li>
+</ul>
+</li>
+<li><strong>维护与演进成本</strong>：传统 workflow 方案每次客户需求变更都需要开发介入，后期维护成本随客户数量线性增长。</li>
+</ul>
+</li>
+<li>
+<p><strong>1.2 市场机会与竞争优势</strong></p>
+<ul>
+<li><strong>Agent 化转型窗口期</strong>：市场上 ToB Agent 产品尚处早期，率先推出企业级 Agent 平台可抢占先机。</li>
+<li><strong>知识资产沉淀</strong>：将行业经验沉淀为"场景 + Prompt + Skill"资产，构建竞争壁垒。</li>
+<li><strong>降本增效显著</strong>：通过平台化复用，将单个项目交付周期从 2-3 个月缩短到 1-2 周。</li>
+</ul>
+</li>
+<li>
+<p><strong>1.3 本项目要解决什么问题</strong></p>
+<ul>
+<li><strong>统一 AI 能力入口</strong>：为企业内部团队和客户提供一站式 AI 控制台，降低 AI 使用门槛。</li>
+<li><strong>能力资产化</strong>：用"业务场景 + Prompt + Skill"把行业经验沉淀为可配置、可复用、可交易的资产。</li>
+<li><strong>系统自我进化</strong>：基于用户反馈和偏好，实现系统的持续优化，降低人工调优成本。</li>
+<li><strong>多租户隔离</strong>：支持不同企业/部门的场景隔离与个性化配置。</li>
+</ul>
+</li>
+<li>
+<p><strong>1.4 项目愿景与商业价值</strong></p>
+<ul>
+<li>
+<p><strong>短期愿景</strong>：打造公司内部的"AI 操作系统"——配置什么 <strong>Prompt + 场景 + Skill</strong>，就能自动执行对应的业务任务。</p>
+</li>
+<li>
+<p><strong>长期愿景</strong>：构建 ToB AI 应用生态平台：</p>
+<ul>
+<li>对内：提效 50%+，交付成本降低 70%+</li>
+<li>对外：向客户提供 SaaS 化 Agent 平台，支持私有化部署与定制化服务</li>
+<li>生态：沉淀行业场景库，形成可交易的 AI 能力市场</li>
+</ul>
+</li>
+<li>
+<p><strong>建议配图</strong>：<a href="./diagrams/architecture_overview.html">📊 整体架构图</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="二-产品功能全景what---企业级能力矩阵">二、产品功能全景（What - 企业级能力矩阵） </h3>
+<ul>
+<li>
+<p><strong>2.1 产品定位与核心价值</strong></p>
+<ul>
+<li><strong>定位</strong>：企业级 AI 智能控制台与应用运行平台，为 ToB 客户提供统一、安全、可控的 AI 能力入口与场景化解决方案。</li>
+<li><strong>一句话介绍</strong>：将行业经验沉淀为"场景 + Prompt + Skill"资产，通过智能匹配与自我进化，为企业客户提供开箱即用的 AI 解决方案。</li>
+<li><strong>核心差异化优势</strong>：
+<ul>
+<li>vs 通用 AI 平台（如 ChatGPT）：行业场景化、企业级安全、可控可定制</li>
+<li>vs 传统 workflow 平台：Agent 自主决策、自我进化、低配置成本</li>
+<li>vs 定制化开发：资产复用、快速交付、持续优化</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>2.2 企业角色与权限体系</strong></p>
+<ul>
+<li><strong>企业租户（Tenant）</strong>：多租户隔离，支持不同企业/部门独立配置场景、Prompt、Skill（v0.8+ 规划）。</li>
+<li><strong>管理员 / 平台运营者</strong>（企业侧）：
+<ul>
+<li>场景库管理：创建/编辑/发布场景，配置场景 Prompt、绑定 Skill 与工具</li>
+<li>用户权限管理：为团队成员分配可用场景、查看使用统计、配置个性化参数</li>
+<li>知识资产管理：维护企业私有 Prompt 模板、Skill 工具库</li>
+<li>数据洞察：查看团队使用情况、效果评估、成本分析</li>
+</ul>
+</li>
+<li><strong>普通用户 / 业务人员</strong>（企业员工）：
+<ul>
+<li>对话式交互：提问、生成文档/报告/PPT/代码、数据分析</li>
+<li>场景化引导：自动匹配业务场景，享受领域专业化服务</li>
+<li>反馈与纠偏：点赞/点踩/纠正反馈，帮助系统自我进化</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>2.3 典型行业应用场景</strong></p>
+<ul>
+<li><strong>水利规划局</strong>：
+<ul>
+<li>工程设计场景：水利方案智能生成、图纸解读、工程量计算</li>
+<li>数据分析场景：水文数据分析、水资源评估、防汛预测报告</li>
+<li>监管报表场景：水利工程进度监控、质量检查报告、合规性审查</li>
+<li>办公场景：政策文件解读、公文拟稿、会议纪要生成</li>
+</ul>
+</li>
+<li><strong>宁夏交建（交通建设）</strong>：
+<ul>
+<li>施工管理场景：施工方案优化、进度计划生成、质量安全报告</li>
+<li>文档管理场景：合同审查、工程资料整理、竣工报告生成</li>
+</ul>
+</li>
+<li><strong>标书写作通用场景</strong>：
+<ul>
+<li>技术标撰写：根据招标需求自动生成技术方案、实施方案、人员配置</li>
+<li>商务标生成：报价计算、成本分析、商务条款审查</li>
+<li>资质文件整理：自动匹配资质要求、生成资质证明文件目录</li>
+<li>合规性检查：对照招标文件要求，检查标书完整性与符合性</li>
+<li>多格式输出：生成 Word/PDF 格式标书，支持模板快速套用</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/industry_scenario_matrix.html">📊 行业-场景矩阵图</a>，展示不同客户的典型应用场景与对应 Skill。</li>
+</ul>
+</li>
+<li>
+<p><strong>2.4 功能清单（普通用户视角）</strong></p>
+<ul>
+<li><strong>对话与会话管理</strong>：
+<ul>
+<li>发起新对话、多轮交互、上下文记忆</li>
+<li>历史会话查看、搜索、收藏、导出</li>
+<li>场景标签自动标注，便于回溯与复用</li>
+</ul>
+</li>
+<li><strong>智能场景匹配</strong>：
+<ul>
+<li>根据自然语言问题，自动匹配最合适的业务场景</li>
+<li>支持场景切换与手动指定</li>
+<li>通用场景兜底，保证"有问必答"</li>
+</ul>
+</li>
+<li><strong>技能 / 工具调用</strong>：
+<ul>
+<li>对用户透明：用户无需了解技术细节，自然语言即可调用</li>
+<li>支持技能串行/并行调用，复杂任务自动编排</li>
+<li>实时展示工具执行进度与结果</li>
+</ul>
+</li>
+<li><strong>反馈与纠正</strong>：
+<ul>
+<li>点赞/点踩：快速反馈满意度</li>
+<li>纠正反馈：指出回答错误，提供正确答案，系统学习改进</li>
+<li>重生成：对不满意的结果重新生成</li>
+</ul>
+</li>
+<li><strong>工作区与协作</strong>：
+<ul>
+<li>生成结果保存到个人工作区</li>
+<li>支持分享给团队成员（v0.8+）</li>
+<li>历史记录与版本管理</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/user_journey_map.html">🎯 用户旅程地图</a>，从登录 → 选择场景/自动匹配 → 对话交互 → 获得结果 → 反馈优化。</li>
+</ul>
+</li>
+<li>
+<p><strong>2.5 功能清单（管理员视角）</strong></p>
+<ul>
+<li><strong>场景管理（BusinessScenario）</strong>：
+<ul>
+<li>创建/编辑/删除/发布场景，配置 <code>category</code>、<code>meta</code>、场景 Prompt、<code>is_default</code></li>
+<li>场景版本管理：A/B 测试、灰度发布</li>
+<li>场景效果分析：使用量、满意度、转化率统计</li>
+</ul>
+</li>
+<li><strong>系统 Prompt 管理</strong>：
+<ul>
+<li>维护通用 Prompt 模板库（可复用、可继承）</li>
+<li>Prompt 版本控制与回滚</li>
+<li>Prompt 效果对比分析</li>
+</ul>
+</li>
+<li><strong>技能管理（Skill）</strong>：
+<ul>
+<li>技能内容编辑、分类、可见性控制（<code>is_public</code> + <code>created_by</code>）</li>
+<li>技能与场景绑定、技能组合编排</li>
+<li>技能执行日志与性能监控</li>
+</ul>
+</li>
+<li><strong>用户配置与场景授权</strong>：
+<ul>
+<li>为用户/团队配置可用场景列表</li>
+<li>用户个性化参数配置（温度、输出格式等）</li>
+<li>批量导入/导出用户配置</li>
+</ul>
+</li>
+<li><strong>数据洞察与优化</strong>：
+<ul>
+<li>用户级偏好分析：了解用户需求与行为模式</li>
+<li>Session 级偏好分析：追踪会话级决策路径</li>
+<li>会话与工具使用统计：高频场景、热门技能、问题类型分布</li>
+<li>反馈分析：点踩原因分析、纠正内容挖掘</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/admin_info_architecture.html">📊 管理后台信息架构图</a>，展示场景 / Prompt / Skill / 用户配置 / 数据分析的关系框图。</li>
+</ul>
+</li>
+<li>
+<p><strong>2.6 关键交互示意</strong></p>
+<ul>
+<li><strong>用户侧：从提问到获得结果的完整流程</strong>
+<ul>
+<li>进入 AI 助手 → 输入自然语言问题 → 系统自动场景匹配 → 展示匹配场景（用户可切换） → 组合 Prompt + 调用 Skill → 流式返回结果 → 用户反馈 → 系统自我进化</li>
+<li><strong>关键体验点</strong>：
+<ul>
+<li>场景匹配准确率（目标 ≥85%）</li>
+<li>首字响应时间（目标 &lt;2 秒）</li>
+<li>结果满意度（目标 ≥90%）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>管理员侧：从创建场景到上线运营的流程</strong>
+<ul>
+<li>进入管理中心 → 资源配置 → 创建新场景 → 编写场景 Prompt → 绑定 Skill 与工具 → 配置元数据（分类/标签） → 预览测试 → 发布 → 为用户/团队授权 → 监控效果 → 持续优化</li>
+<li><strong>关键体验点</strong>：
+<ul>
+<li>场景配置便捷性（目标 &lt;15 分钟完成一个场景）</li>
+<li>测试验证效率（支持沙盒测试、A/B 对比）</li>
+<li>数据洞察深度（可视化报表、趋势分析、异常告警）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：
+<ul>
+<li>用户侧：<a href="./diagrams/user_interaction_flow.html">🔄 用户交互流程图</a>，标注关键体验点</li>
+<li>管理员侧：<a href="./diagrams/admin_swimlane.html">📊 管理员泳道图</a>，展示从需求分析到上线运营的全流程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="三-技术架构概览how---企业级技术方案">三、技术架构概览（How - 企业级技术方案） </h3>
+<ul>
+<li>
+<p><strong>3.1 整体架构设计原则</strong></p>
+<ul>
+<li><strong>企业级安全</strong>：数据隔离、权限控制、审计日志、加密存储</li>
+<li><strong>高可用性</strong>：服务冗余、故障自动恢复、降级策略</li>
+<li><strong>可扩展性</strong>：水平扩展能力，支持从单租户到多租户的平滑演进</li>
+<li><strong>开放集成</strong>：标准化 API，支持与企业现有系统集成（SSO、ERP、CRM、数据湖）</li>
+<li><strong>可观测性</strong>：全链路日志、监控告警、性能分析、成本追踪</li>
+</ul>
+</li>
+<li>
+<p><strong>3.2 分层架构图</strong></p>
+<ul>
+<li><strong>接入层</strong>：
+<ul>
+<li>Web 前端：React Console（ChatInterface / SessionHistory / AdminDashboard / ResourceCenter）</li>
+<li>API Gateway：统一 API 入口、认证鉴权、限流熔断、日志审计</li>
+</ul>
+</li>
+<li><strong>应用层</strong>：
+<ul>
+<li>FastAPI 服务：Agent API / Platform API / Admin API</li>
+<li>核心服务模块：
+<ul>
+<li>AgentService：Agent 生命周期管理、模型调用、工具编排</li>
+<li>ScenarioMatcher：基于 LLM 的智能场景匹配</li>
+<li>ScenarioProvider：用户可用场景计算与缓存</li>
+<li>ConfigurationManager：多层级配置合并（Request &gt; Session &gt; User &gt; Scenario &gt; Global）</li>
+<li>PromptComposer：动态 Prompt 组装（系统 Prompt + 场景 Prompt + 用户偏好）</li>
+<li>PromptEvolver：Prompt 进化引擎，注入学习到的偏好</li>
+<li>PreferenceLearner：用户偏好学习引擎（离线分析 + 实时更新）</li>
+<li>FeedbackCollector：反馈数据采集与清洗</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>数据层</strong>：
+<ul>
+<li>关系型数据库：SQLite（开发）/ PostgreSQL（生产，支持多租户 schema 隔离）</li>
+<li>缓存层：Redis（Session 缓存、偏好缓存、场景匹配结果缓存）</li>
+<li>文件存储：MinIO / S3（上传文件、生成文档、PPT 等）</li>
+<li>向量数据库：ChromaDB / Qdrant（v0.8+，支持语义搜索与 RAG）</li>
+</ul>
+</li>
+<li><strong>模型与工具层</strong>：
+<ul>
+<li>LLM 路由：Claude / GPT-4 / 国产大模型（按场景与成本智能路由）</li>
+<li>Agent SDK：Claude Agent SDK / 自研 Agent 框架</li>
+<li>工具生态：MCP 工具、自定义 Skill、第三方 API 集成</li>
+<li>任务队列：Celery / Temporal（异步任务、定时任务、工作流编排）</li>
+</ul>
+</li>
+<li><strong>基础设施层</strong>：
+<ul>
+<li>容器化：Docker + Kubernetes（生产环境）</li>
+<li>服务网格：Istio（微服务通信、流量管理）</li>
+<li>监控告警：Prometheus + Grafana + AlertManager</li>
+<li>日志中心：ELK / Loki</li>
+<li>链路追踪：Jaeger / Zipkin</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/six_layer_architecture.html">🏗️ 六层架构图</a>，标出关键模块、调用方向、数据流向（可结合 <a href="./diagrams/architecture_overview.html">整体架构图</a>）。</li>
+</ul>
+</li>
+<li>
+<p><strong>3.3 关键技术组件详解</strong></p>
+<ul>
+<li><strong>ScenarioMatcher（场景匹配引擎）</strong>：
+<ul>
+<li>功能：根据用户 Query，在候选场景中智能选择最合适的场景</li>
+<li>技术：基于 LLM 的分类模型 + 规则兜底 + 缓存优化</li>
+<li>优化：场景 Embedding 预计算 + 向量检索加速（v0.8+）</li>
+</ul>
+</li>
+<li><strong>ConfigurationManager（配置管理中心）</strong>：
+<ul>
+<li>功能：按优先级合并多层配置（Request &gt; Session &gt; User &gt; Scenario &gt; Global）</li>
+<li>特性：支持配置继承、覆盖、默认值、校验</li>
+<li>扩展：支持租户级配置隔离（v0.8+）</li>
+</ul>
+</li>
+<li><strong>PromptComposer + PromptEvolver（Prompt 组合与进化）</strong>：
+<ul>
+<li>PromptComposer：动态组装多层 Prompt（系统指令 + 场景指令 + 用户偏好 + 历史上下文）</li>
+<li>PromptEvolver：基于用户偏好数据，动态调整 Prompt 参数（温度、格式、风格等）</li>
+<li>优化：Prompt 模板化、变量插值、版本管理、A/B 测试</li>
+</ul>
+</li>
+<li><strong>PreferenceLearner + FeedbackCollector（自我进化核心）</strong>：
+<ul>
+<li>FeedbackCollector：采集用户反馈（点赞/点踩/纠正/重生成）</li>
+<li>PreferenceLearner：
+<ul>
+<li>实时模式：从单个 Session 学习短期偏好</li>
+<li>离线模式：批量分析历史反馈，提取长期偏好模式</li>
+<li>技术方案：规则引擎 + LLM 分析 + 机器学习分类（v0.8+）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>多租户隔离组件（v0.8+）</strong>：
+<ul>
+<li>租户识别：基于域名 / 子路径 / API Key</li>
+<li>数据隔离：Schema 隔离 / Row-level Security</li>
+<li>资源配额：QoS 限流、存储配额、模型调用量限制</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/core_component_interaction.html">🔄 核心组件交互图</a>，用方块 + 箭头标注各组件的数据流与依赖关系，突出 Prompt 链路与自我进化闭环。</li>
+</ul>
+</li>
+<li>
+<p><strong>3.4 关键数据模型</strong></p>
+<ul>
+<li><strong>核心业务模型</strong>：
+<ul>
+<li>Session：会话（租户 ID、用户 ID、场景 ID、创建时间、状态）</li>
+<li>Message：消息（Session ID、角色、内容、工具调用、时间戳）</li>
+<li>ConversationTurnConfig：对话轮次配置快照（用于可追溯性与复盘）</li>
+</ul>
+</li>
+<li><strong>场景与配置模型</strong>：
+<ul>
+<li>BusinessScenario：业务场景（租户 ID、分类、元数据、Prompt、技能绑定、是否默认）</li>
+<li>SystemPrompt：系统 Prompt 模板（租户 ID、版本、内容、变量）</li>
+<li>Skill：技能（租户 ID、名称、内容、分类、可见性、创建者）</li>
+</ul>
+</li>
+<li><strong>用户与权限模型</strong>：
+<ul>
+<li>UserConfig：用户配置（租户 ID、用户 ID、可用场景列表、个性化参数）</li>
+<li>UserScenarioConfig：用户-场景关联配置（场景级覆盖参数）</li>
+<li>Tenant：租户（企业信息、配额、计费配置、状态）</li>
+</ul>
+</li>
+<li><strong>反馈与进化模型</strong>：
+<ul>
+<li>UserFeedback：用户反馈（消息 ID、反馈类型、纠正内容、时间戳）</li>
+<li>UserPreferencesCache：用户偏好缓存（用户 ID、偏好维度、偏好值、置信度）</li>
+<li>SessionPreferences：会话偏好（Session ID、临时偏好、生命周期）</li>
+<li>UserBehaviorStats：用户行为统计（用户 ID、场景使用频次、技能使用统计、时间分布）</li>
+</ul>
+</li>
+<li><strong>审计与日志模型</strong>：
+<ul>
+<li>AuditLog：操作审计（租户 ID、用户 ID、操作类型、资源、IP、时间戳）</li>
+<li>SystemMetrics：系统指标（QPS、延迟、错误率、成本）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="四-核心流程拆解how---关键业务链路">四、核心流程拆解（How - 关键业务链路） </h3>
+<ul>
+<li>
+<p><strong>4.1 用户对话主链路（端到端响应流程）</strong></p>
+<ul>
+<li><strong>接口</strong>：<code>POST /api/v1/session/query/stream</code>（前端统一入口）</li>
+<li><strong>完整步骤</strong>：
+<ol>
+<li><strong>身份认证与鉴权</strong>：验证 JWT Token / API Key，识别租户 ID 与用户 ID</li>
+<li><strong>会话管理</strong>：解析或创建 Session，加载历史上下文（最近 N 轮对话）</li>
+<li><strong>场景候选计算</strong>：ScenarioProvider 计算用户可用场景列表（默认场景 + 公共场景 + 用户授权场景），从缓存加载</li>
+<li><strong>智能场景匹配</strong>：ScenarioMatcher 根据用户 Query，在候选场景中选择最合适场景（LLM 分类 + 规则兜底 + 缓存加速）</li>
+<li><strong>配置合并</strong>：ConfigurationManager 按优先级合并配置（Request &gt; Session &gt; User &gt; Scenario &gt; Global），生成最终配置</li>
+<li><strong>Prompt 组装</strong>：PromptComposer 组装多层 Prompt（系统指令 + 场景指令 + 用户偏好 + 历史上下文 + 工具说明）</li>
+<li><strong>Agent 执行</strong>：AgentService 调用 Claude Agent SDK，执行模型推理与工具调用（Skill/MCP）</li>
+<li><strong>流式返回</strong>：通过 SSE 流式返回 Token，前端实时渲染 Markdown、工具调用进度</li>
+<li><strong>持久化</strong>：异步保存消息记录、配置快照、工具调用结果到数据库</li>
+<li><strong>埋点上报</strong>：记录 QPS、延迟、Token 消耗、成本等指标到监控系统</li>
+</ol>
+</li>
+<li><strong>性能目标</strong>：
+<ul>
+<li>场景匹配延迟：&lt;200ms（P99）</li>
+<li>首字响应时间（TTFT）：&lt;2 秒（P99）</li>
+<li>总响应时间：取决于模型与工具调用（通常 5-30 秒）</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/conversation_flow.html">🔄 从前端输入到模型调用的完整时序图</a>，标注关键节点与耗时。</li>
+</ul>
+</li>
+<li>
+<p><strong>4.2 自我进化链路（反馈驱动的持续优化）</strong></p>
+<ul>
+<li><strong>反馈采集</strong>：
+<ul>
+<li>前端：用户点击点赞/点踩/纠正/重生成按钮</li>
+<li>API：<code>POST /api/v1/feedback</code>（消息 ID、反馈类型、纠正内容、评分）</li>
+<li>存储：FeedbackCollector 写入 <code>user_feedback</code> 表，标记时间戳与用户 ID</li>
+</ul>
+</li>
+<li><strong>偏好学习</strong>（异步批处理）：
+<ul>
+<li>实时模式（Session 级）：PreferenceLearner 从单个 Session 的反馈中提取短期偏好（如风格偏好、格式偏好），写入 <code>session_preferences</code></li>
+<li>离线模式（用户级）：CronJob 定期（如每小时/每天）批量分析 <code>user_feedback</code>，聚合长期偏好模式，写入 <code>user_preferences_cache</code></li>
+<li>技术方案：
+<ul>
+<li>规则引擎：常见偏好模式（如"喜欢简洁回答"、"喜欢表格格式"）</li>
+<li>LLM 分析：对纠正反馈进行语义分析，提取隐含偏好</li>
+<li>机器学习（v0.8+）：训练分类模型，预测用户偏好</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Prompt 进化</strong>：
+<ul>
+<li>PromptComposer 读取用户偏好（UserPreferencesCache + SessionPreferences）</li>
+<li>PromptEvolver 将偏好注入系统 Prompt（如调整温度、设定输出格式、注入风格约束）</li>
+<li>下次对话自动生效，无需人工干预</li>
+</ul>
+</li>
+<li><strong>效果评估</strong>：
+<ul>
+<li>离线评估：定期计算满意度提升率、点踩率下降趋势</li>
+<li>在线 A/B 测试：对比启用偏好学习前后的用户满意度</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/self_evolution_loop.html">🔄 环形闭环图</a>，突出"反馈 → 学习 → 进化 → 验证"的持续优化循环。</li>
+</ul>
+</li>
+<li>
+<p><strong>4.3 企业客户接入流程（从签约到上线）</strong></p>
+<ul>
+<li><strong>阶段一：需求分析与方案设计</strong>（1-2 周）
+<ul>
+<li>与客户对接人沟通，梳理业务场景与需求</li>
+<li>评估现有场景库的复用程度，识别定制化需求</li>
+<li>设计技术方案：数据集成方案、SSO 对接、私有化部署/云端部署</li>
+</ul>
+</li>
+<li><strong>阶段二：租户初始化与配置</strong>（2-3 天）
+<ul>
+<li>在系统中创建租户（Tenant），分配租户 ID 与 API Key</li>
+<li>配置租户参数：资源配额（QPS、存储、调用量）、计费模式</li>
+<li>初始化租户管理员账号，配置初始场景与 Skill</li>
+</ul>
+</li>
+<li><strong>阶段三：场景定制与集成</strong>（1-2 周，视定制化程度）
+<ul>
+<li>复用场景库：从公共场景库中挑选适用场景，一键复制到租户空间</li>
+<li>场景定制：根据客户需求调整场景 Prompt、绑定客户专属 Skill</li>
+<li>系统集成：对接客户 SSO（如 LDAP / OAuth2 / SAML）、数据源（如 ERP/CRM）、知识库</li>
+</ul>
+</li>
+<li><strong>阶段四：测试与培训</strong>（3-5 天）
+<ul>
+<li>功能测试：验证场景匹配、工具调用、权限控制</li>
+<li>性能测试：压测 QPS、并发、响应时间</li>
+<li>安全测试：权限隔离、数据加密、审计日志</li>
+<li>用户培训：为最终用户提供使用手册、视频教程、现场培训</li>
+</ul>
+</li>
+<li><strong>阶段五：上线与运营支持</strong>（持续）
+<ul>
+<li>灰度发布：先小范围试点，收集反馈后全面推广</li>
+<li>监控告警：配置租户级监控，异常情况及时告警</li>
+<li>运营支持：定期分析使用数据，优化场景与 Prompt</li>
+</ul>
+</li>
+<li><strong>关键里程碑</strong>：从签约到上线通常 4-6 周（传统定制化开发需 2-3 个月）</li>
+<li><strong>配图</strong>：<a href="./diagrams/customer_onboarding_flow.md">📊 企业客户接入流程图</a></li>
+</ul>
+</li>
+<li>
+<p><strong>4.4 数据安全与权限控制流程</strong></p>
+<ul>
+<li><strong>认证流程</strong>：
+<ul>
+<li>用户登录：支持用户名密码 / SSO（OAuth2 / LDAP / SAML）</li>
+<li>Token 颁发：JWT Token，包含租户 ID、用户 ID、角色、权限、过期时间</li>
+<li>Token 刷新：Refresh Token 机制，支持无感刷新</li>
+</ul>
+</li>
+<li><strong>鉴权流程</strong>：
+<ul>
+<li>API 层：API Gateway 验证 Token 签名与有效期</li>
+<li>业务层：检查用户权限（如访问场景、修改配置、查看数据）</li>
+<li>数据层：Row-level Security，确保用户只能访问授权数据</li>
+</ul>
+</li>
+<li><strong>数据隔离</strong>：
+<ul>
+<li>租户级隔离：不同租户的数据存储在独立 Schema 或表中</li>
+<li>场景级隔离：用户只能访问被授权的场景</li>
+<li>敏感数据脱敏：日志中隐藏敏感信息（如身份证号、手机号）</li>
+</ul>
+</li>
+<li><strong>审计日志</strong>：
+<ul>
+<li>记录所有敏感操作：登录、场景修改、数据导出、配置变更</li>
+<li>日志内容：操作人、操作时间、操作类型、资源、IP、结果</li>
+<li>日志留存：按合规要求保留（如至少 6 个月）</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/security_flow.html">🔒 安全流程图</a>，展示认证 → 鉴权 → 访问控制 → 审计的完整链路。</li>
+</ul>
+</li>
+<li>
+<p><strong>4.5 场景与 Skill 快速扩展流程</strong></p>
+<ul>
+<li><strong>场景扩展</strong>：
+<ol>
+<li>管理员在后台创建新场景，填写场景名称、分类、描述、Prompt</li>
+<li>绑定所需 Skill 与工具，配置场景参数（温度、Max Tokens 等）</li>
+<li>配置场景可见性（公共场景 / 私有场景）与默认状态</li>
+<li>测试验证：使用测试账号验证场景匹配与执行效果</li>
+<li>发布场景：一键发布到生产环境，授权给目标用户/团队</li>
+<li>监控效果：查看使用统计、满意度，持续优化</li>
+</ol>
+</li>
+<li><strong>Skill 开发</strong>：
+<ul>
+<li><strong>MCP 工具</strong>：遵循 MCP 协议，封装为标准工具（如数据库查询、API 调用）</li>
+<li><strong>自定义 Skill</strong>：编写 Python 函数，注册到 Skill 仓库，支持复杂业务逻辑</li>
+<li><strong>技能编排</strong>：支持技能串联（如"数据查询 → 分析 → 生成报告"）</li>
+</ul>
+</li>
+<li><strong>复用与共享</strong>：
+<ul>
+<li>场景市场：支持将场景发布到公共场景库，供其他租户复用</li>
+<li>Skill 市场：支持将 Skill 发布到 Skill 市场，形成生态</li>
+</ul>
+</li>
+<li><strong>目标</strong>：新场景从设计到上线 &lt;1 天（传统 workflow 开发需 1-2 周）</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/scenario_extension_flow.html">🚀 场景扩展流程图</a> + <a href="./diagrams/skill_development_example.html">💻 Skill 开发示例</a>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="五-团队分工与演进计划who--next">五、团队分工与演进计划（Who &amp; Next） </h3>
+<ul>
+<li>
+<p><strong>5.1 团队分工建议</strong></p>
+<ul>
+<li><strong>前端团队</strong>：
+<ul>
+<li>负责 Chat 界面、SessionHistory、AdminDashboard、ResourceCenter 等交互与视觉</li>
+<li>实现偏好可视化、工具调用进度展示、使用统计图表等组件</li>
+<li>优化流式响应体验，提升首字响应时间与交互流畅度</li>
+<li>支持多租户 UI 主题定制（v0.8+）</li>
+</ul>
+</li>
+<li><strong>后端团队</strong>：
+<ul>
+<li>负责 API 设计与实现、数据模型、服务模块（ScenarioMatcher / PromptComposer / PreferenceLearner 等）</li>
+<li>负责性能优化、日志与审计、数据库迁移与扩展</li>
+<li>实现企业级特性：多租户隔离、权限控制、SSO 集成、配额管理</li>
+<li>构建监控告警体系，保障系统稳定性与可观测性</li>
+</ul>
+</li>
+<li><strong>算法 / 调优团队</strong>：
+<ul>
+<li>负责 ScenarioMatcher 和 PreferenceLearner 的 Prompt 设计与优化</li>
+<li>设计评估指标与离线评估流程，验证自我进化效果</li>
+<li>探索多模型路由策略，平衡效果与成本</li>
+<li>研究行业场景最佳实践，沉淀场景库与 Skill 库</li>
+</ul>
+</li>
+<li><strong>产品 / 运营团队</strong>：
+<ul>
+<li>梳理行业需求，设计产品功能与交互流程</li>
+<li>收集用户反馈，规划产品迭代路线</li>
+<li>编写用户文档、培训材料，支持客户成功</li>
+<li>运营场景库与 Skill 市场，打造生态</li>
+</ul>
+</li>
+<li><strong>售前 / 解决方案团队</strong>：
+<ul>
+<li>配合销售团队，参与客户需求分析与方案设计</li>
+<li>撰写技术方案 PPT、演示 Demo，支持客户 PoC</li>
+<li>总结行业最佳实践，反哺产品团队</li>
+</ul>
+</li>
+<li><strong>运维 / SRE 团队</strong>：
+<ul>
+<li>负责部署架构（私有化部署 / 云端部署）、容器化与编排</li>
+<li>监控系统健康度，处理故障与告警</li>
+<li>优化成本，提升资源利用率</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/team_collaboration_matrix.html">👥 团队协作矩阵图</a>，标注各团队在项目中的职责边界与协作关系。</li>
+</ul>
+</li>
+<li>
+<p><strong>5.2 近期里程碑（v0.7.1 → v0.7.2-dev → v0.8）</strong></p>
+<ul>
+<li><strong>v0.7.1（当前版本）</strong>：
+<ul>
+<li>✅ 基础对话能力：多轮对话、历史会话、流式响应</li>
+<li>✅ 场景体系：场景管理、智能匹配、场景授权</li>
+<li>✅ Skill 体系：Skill 管理、工具调用、MCP 集成</li>
+<li>✅ 自我进化 V1：反馈采集、偏好学习、Prompt 进化</li>
+<li>✅ 反馈交互：点赞/点踩/纠正/重生成</li>
+</ul>
+</li>
+<li><strong>v0.7.2-dev（下一个迭代）</strong>：
+<ul>
+<li>🚧 偏好可视化：用户偏好面板、管理员偏好洞察</li>
+<li>🚧 更多业务场景：金融、制造、政务、医疗等行业场景库</li>
+<li>🚧 管理后台完善：场景效果分析、A/B 测试、批量导入导出</li>
+<li>🚧 性能优化：缓存策略、并发优化、成本控制</li>
+<li>🚧 用户体验：快捷指令、模板库、协作功能</li>
+</ul>
+</li>
+<li><strong>v0.8（企业级版本）</strong>：
+<ul>
+<li>📋 多租户支持：租户隔离、配额管理、计费系统</li>
+<li>📋 SSO 集成：OAuth2 / LDAP / SAML</li>
+<li>📋 企业级安全：审计日志、数据加密、权限细化</li>
+<li>📋 私有化部署：Docker 镜像、Kubernetes 部署方案</li>
+<li>📋 API 生态：开放 API、SDK、Webhook</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/roadmap_timeline.html">📅 Roadmap 时间线</a>，标注 v0.7.1 / v0.7.2 / v0.8 的里程碑、交付时间、负责人。</li>
+</ul>
+</li>
+<li>
+<p><strong>5.3 长期规划与愿景（v0.9+）</strong></p>
+<ul>
+<li><strong>产品层面</strong>：
+<ul>
+<li>引入团队级偏好与模板库，支持企业知识沉淀</li>
+<li>支持多模型智能路由（Claude / GPT-4 / 国产大模型），按场景与成本动态选择</li>
+<li>自动生成场景与 Skill 草稿，降低配置成本（基于历史数据与行业知识库）</li>
+<li>构建 AI Agent 市场，支持场景与 Skill 的交易与复用</li>
+</ul>
+</li>
+<li><strong>技术层面</strong>：
+<ul>
+<li>引入 RAG（检索增强生成），支持企业知识库问答</li>
+<li>支持多模态：图片、语音、视频的理解与生成</li>
+<li>分布式 Agent 协作：多个 Agent 协同完成复杂任务</li>
+<li>模型微调（Fine-tuning）：基于企业数据微调专属模型</li>
+</ul>
+</li>
+<li><strong>商业层面</strong>：
+<ul>
+<li>SaaS 化运营：订阅制、按量计费、私有化部署 license</li>
+<li>行业解决方案：推出金融版、制造版、政务版等垂直产品</li>
+<li>伙伴生态：与行业 ISV 合作，共建场景库与 Skill 库</li>
+<li>国际化：支持多语言、多区域部署</li>
+</ul>
+</li>
+<li><strong>组织层面</strong>：
+<ul>
+<li>建立客户成功团队（CSM），负责客户 Onboarding、培训、续约</li>
+<li>建立解决方案团队（SA），负责售前方案设计、PoC 支持</li>
+<li>建立行业专家团队，沉淀行业最佳实践</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：
+<ul>
+<li><a href="./diagrams/product_evolution.html">📈 产品演进图</a>：从 MVP 到企业级平台到生态平台的演进路径</li>
+<li><a href="./diagrams/business_model.html">💰 商业模式图</a>：订阅制 + 按量计费 + 私有化部署 + 生态分成</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>5.4 成功指标与衡量标准</strong></p>
+<ul>
+<li><strong>产品指标</strong>：
+<ul>
+<li>场景匹配准确率：≥85%（v0.7.1），≥90%（v0.8）</li>
+<li>用户满意度：≥85%（点赞率），≤5%（点踩率）</li>
+<li>首字响应时间：&lt;2 秒（P99）</li>
+<li>系统可用性：≥99.5%（SLA）</li>
+</ul>
+</li>
+<li><strong>业务指标</strong>：
+<ul>
+<li>单客户交付周期：从 2-3 个月缩短到 4-6 周</li>
+<li>场景复用率：从 20% 提升到 80%</li>
+<li>客户续约率：≥90%</li>
+<li>客户 NPS：≥50</li>
+</ul>
+</li>
+<li><strong>成本指标</strong>：
+<ul>
+<li>单项目交付成本：从 30-50 万降至 5-10 万</li>
+<li>人效提升：人均交付客户数从 2-3 个/年提升到 8-10 个/年</li>
+<li>模型调用成本：通过缓存、路由优化降低 30%+</li>
+</ul>
+</li>
+<li><strong>建议配图</strong>：<a href="./diagrams/metrics_dashboard.html">📊 指标仪表盘</a>，展示目标值与当前值，标注改进措施。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="六-总结与行动建议summary--actions">六、总结与行动建议（Summary &amp; Actions） </h3>
+<ul>
+<li>
+<p><strong>6.1 核心价值主张</strong></p>
+<ul>
+<li><strong>对客户</strong>：
+<ul>
+<li>降低 AI 应用门槛：开箱即用的行业场景，无需技术背景</li>
+<li>提升业务效率：自动化重复工作，释放人力资源</li>
+<li>持续优化改进：系统自我进化，越用越懂业务</li>
+<li>数据安全保障：企业级安全、权限控制、审计合规</li>
+</ul>
+</li>
+<li><strong>对我们</strong>：
+<ul>
+<li>降本增效：交付成本降低 70%+，人效提升 3-4 倍</li>
+<li>知识资产化：行业经验沉淀为可复用场景与 Skill</li>
+<li>规模化扩展：从项目制到平台化，支持快速复制</li>
+<li>竞争壁垒：构建行业场景库，形成差异化优势</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>6.2 关键成功要素</strong></p>
+<ul>
+<li><strong>技术要素</strong>：
+<ul>
+<li>高质量场景库：覆盖主流行业场景，确保匹配准确率 ≥85%</li>
+<li>流畅体验：首字响应 &lt;2 秒，流式输出无卡顿</li>
+<li>稳定可靠：系统可用性 ≥99.5%，故障快速恢复</li>
+</ul>
+</li>
+<li><strong>业务要素</strong>：
+<ul>
+<li>深度行业理解：提炼行业最佳实践，设计场景化解决方案</li>
+<li>客户成功体系：完善 Onboarding、培训、运营支持</li>
+<li>持续迭代优化：基于数据反馈，快速响应需求</li>
+</ul>
+</li>
+<li><strong>组织要素</strong>：
+<ul>
+<li>跨团队协作：产品 / 技术 / 销售 / 客服密切配合</li>
+<li>敏捷迭代：小步快跑，快速验证与调整</li>
+<li>知识沉淀：建立场景库、Skill 库、最佳实践库</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>6.3 风险与挑战</strong></p>
+<ul>
+<li><strong>技术风险</strong>：
+<ul>
+<li>场景匹配准确率不达预期：需持续优化 Prompt 与匹配算法</li>
+<li>模型成本过高：需通过缓存、路由、模型优化控制成本</li>
+<li>并发性能瓶颈：需架构优化、水平扩展、缓存策略</li>
+</ul>
+</li>
+<li><strong>业务风险</strong>：
+<ul>
+<li>客户定制化需求过重：需引导客户使用标准化场景，控制定制化比例</li>
+<li>场景库建设周期长：需分行业逐步沉淀，优先重点行业</li>
+<li>客户期望管理：需合理设定期望，避免过度承诺</li>
+</ul>
+</li>
+<li><strong>应对措施</strong>：
+<ul>
+<li>技术预研：提前布局关键技术，降低实施风险</li>
+<li>MVP 验证：小范围试点，验证核心假设后再大规模推广</li>
+<li>备选方案：准备降级策略，确保核心功能可用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>6.4 近期行动建议（Next Steps）</strong></p>
+<ul>
+<li><strong>短期（1-2 个月）</strong>：
+<ul>
+<li>✅ 完成 v0.7.1 开发与测试，内部试运行</li>
+<li>📌 选择 1-2 个友好客户进行 PoC，验证产品价值</li>
+<li>📌 收集用户反馈，优化产品体验与场景匹配</li>
+<li>📌 梳理重点行业场景，启动场景库建设</li>
+</ul>
+</li>
+<li><strong>中期（3-6 个月）</strong>：
+<ul>
+<li>📌 完成 v0.7.2 开发，上线 10+ 行业场景</li>
+<li>📌 签约 3-5 个付费客户，跑通客户接入全流程</li>
+<li>📌 建立客户成功团队，完善 Onboarding 与培训体系</li>
+<li>📌 启动 v0.8 企业级特性开发（多租户、SSO、审计）</li>
+</ul>
+</li>
+<li><strong>长期（6-12 个月）</strong>：
+<ul>
+<li>📌 完成 v0.8 开发，支持私有化部署</li>
+<li>📌 场景库覆盖 5+ 重点行业，场景数量 ≥50</li>
+<li>📌 客户数 ≥20，续约率 ≥90%</li>
+<li>📌 启动生态建设，引入 ISV 合作伙伴</li>
+</ul>
+</li>
+<li><strong>资源需求</strong>：
+<ul>
+<li>人力：前端 2 人、后端 3 人、算法 1 人、产品 1 人、运维 1 人</li>
+<li>预算：模型调用成本、云资源成本、第三方工具采购</li>
+<li>时间：v0.7.2 预计 2 个月，v0.8 预计 4-6 个月</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>6.5 Q&amp;A 预判</strong></p>
+<ul>
+<li><strong>Q：场景匹配准确率如何保证？</strong>
+<ul>
+<li>A：通过 LLM 分类 + 规则兜底 + 缓存优化，目标准确率 ≥85%。持续收集反馈数据，优化匹配 Prompt 与算法，v0.8 目标提升到 ≥90%。</li>
+</ul>
+</li>
+<li><strong>Q：如何控制模型调用成本？</strong>
+<ul>
+<li>A：通过缓存策略（减少重复调用）、模型路由（简单场景用小模型）、Token 优化（精简 Prompt）等措施，预计可降低 30%+ 成本。</li>
+</ul>
+</li>
+<li><strong>Q：多租户隔离如何实现？</strong>
+<ul>
+<li>A：v0.8 将支持租户级数据隔离（Schema 隔离 / Row-level Security）、资源配额管理、计费系统，确保不同租户的数据与资源完全隔离。</li>
+</ul>
+</li>
+<li><strong>Q：如何快速构建行业场景库？</strong>
+<ul>
+<li>A：优先重点行业（金融、制造、政务），与行业专家合作提炼场景；复用现有 workflow 经验，转化为场景配置；建立场景模板，降低新场景配置成本。</li>
+</ul>
+</li>
+<li><strong>Q：与传统 workflow 方案相比，优势是什么？</strong>
+<ul>
+<li>A：① 配置成本从 1-2 周降到 &lt;1 天；② Agent 自主决策 vs 固定流程；③ 自我进化 vs 手工调优；④ 知识资产复用率从 20% 提升到 80%。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="附录参考文档与资源">附录：参考文档与资源 </h3>
+<ul>
+<li><strong>架构图与流程图</strong>：
+<ul>
+<li><a href="./diagrams/architecture_overview.html">📊 整体架构图</a></li>
+<li><a href="./diagrams/conversation_flow.html">🔄 对话流程图</a></li>
+<li><a href="./diagrams/self_evolution_loop.html">🔄 自我进化闭环图</a></li>
+<li><a href="./diagrams/customer_onboarding_flow.md">🎯 客户接入流程图</a></li>
+</ul>
+</li>
+<li><strong>技术文档</strong>：
+<ul>
+<li><a href="../api/API_REFERENCE.md">📖 API 文档</a></li>
+<li><a href="../data_models/DATABASE_SCHEMA.md">🗄️ 数据模型设计</a></li>
+<li><a href="../guides/SCENARIO_CONFIGURATION.md">⚙️ 场景配置指南</a></li>
+</ul>
+</li>
+<li><strong>行业案例</strong>：
+<ul>
+<li><a href="../case_studies/FINANCE_CASE.md">💰 金融行业解决方案</a></li>
+<li><a href="../case_studies/MANUFACTURING_CASE.md">🏭 制造业解决方案</a></li>
+</ul>
+</li>
+<li><strong>培训材料</strong>：
+<ul>
+<li><a href="../training/USER_MANUAL.md">📚 用户操作手册</a></li>
+<li><a href="../training/ADMIN_GUIDE.md">🔧 管理员配置指南</a></li>
+<li><a href="../training/ONBOARDING_CHECKLIST.md">✅ 客户 Onboarding Checklist</a></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>

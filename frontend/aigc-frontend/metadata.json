@@ -1,0 +1,9 @@
+{
+  "name": "X AI Dashboard",
+  "version": "1.3.1",
+  "description": "An Apple-inspired, high-performance AI chat interface with real-time analytics, Markmap visualizations, and multimodal video/voice input support.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

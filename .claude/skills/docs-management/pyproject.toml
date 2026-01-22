@@ -1,0 +1,195 @@
+# pyproject.toml for docs-management skill
+# Modern Python package configuration following PEP 621 standards
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docs-management"
+version = "1.0.0"
+description = "Documentation management for Claude Code skill - scrapes, indexes, and resolves official Claude documentation"
+readme = "SKILL.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Claude Code Project", email = "noreply@anthropic.com" }
+]
+keywords = ["claude", "documentation", "skill", "nlp", "indexing"]
+
+# Core dependencies from requirements.txt
+dependencies = [
+    "pyyaml>=6.0",
+    "requests>=2.28.0",
+    "beautifulsoup4>=4.11.0",
+    "markdownify>=0.11.6",
+    "spacy>=3.7.0",
+    "yake>=0.4.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.0",
+    "responses>=0.23.0",
+    "freezegun>=1.2.0",
+    "types-pyyaml>=6.0",
+    "types-requests>=2.28",
+    "types-beautifulsoup4>=4.11",
+]
+
+# Ruff configuration - Modern Python linter and formatter
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+# Exclude common directories
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+# Enable recommended rules + additional quality checks
+select = [
+    "E",    # pycodestyle errors
+    "F",    # Pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "ANN",  # flake8-annotations
+    "S",    # flake8-bandit (security)
+    "C4",   # flake8-comprehensions
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+]
+
+# Disable overly strict rules for this project
+ignore = [
+    "ANN101",  # Missing type annotation for self
+    "ANN102",  # Missing type annotation for cls
+    "S603",    # subprocess without shell=True is okay
+    "S607",    # Partial executable path is acceptable
+]
+
+# Allow autofix for all enabled rules
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+# Test files don't need strict annotations
+"tests/**/*.py" = ["ANN", "S101"]
+# Scripts can have more relaxed rules
+"scripts/**/*.py" = ["ANN"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+# Mypy configuration - Static type checking
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+strict_equality = true
+check_untyped_defs = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_reexport = true
+extra_checks = true
+
+# Display improvements
+pretty = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+
+# Import discovery
+namespace_packages = true
+explicit_package_bases = true
+
+# Caching
+cache_dir = ".mypy_cache"
+sqlite_cache = true
+
+# Per-module overrides
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disable_error_code = ["var-annotated", "has-type"]
+
+[[tool.mypy.overrides]]
+module = [
+    "spacy.*",
+    "yake.*",
+    "markdownify.*",
+    "bs4.*",
+]
+ignore_missing_imports = true
+
+# Pytest configuration - Testing framework
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=scripts",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "no_config_reset: skip config cache clearing for tests that need stable config state",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["scripts"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]

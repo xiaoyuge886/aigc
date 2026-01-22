@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill开发示例</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #607D8B;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .code-example {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #607D8B;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Skill开发示例</h1>
+    <div class="description">
+        <p>展示不同类型Skill的开发流程与代码示例。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+flowchart LR
+    subgraph Skill类型
+        A[MCP工具]
+        B[自定义Skill]
+        C[技能组合]
+    end
+
+    subgraph 开发步骤
+        A1[遵循MCP协议]
+        A2[封装标准接口]
+        A3[注册到MCP Server]
+
+        B1[编写Python函数]
+        B2[定义输入输出]
+        B3[添加文档说明]
+        B4[注册到Skill仓库]
+
+        C1[串联多个Skill]
+        C2[编排执行顺序]
+        C3[处理数据流转]
+    end
+
+    A --> A1 --> A2 --> A3
+    B --> B1 --> B2 --> B3 --> B4
+    C --> C1 --> C2 --> C3
+
+    A3 -.可用.-> C1
+    B4 -.可用.-> C1
+
+    style Skill类型 fill:#e3f2fd
+    style 开发步骤 fill:#fff3e0
+        </div>
+    </div>
+
+    <div class="code-example">
+        <h3>💻 Skill代码示例</h3>
+
+        <h4>1. MCP工具示例（数据库查询）</h4>
+        <pre>
+@register_mcp_tool
+async def query_database(query: str) -> dict:
+    """执行数据库查询并返回结果"""
+    # 验证SQL安全性
+    if not validate_sql(query):
+        raise ValueError("Invalid SQL query")
+
+    # 执行查询
+    result = await db.execute(query)
+    return {"rows": result, "count": len(result)}
+        </pre>
+
+        <h4>2. 自定义Skill示例（数据分析）</h4>
+        <pre>
+from skills import Skill
+
+@Skill(name="data_analysis")
+async def analyze_sales_data(data: List[Dict]) -> Dict:
+    """
+    分析销售数据，生成统计报告
+
+    Args:
+        data: 销售记录列表
+
+    Returns:
+        包含统计指标的字典
+    """
+    total_sales = sum(item['amount'] for item in data)
+    avg_sales = total_sales / len(data)
+
+    return {
+        "total": total_sales,
+        "average": avg_sales,
+        "top_products": get_top_products(data)
+    }
+        </pre>
+
+        <h4>3. 技能组合示例（数据查询→分析→报告）</h4>
+        <pre>
+@Skill(name="sales_report_workflow")
+async def generate_sales_report(date_range: str) -> str:
+    """生成销售报告工作流"""
+    # Step 1: 查询数据
+    query_result = await query_database(
+        f"SELECT * FROM sales WHERE date BETWEEN {date_range}"
+    )
+
+    # Step 2: 分析数据
+    analysis = await analyze_sales_data(query_result['rows'])
+
+    # Step 3: 生成报告
+    report = await generate_markdown_report(analysis)
+
+    return report
+        </pre>
+    </div>
+</body>
+</html>

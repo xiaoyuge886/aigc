@@ -1,0 +1,265 @@
+# Claude Docs
+
+## Docs
+
+- [Get API Key](https://docs.claude.com/en/api/admin-api/apikeys/get-api-key.md)
+- [List API Keys](https://docs.claude.com/en/api/admin-api/apikeys/list-api-keys.md)
+- [Update API Keys](https://docs.claude.com/en/api/admin-api/apikeys/update-api-key.md)
+- [Get Claude Code Usage Report](https://docs.claude.com/en/api/admin-api/claude-code/get-claude-code-usage-report.md): Retrieve daily aggregated usage metrics for Claude Code users.
+Enables organizations to analyze developer productivity and build custom dashboards.
+- [Create Invite](https://docs.claude.com/en/api/admin-api/invites/create-invite.md)
+- [Delete Invite](https://docs.claude.com/en/api/admin-api/invites/delete-invite.md)
+- [Get Invite](https://docs.claude.com/en/api/admin-api/invites/get-invite.md)
+- [List Invites](https://docs.claude.com/en/api/admin-api/invites/list-invites.md)
+- [Get Organization Info](https://docs.claude.com/en/api/admin-api/organization/get-me.md)
+- [Get Cost Report](https://docs.claude.com/en/api/admin-api/usage-cost/get-cost-report.md)
+- [Get Usage Report for the Messages API](https://docs.claude.com/en/api/admin-api/usage-cost/get-messages-usage-report.md)
+- [Get User](https://docs.claude.com/en/api/admin-api/users/get-user.md)
+- [List Users](https://docs.claude.com/en/api/admin-api/users/list-users.md)
+- [Remove User](https://docs.claude.com/en/api/admin-api/users/remove-user.md)
+- [Update User](https://docs.claude.com/en/api/admin-api/users/update-user.md)
+- [Add Workspace Member](https://docs.claude.com/en/api/admin-api/workspace_members/create-workspace-member.md)
+- [Delete Workspace Member](https://docs.claude.com/en/api/admin-api/workspace_members/delete-workspace-member.md)
+- [Get Workspace Member](https://docs.claude.com/en/api/admin-api/workspace_members/get-workspace-member.md)
+- [List Workspace Members](https://docs.claude.com/en/api/admin-api/workspace_members/list-workspace-members.md)
+- [Update Workspace Member](https://docs.claude.com/en/api/admin-api/workspace_members/update-workspace-member.md)
+- [Archive Workspace](https://docs.claude.com/en/api/admin-api/workspaces/archive-workspace.md)
+- [Create Workspace](https://docs.claude.com/en/api/admin-api/workspaces/create-workspace.md)
+- [Get Workspace](https://docs.claude.com/en/api/admin-api/workspaces/get-workspace.md)
+- [List Workspaces](https://docs.claude.com/en/api/admin-api/workspaces/list-workspaces.md)
+- [Update Workspace](https://docs.claude.com/en/api/admin-api/workspaces/update-workspace.md)
+- [Beta headers](https://docs.claude.com/en/api/beta-headers.md): Documentation for using beta headers with the Claude API
+- [Cancel a Message Batch](https://docs.claude.com/en/api/canceling-message-batches.md): Batches may be canceled any time before processing ends. Once cancellation is initiated, the batch enters a `canceling` state, at which time the system may complete any in-progress, non-interruptible requests before finalizing cancellation.
+
+The number of canceled requests is specified in `request_counts`. To determine which requests were canceled, check the individual results within the batch. Note that cancellation may not result in any canceled requests if they were non-interruptible.
+
+Learn more about the Message Batches API in our [user guide](/en/docs/build-with-claude/batch-processing)
+- [Client SDKs](https://docs.claude.com/en/api/client-sdks.md): We provide client libraries in a number of popular languages that make it easier to work with the Claude API.
+- [Create a Message Batch](https://docs.claude.com/en/api/creating-message-batches.md): Send a batch of Message creation requests.
+
+The Message Batches API can be used to process multiple Messages API requests at once. Once a Message Batch is created, it begins processing immediately. Batches can take up to 24 hours to complete.
+
+Learn more about the Message Batches API in our [user guide](/en/docs/build-with-claude/batch-processing)
+- [Delete a Message Batch](https://docs.claude.com/en/api/deleting-message-batches.md): Delete a Message Batch.
+
+Message Batches can only be deleted once they've finished processing. If you'd like to delete an in-progress batch, you must first cancel it.
+
+Learn more about the Message Batches API in our [user guide](/en/docs/build-with-claude/batch-processing)
+- [Errors](https://docs.claude.com/en/api/errors.md)
+- [Download a File](https://docs.claude.com/en/api/files-content.md): Download the contents of a Claude generated file
+- [Create a File](https://docs.claude.com/en/api/files-create.md): Upload a file
+- [Delete a File](https://docs.claude.com/en/api/files-delete.md): Make a file inaccessible through the API
+- [List Files](https://docs.claude.com/en/api/files-list.md): List files within a workspace
+- [Get File Metadata](https://docs.claude.com/en/api/files-metadata.md)
+- [IP addresses](https://docs.claude.com/en/api/ip-addresses.md): Anthropic services use fixed IP addresses for both inbound and outbound connections. You can use these addresses to configure your firewall rules for secure access to the Claude API and Console. These addresses will not change without notice.
+- [List Message Batches](https://docs.claude.com/en/api/listing-message-batches.md): List all Message Batches within a Workspace. Most recently created batches are returned first.
+
+Learn more about the Message Batches API in our [user guide](/en/docs/build-with-claude/batch-processing)
+- [Messages](https://docs.claude.com/en/api/messages.md): Send a structured list of input messages with text and/or image content, and the model will generate the next message in the conversation.
+
+The Messages API can be used for either single queries or stateless multi-turn conversations.
+
+Learn more about the Messages API in our [user guide](/en/docs/initial-setup)
+- [Count Message tokens](https://docs.claude.com/en/api/messages-count-tokens.md): Count the number of tokens in a Message.
+
+The Token Count API can be used to count the number of tokens in a Message, including tools, images, and documents, without creating it.
+
+Learn more about token counting in our [user guide](/en/docs/build-with-claude/token-counting)
+- [Migrating from Text Completions](https://docs.claude.com/en/api/migrating-from-text-completions-to-messages.md): Migrating from Text Completions to Messages
+- [Get a Model](https://docs.claude.com/en/api/models.md): Get a specific model.
+
+The Models API response can be used to determine information about a specific model or resolve a model alias to a model ID.
+- [List Models](https://docs.claude.com/en/api/models-list.md): List available models.
+
+The Models API response can be used to determine which models are available for use in the API. More recently released models are listed first.
+- [OpenAI SDK compatibility](https://docs.claude.com/en/api/openai-sdk.md): Anthropic provides a compatibility layer that enables you to use the OpenAI SDK to test the Claude API. With a few code changes, you can quickly evaluate Anthropic model capabilities.
+- [Features overview](https://docs.claude.com/en/api/overview.md): Explore Claude's advanced features and capabilities.
+- [Generate a prompt](https://docs.claude.com/en/api/prompt-tools-generate.md): Generate a well-written prompt
+- [Improve a prompt](https://docs.claude.com/en/api/prompt-tools-improve.md): Create a new-and-improved prompt guided by feedback
+- [Templatize a prompt](https://docs.claude.com/en/api/prompt-tools-templatize.md): Templatize a prompt by indentifying and extracting variables
+- [Rate limits](https://docs.claude.com/en/api/rate-limits.md): To mitigate misuse and manage capacity on our API, we have implemented limits on how much an organization can use the Claude API.
+- [Retrieve Message Batch Results](https://docs.claude.com/en/api/retrieving-message-batch-results.md): Streams the results of a Message Batch as a `.jsonl` file.
+
+Each line in the file is a JSON object containing the result of a single request in the Message Batch. Results are not guaranteed to be in the same order as requests. Use the `custom_id` field to match results to requests.
+
+Learn more about the Message Batches API in our [user guide](/en/docs/build-with-claude/batch-processing)
+- [Retrieve a Message Batch](https://docs.claude.com/en/api/retrieving-message-batches.md): This endpoint is idempotent and can be used to poll for Message Batch completion. To access the results of a Message Batch, make a request to the `results_url` field in the response.
+
+Learn more about the Message Batches API in our [user guide](/en/docs/build-with-claude/batch-processing)
+- [Service tiers](https://docs.claude.com/en/api/service-tiers.md): Different tiers of service allow you to balance availability, performance, and predictable costs based on your application's needs.
+- [Create Skill](https://docs.claude.com/en/api/skills/create-skill.md)
+- [Create Skill Version](https://docs.claude.com/en/api/skills/create-skill-version.md)
+- [Delete Skill](https://docs.claude.com/en/api/skills/delete-skill.md)
+- [Delete Skill Version](https://docs.claude.com/en/api/skills/delete-skill-version.md)
+- [Get Skill](https://docs.claude.com/en/api/skills/get-skill.md)
+- [Get Skill Version](https://docs.claude.com/en/api/skills/get-skill-version.md)
+- [List Skill Versions](https://docs.claude.com/en/api/skills/list-skill-versions.md)
+- [List Skills](https://docs.claude.com/en/api/skills/list-skills.md)
+- [Supported regions](https://docs.claude.com/en/api/supported-regions.md): Here are the countries, regions, and territories we can currently support access from:
+- [Versions](https://docs.claude.com/en/api/versioning.md): When making API requests, you must send an `anthropic-version` request header. For example, `anthropic-version: 2023-06-01`. If you are using our [client SDKs](/en/api/client-sdks), this is handled for you automatically.
+- [Glossary](https://docs.claude.com/en/docs/about-claude/glossary.md): These concepts are not unique to Anthropic’s language models, but we present a brief summary of key terms below.
+- [Model deprecations](https://docs.claude.com/en/docs/about-claude/model-deprecations.md)
+- [Choosing the right model](https://docs.claude.com/en/docs/about-claude/models/choosing-a-model.md): Selecting the optimal Claude model for your application involves balancing three key considerations: capabilities, speed, and cost. This guide helps you make an informed decision based on your specific requirements.
+- [Migrating to Claude 4.5](https://docs.claude.com/en/docs/about-claude/models/migrating-to-claude-4.md)
+- [Models overview](https://docs.claude.com/en/docs/about-claude/models/overview.md): Claude is a family of state-of-the-art large language models developed by Anthropic. This guide introduces our models and compares their performance.
+- [What's new in Claude 4.5](https://docs.claude.com/en/docs/about-claude/models/whats-new-claude-4-5.md)
+- [Pricing](https://docs.claude.com/en/docs/about-claude/pricing.md): Learn about Anthropic's pricing structure for models and features
+- [Content moderation](https://docs.claude.com/en/docs/about-claude/use-case-guides/content-moderation.md): Content moderation is a critical aspect of maintaining a safe, respectful, and productive environment in digital applications. In this guide, we'll discuss how Claude can be used to moderate content within your digital application.
+- [Customer support agent](https://docs.claude.com/en/docs/about-claude/use-case-guides/customer-support-chat.md): This guide walks through how to leverage Claude's advanced conversational capabilities to handle customer inquiries in real time, providing 24/7 support, reducing wait times, and managing high support volumes with accurate responses and positive interactions.
+- [Legal summarization](https://docs.claude.com/en/docs/about-claude/use-case-guides/legal-summarization.md): This guide walks through how to leverage Claude's advanced natural language processing capabilities to efficiently summarize legal documents, extracting key information and expediting legal research. With Claude, you can streamline the review of contracts, litigation prep, and regulatory work, saving time and ensuring accuracy in your legal processes.
+- [Guides to common use cases](https://docs.claude.com/en/docs/about-claude/use-case-guides/overview.md)
+- [Ticket routing](https://docs.claude.com/en/docs/about-claude/use-case-guides/ticket-routing.md): This guide walks through how to harness Claude's advanced natural language understanding capabilities to classify customer support tickets at scale based on customer intent, urgency, prioritization, customer profile, and more.
+- [Tracking Costs and Usage](https://docs.claude.com/en/docs/agent-sdk/cost-tracking.md): Understand and track token usage for billing in the Claude Agent SDK
+- [Custom Tools](https://docs.claude.com/en/docs/agent-sdk/custom-tools.md): Build and integrate custom tools to extend Claude Agent SDK functionality
+- [Hosting the Agent SDK](https://docs.claude.com/en/docs/agent-sdk/hosting.md): Deploy and host Claude Agent SDK in production environments
+- [MCP in the SDK](https://docs.claude.com/en/docs/agent-sdk/mcp.md): Extend Claude Code with custom tools using Model Context Protocol servers
+- [Modifying system prompts](https://docs.claude.com/en/docs/agent-sdk/modifying-system-prompts.md): Learn how to customize Claude's behavior by modifying system prompts using three approaches - output styles, systemPrompt with append, and custom system prompts.
+- [Agent SDK overview](https://docs.claude.com/en/docs/agent-sdk/overview.md): Build custom AI agents with the Claude Agent SDK
+- [Handling Permissions](https://docs.claude.com/en/docs/agent-sdk/permissions.md): Control tool usage and permissions in the Claude Agent SDK
+- [Plugins in the SDK](https://docs.claude.com/en/docs/agent-sdk/plugins.md): Load custom plugins to extend Claude Code with commands, agents, skills, and hooks through the Agent SDK
+- [Agent SDK reference - Python](https://docs.claude.com/en/docs/agent-sdk/python.md): Complete API reference for the Python Agent SDK, including all functions, types, and classes.
+- [Session Management](https://docs.claude.com/en/docs/agent-sdk/sessions.md): Understanding how the Claude Agent SDK handles sessions and session resumption
+- [Agent Skills in the SDK](https://docs.claude.com/en/docs/agent-sdk/skills.md): Extend Claude with specialized capabilities using Agent Skills in the Claude Agent SDK
+- [Slash Commands in the SDK](https://docs.claude.com/en/docs/agent-sdk/slash-commands.md): Learn how to use slash commands to control Claude Code sessions through the SDK
+- [Streaming Input](https://docs.claude.com/en/docs/agent-sdk/streaming-vs-single-mode.md): Understanding the two input modes for Claude Agent SDK and when to use each
+- [Structured outputs in the SDK](https://docs.claude.com/en/docs/agent-sdk/structured-outputs.md): Get validated JSON results from agent workflows
+- [Subagents in the SDK](https://docs.claude.com/en/docs/agent-sdk/subagents.md): Working with subagents in the Claude Agent SDK
+- [Todo Lists](https://docs.claude.com/en/docs/agent-sdk/todo-tracking.md): Track and display todos using the Claude Agent SDK for organized task management
+- [Agent SDK reference - TypeScript](https://docs.claude.com/en/docs/agent-sdk/typescript.md): Complete API reference for the TypeScript Agent SDK, including all functions, types, and interfaces.
+- [Skill authoring best practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices.md): Learn how to write effective Skills that Claude can discover and use successfully.
+- [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md): Agent Skills are modular capabilities that extend Claude's functionality. Each Skill packages instructions, metadata, and optional resources (scripts, templates) that Claude uses automatically when relevant.
+- [Get started with Agent Skills in the API](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/quickstart.md): Learn how to use Agent Skills to create documents with the Claude API in under 10 minutes.
+- [Google Sheets add-on](https://docs.claude.com/en/docs/agents-and-tools/claude-for-sheets.md): The [Claude for Sheets extension](https://workspace.google.com/marketplace/app/claude%5Ffor%5Fsheets/909417792257) integrates Claude into Google Sheets, allowing you to execute interactions with Claude directly in cells.
+- [MCP connector](https://docs.claude.com/en/docs/agents-and-tools/mcp-connector.md)
+- [Remote MCP servers](https://docs.claude.com/en/docs/agents-and-tools/remote-mcp-servers.md)
+- [Bash tool](https://docs.claude.com/en/docs/agents-and-tools/tool-use/bash-tool.md)
+- [Code execution tool](https://docs.claude.com/en/docs/agents-and-tools/tool-use/code-execution-tool.md)
+- [Computer use tool](https://docs.claude.com/en/docs/agents-and-tools/tool-use/computer-use-tool.md)
+- [Fine-grained tool streaming](https://docs.claude.com/en/docs/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
+- [How to implement tool use](https://docs.claude.com/en/docs/agents-and-tools/tool-use/implement-tool-use.md)
+- [Memory tool](https://docs.claude.com/en/docs/agents-and-tools/tool-use/memory-tool.md)
+- [Tool use with Claude](https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview.md)
+- [Text editor tool](https://docs.claude.com/en/docs/agents-and-tools/tool-use/text-editor-tool.md)
+- [Token-efficient tool use](https://docs.claude.com/en/docs/agents-and-tools/tool-use/token-efficient-tool-use.md)
+- [Web fetch tool](https://docs.claude.com/en/docs/agents-and-tools/tool-use/web-fetch-tool.md)
+- [Web search tool](https://docs.claude.com/en/docs/agents-and-tools/tool-use/web-search-tool.md)
+- [Admin API overview](https://docs.claude.com/en/docs/build-with-claude/administration-api.md)
+- [Batch processing](https://docs.claude.com/en/docs/build-with-claude/batch-processing.md)
+- [Citations](https://docs.claude.com/en/docs/build-with-claude/citations.md)
+- [Claude Code Analytics API](https://docs.claude.com/en/docs/build-with-claude/claude-code-analytics-api.md): Programmatically access your organization's Claude Code usage analytics and productivity metrics with the Claude Code Analytics Admin API.
+- [Claude in Microsoft Foundry](https://docs.claude.com/en/docs/build-with-claude/claude-in-microsoft-foundry.md): Access Claude models through Microsoft Foundry with Azure-native endpoints and authentication.
+- [Claude on Amazon Bedrock](https://docs.claude.com/en/docs/build-with-claude/claude-on-amazon-bedrock.md): Anthropic's Claude models are now generally available through Amazon Bedrock.
+- [Claude on Vertex AI](https://docs.claude.com/en/docs/build-with-claude/claude-on-vertex-ai.md): Anthropic's Claude models are now generally available through [Vertex AI](https://cloud.google.com/vertex-ai).
+- [Context editing](https://docs.claude.com/en/docs/build-with-claude/context-editing.md): Automatically manage conversation context as it grows with context editing.
+- [Context windows](https://docs.claude.com/en/docs/build-with-claude/context-windows.md)
+- [Embeddings](https://docs.claude.com/en/docs/build-with-claude/embeddings.md): Text embeddings are numerical representations of text that enable measuring semantic similarity. This guide introduces embeddings, their applications, and how to use embedding models for tasks like search, recommendations, and anomaly detection.
+- [Building with extended thinking](https://docs.claude.com/en/docs/build-with-claude/extended-thinking.md)
+- [Files API](https://docs.claude.com/en/docs/build-with-claude/files.md)
+- [Multilingual support](https://docs.claude.com/en/docs/build-with-claude/multilingual-support.md): Claude excels at tasks across multiple languages, maintaining strong cross-lingual performance relative to English.
+- [Features overview](https://docs.claude.com/en/docs/build-with-claude/overview.md): Explore Claude's advanced features and capabilities.
+- [PDF support](https://docs.claude.com/en/docs/build-with-claude/pdf-support.md): Process PDFs with Claude. Extract text, analyze charts, and understand visual content from your documents.
+- [Prompt caching](https://docs.claude.com/en/docs/build-with-claude/prompt-caching.md)
+- [Be clear, direct, and detailed](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/be-clear-and-direct.md)
+- [Let Claude think (chain of thought prompting) to increase performance](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/chain-of-thought.md)
+- [Chain complex prompts for stronger performance](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/chain-prompts.md)
+- [Prompting best practices](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices.md)
+- [Extended thinking tips](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/extended-thinking-tips.md)
+- [Long context prompting tips](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/long-context-tips.md)
+- [Use examples (multishot prompting) to guide Claude's behavior](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/multishot-prompting.md)
+- [Prompt engineering overview](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview.md)
+- [Prefill Claude's response for greater output control](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/prefill-claudes-response.md)
+- [Automatically generate first draft prompt templates](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/prompt-generator.md)
+- [Use our prompt improver to optimize your prompts](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/prompt-improver.md)
+- [Use prompt templates and variables](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/prompt-templates-and-variables.md)
+- [Giving Claude a role with a system prompt](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/system-prompts.md)
+- [Use XML tags to structure your prompts](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags.md)
+- [Search results](https://docs.claude.com/en/docs/build-with-claude/search-results.md): Enable natural citations for RAG applications by providing search results with source attribution
+- [Using Agent Skills with the API](https://docs.claude.com/en/docs/build-with-claude/skills-guide.md): Learn how to use Agent Skills to extend Claude's capabilities through the API.
+- [Streaming Messages](https://docs.claude.com/en/docs/build-with-claude/streaming.md)
+- [Structured outputs](https://docs.claude.com/en/docs/build-with-claude/structured-outputs.md): Get validated JSON results from agent workflows
+- [Token counting](https://docs.claude.com/en/docs/build-with-claude/token-counting.md)
+- [Usage and Cost API](https://docs.claude.com/en/docs/build-with-claude/usage-cost-api.md): Programmatically access your organization's API usage and cost data with the Usage & Cost Admin API.
+- [Vision](https://docs.claude.com/en/docs/build-with-claude/vision.md): The Claude 3 and 4 families of models comes with new vision capabilities that allow Claude to understand and analyze images, opening up exciting possibilities for multimodal interaction.
+- [Using the Messages API](https://docs.claude.com/en/docs/build-with-claude/working-with-messages.md): Practical patterns and examples for using the Messages API effectively
+- [Get started with Claude](https://docs.claude.com/en/docs/get-started.md): Make your first API call to Claude and build a simple web search assistant
+- [Intro to Claude](https://docs.claude.com/en/docs/intro.md): Claude is a highly performant, trustworthy, and intelligent AI platform built by Anthropic. Claude excels at tasks involving language, reasoning, analysis, coding, and more.
+- [Model Context Protocol (MCP)](https://docs.claude.com/en/docs/mcp.md)
+- [Define your success criteria](https://docs.claude.com/en/docs/test-and-evaluate/define-success.md)
+- [Create strong empirical evaluations](https://docs.claude.com/en/docs/test-and-evaluate/develop-tests.md)
+- [Using the Evaluation Tool](https://docs.claude.com/en/docs/test-and-evaluate/eval-tool.md): The [Claude Console](https://console.anthropic.com/dashboard) features an **Evaluation tool** that allows you to test your prompts under various scenarios.
+- [Streaming refusals](https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md)
+- [Increase output consistency (JSON mode)](https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/increase-consistency.md)
+- [Keep Claude in character with role prompting and prefilling](https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/keep-claude-in-character.md)
+- [Mitigate jailbreaks and prompt injections](https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks.md)
+- [Reduce hallucinations](https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations.md)
+- [Reducing latency](https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-latency.md)
+- [Reduce prompt leak](https://docs.claude.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak.md)
+- [null](https://docs.claude.com/en/home.md)
+- [Claude Developer Platform](https://docs.claude.com/en/release-notes/overview.md): Updates to the Claude Developer Platform, including the Claude API, client SDKs, and the Claude Console.
+- [System Prompts](https://docs.claude.com/en/release-notes/system-prompts.md): See updates to the core system prompts on [Claude.ai](https://www.claude.ai) and the Claude [iOS](http://anthropic.com/ios) and [Android](http://anthropic.com/android) apps.
+- [null](https://docs.claude.com/en/resources/overview.md)
+- [Adaptive editor](https://docs.claude.com/en/resources/prompt-library/adaptive-editor.md): Rewrite text following user-given instructions, such as with a different tone, audience, or style.
+- [Airport code analyst](https://docs.claude.com/en/resources/prompt-library/airport-code-analyst.md): Find and extract airport codes from text.
+- [Alien anthropologist](https://docs.claude.com/en/resources/prompt-library/alien-anthropologist.md): Analyze human culture and customs from the perspective of an alien anthropologist.
+- [Alliteration alchemist](https://docs.claude.com/en/resources/prompt-library/alliteration-alchemist.md): Generate alliterative phrases and sentences for any given subject.
+- [Babel's broadcasts](https://docs.claude.com/en/resources/prompt-library/babels-broadcasts.md): Create compelling product announcement tweets in the world's 10 most spoken languages.
+- [Brand builder](https://docs.claude.com/en/resources/prompt-library/brand-builder.md): Craft a design brief for a holistic brand identity.
+- [Career coach](https://docs.claude.com/en/resources/prompt-library/career-coach.md): Engage in role-play conversations with an AI career coach.
+- [Cite your sources](https://docs.claude.com/en/resources/prompt-library/cite-your-sources.md): Get answers to questions about a document's content with relevant citations supporting the response.
+- [Code clarifier](https://docs.claude.com/en/resources/prompt-library/code-clarifier.md): Simplify and explain complex code in plain language.
+- [Code consultant](https://docs.claude.com/en/resources/prompt-library/code-consultant.md): Suggest improvements to optimize Python code performance.
+- [Corporate clairvoyant](https://docs.claude.com/en/resources/prompt-library/corporate-clairvoyant.md): Extract insights, identify risks, and distill key information from long corporate reports into a single memo.
+- [Cosmic Keystrokes](https://docs.claude.com/en/resources/prompt-library/cosmic-keystrokes.md): Generate an interactive speed typing game in a single HTML file, featuring side-scrolling gameplay and Tailwind CSS styling.
+- [CSV converter](https://docs.claude.com/en/resources/prompt-library/csv-converter.md): Convert data from various formats (JSON, XML, etc.) into properly formatted CSV files.
+- [Culinary creator](https://docs.claude.com/en/resources/prompt-library/culinary-creator.md): Suggest recipe ideas based on the user's available ingredients and dietary preferences.
+- [Data organizer](https://docs.claude.com/en/resources/prompt-library/data-organizer.md): Turn unstructured text into bespoke JSON tables.
+- [Direction decoder](https://docs.claude.com/en/resources/prompt-library/direction-decoder.md): Transform natural language into step-by-step directions.
+- [Dream interpreter](https://docs.claude.com/en/resources/prompt-library/dream-interpreter.md): Offer interpretations and insights into the symbolism of the user's dreams.
+- [Efficiency estimator](https://docs.claude.com/en/resources/prompt-library/efficiency-estimator.md): Calculate the time complexity of functions and algorithms.
+- [Email extractor](https://docs.claude.com/en/resources/prompt-library/email-extractor.md): Extract email addresses from a document into a JSON-formatted list.
+- [Emoji encoder](https://docs.claude.com/en/resources/prompt-library/emoji-encoder.md): Convert plain text into fun and expressive emoji messages.
+- [Ethical dilemma navigator](https://docs.claude.com/en/resources/prompt-library/ethical-dilemma-navigator.md): Help the user think through complex ethical dilemmas and provide different perspectives.
+- [Excel formula expert](https://docs.claude.com/en/resources/prompt-library/excel-formula-expert.md): Create Excel formulas based on user-described calculations or data manipulations.
+- [Function fabricator](https://docs.claude.com/en/resources/prompt-library/function-fabricator.md): Create Python functions based on detailed specifications.
+- [Futuristic fashion advisor](https://docs.claude.com/en/resources/prompt-library/futuristic-fashion-advisor.md): Suggest avant-garde fashion trends and styles for the user's specific preferences.
+- [Git gud](https://docs.claude.com/en/resources/prompt-library/git-gud.md): Generate appropriate Git commands based on user-described version control actions.
+- [Google apps scripter](https://docs.claude.com/en/resources/prompt-library/google-apps-scripter.md): Generate Google Apps scripts to complete tasks based on user requirements.
+- [Grading guru](https://docs.claude.com/en/resources/prompt-library/grading-guru.md): Compare and evaluate the quality of written texts based on user-defined criteria and standards.
+- [Grammar genie](https://docs.claude.com/en/resources/prompt-library/grammar-genie.md): Transform grammatically incorrect sentences into proper English.
+- [Hal the humorous helper](https://docs.claude.com/en/resources/prompt-library/hal-the-humorous-helper.md): Chat with a knowledgeable AI that has a sarcastic side.
+- [Idiom illuminator](https://docs.claude.com/en/resources/prompt-library/idiom-illuminator.md): Explain the meaning and origin of common idioms and proverbs.
+- [Interview question crafter](https://docs.claude.com/en/resources/prompt-library/interview-question-crafter.md): Generate questions for interviews.
+- [LaTeX legend](https://docs.claude.com/en/resources/prompt-library/latex-legend.md): Write LaTeX documents, generating code for mathematical equations, tables, and more.
+- [Lesson planner](https://docs.claude.com/en/resources/prompt-library/lesson-planner.md): Craft in depth lesson plans on any subject.
+- [Prompt Library](https://docs.claude.com/en/resources/prompt-library/library.md)
+- [Master moderator](https://docs.claude.com/en/resources/prompt-library/master-moderator.md): Evaluate user inputs for potential harmful or illegal content.
+- [Meeting scribe](https://docs.claude.com/en/resources/prompt-library/meeting-scribe.md): Distill meetings into concise summaries including discussion topics, key takeaways, and action items.
+- [Memo maestro](https://docs.claude.com/en/resources/prompt-library/memo-maestro.md): Compose comprehensive company memos based on key points.
+- [Mindfulness mentor](https://docs.claude.com/en/resources/prompt-library/mindfulness-mentor.md): Guide the user through mindfulness exercises and techniques for stress reduction.
+- [Mood colorizer](https://docs.claude.com/en/resources/prompt-library/mood-colorizer.md): Transform text descriptions of moods into corresponding HEX codes.
+- [Motivational muse](https://docs.claude.com/en/resources/prompt-library/motivational-muse.md): Provide personalized motivational messages and affirmations based on user input.
+- [Neologism creator](https://docs.claude.com/en/resources/prompt-library/neologism-creator.md): Invent new words and provide their definitions based on user-provided concepts or ideas.
+- [Perspectives ponderer](https://docs.claude.com/en/resources/prompt-library/perspectives-ponderer.md): Weigh the pros and cons of a user-provided topic.
+- [Philosophical musings](https://docs.claude.com/en/resources/prompt-library/philosophical-musings.md): Engage in deep philosophical discussions and thought experiments.
+- [PII purifier](https://docs.claude.com/en/resources/prompt-library/pii-purifier.md): Automatically detect and remove personally identifiable information (PII) from text documents.
+- [Polyglot superpowers](https://docs.claude.com/en/resources/prompt-library/polyglot-superpowers.md): Translate text from any language into any language.
+- [Portmanteau poet](https://docs.claude.com/en/resources/prompt-library/portmanteau-poet.md): Blend two words together to create a new, meaningful portmanteau.
+- [Product naming pro](https://docs.claude.com/en/resources/prompt-library/product-naming-pro.md): Create catchy product names from descriptions and keywords.
+- [Prose polisher](https://docs.claude.com/en/resources/prompt-library/prose-polisher.md): Refine and improve written content with advanced copyediting techniques and suggestions.
+- [Pun-dit](https://docs.claude.com/en/resources/prompt-library/pun-dit.md): Generate clever puns and wordplay based on any given topic.
+- [Python bug buster](https://docs.claude.com/en/resources/prompt-library/python-bug-buster.md): Detect and fix bugs in Python code.
+- [Review classifier](https://docs.claude.com/en/resources/prompt-library/review-classifier.md): Categorize feedback into pre-specified tags and categorizations.
+- [Riddle me this](https://docs.claude.com/en/resources/prompt-library/riddle-me-this.md): Generate riddles and guide the user to the solutions.
+- [Sci-fi scenario simulator](https://docs.claude.com/en/resources/prompt-library/sci-fi-scenario-simulator.md): Discuss with the user various science fiction scenarios and associated challenges and considerations.
+- [Second-grade simplifier](https://docs.claude.com/en/resources/prompt-library/second-grade-simplifier.md): Make complex text easy for young learners to understand.
+- [Simile savant](https://docs.claude.com/en/resources/prompt-library/simile-savant.md): Generate similes from basic descriptions.
+- [Socratic sage](https://docs.claude.com/en/resources/prompt-library/socratic-sage.md): Engage in Socratic style conversation over a user-given topic.
+- [Spreadsheet sorcerer](https://docs.claude.com/en/resources/prompt-library/spreadsheet-sorcerer.md): Generate CSV spreadsheets with various types of data.
+- [SQL sorcerer](https://docs.claude.com/en/resources/prompt-library/sql-sorcerer.md): Transform everyday language into SQL queries.
+- [Storytelling sidekick](https://docs.claude.com/en/resources/prompt-library/storytelling-sidekick.md): Collaboratively create engaging stories with the user, offering plot twists and character development.
+- [Time travel consultant](https://docs.claude.com/en/resources/prompt-library/time-travel-consultant.md): Help the user navigate hypothetical time travel scenarios and their implications.
+- [Tongue twister](https://docs.claude.com/en/resources/prompt-library/tongue-twister.md): Create challenging tongue twisters.
+- [Trivia generator](https://docs.claude.com/en/resources/prompt-library/trivia-generator.md): Generate trivia questions on a wide range of topics and provide hints when needed.
+- [Tweet tone detector](https://docs.claude.com/en/resources/prompt-library/tweet-tone-detector.md): Detect the tone and sentiment behind tweets.
+- [VR fitness innovator](https://docs.claude.com/en/resources/prompt-library/vr-fitness-innovator.md): Brainstorm creative ideas for virtual reality fitness games.
+- [Website wizard](https://docs.claude.com/en/resources/prompt-library/website-wizard.md): Create one-page websites based on user specifications.

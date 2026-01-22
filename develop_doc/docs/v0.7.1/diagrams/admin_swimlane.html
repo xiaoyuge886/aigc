@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员工作流程泳道图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #FF9800;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .kpi {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #FF9800;
+        }
+    </style>
+</head>
+<body>
+    <h1>管理员工作流程泳道图</h1>
+    <div class="description">
+        <p>展示管理员从需求分析到上线运营的完整工作流程，体现跨角色协作与关键决策点。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+flowchart LR
+    subgraph 需求分析阶段
+        A1[收集用户需求] --> A2[分析业务场景]
+        A2 --> A3[评估技术可行性]
+    end
+
+    subgraph 资源配置阶段
+        B1[创建新场景] --> B2[编写场景Prompt]
+        B2 --> B3[绑定Skill与工具]
+        B3 --> B4[配置元数据]
+        B4 --> B5[预览测试]
+    end
+
+    subgraph 发布管理阶段
+        C1{测试通过?}
+        C1 -->|是| C2[发布场景]
+        C1 -->|否| B2
+        C2 --> C3[为用户授权]
+        C3 --> C4[配置监控指标]
+    end
+
+    subgraph 运营优化阶段
+        D1[监控使用数据]
+        D1 --> D2[分析效果指标]
+        D2 --> D3{需要优化?}
+        D3 -->|是| D4[调整Prompt/参数]
+        D4 --> B5
+        D3 -->|否| D1
+    end
+
+    A3 --> B1
+    C4 --> D1
+
+    style 需求分析阶段 fill:#e3f2fd
+    style 资源配置阶段 fill:#fff3e0
+    style 发布管理阶段 fill:#e8f5e9
+    style 运营优化阶段 fill:#fce4ec
+        </div>
+    </div>
+
+    <div class="kpi">
+        <h3>🎯 关键体验目标</h3>
+        <ul>
+            <li><strong>场景配置便捷性</strong>：<15分钟完成一个场景配置</li>
+            <li><strong>测试验证效率</strong>：支持沙盒测试、A/B对比，<5分钟完成验证</li>
+            <li><strong>数据洞察深度</strong>：可视化报表、趋势分析、异常告警</li>
+            <li><strong>迭代响应速度</strong>：从发现到优化上线 <1小时</li>
+        </ul>
+    </div>
+</body>
+</html>

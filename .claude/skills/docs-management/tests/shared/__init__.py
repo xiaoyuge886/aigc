@@ -1,0 +1,124 @@
+"""Shared test fixtures and utilities."""
+
+from tests.shared.constants import (
+    # Domain constants
+    TEST_DOMAIN,
+    TEST_DOMAIN_WITH_SLASH,
+    TEST_DOC_URL,
+    TEST_API_URL,
+    TEST_SKILLS_URL,
+    TEST_HOOKS_URL,
+    TEST_NOT_FOUND_URL,
+    TEST_FORBIDDEN_URL,
+    # HTTP constants
+    TEST_HTTP_TIMEOUT,
+    TEST_VALIDATION_TIMEOUT,
+    TEST_SHORT_TIMEOUT,
+    HTTP_OK,
+    HTTP_NOT_FOUND,
+    HTTP_FORBIDDEN,
+    HTTP_SERVER_ERROR,
+    HTTP_SERVICE_UNAVAILABLE,
+    HTTP_RATE_LIMITED,
+    TEST_MAX_RETRIES,
+    TEST_RETRY_DELAY,
+    # Test data
+    TEST_DOC_ID,
+    TEST_DOC_ID_2,
+    TEST_DOC_ID_HOOKS,
+    TEST_DOC_PATH,
+    TEST_DOC_PATH_2,
+    TEST_CONTENT_HASH,
+    TEST_CONTENT_HASH_2,
+    # Keywords and tags
+    TEST_KEYWORDS,
+    TEST_KEYWORDS_HOOKS,
+    TEST_TAGS,
+    TEST_TAGS_GUIDE,
+    TEST_TAGS_HOOKS,
+    TEST_CATEGORY_DOCS,
+    TEST_CATEGORY_GUIDE,
+    TEST_CATEGORY_REFERENCE,
+    # Content templates
+    TEST_MARKDOWN_MINIMAL,
+    TEST_MARKDOWN_WITH_SECTIONS,
+    TEST_HTML_WITH_DATES,
+    # Config values
+    TEST_CONFIG,
+    TestConfigValues,
+    # Expected output patterns
+    EXPECTED_LOG_INFO_PREFIX,
+    EXPECTED_LOG_WARNING_PREFIX,
+    EXPECTED_LOG_ERROR_PREFIX,
+    EXPECTED_INDEX_FIELDS,
+    EXPECTED_METADATA_FIELDS,
+    # File system constants
+    MD_EXTENSION,
+    YAML_EXTENSION,
+    JSON_EXTENSION,
+    TEST_CANONICAL_DIR,
+    TEST_CONFIG_DIR,
+    TEST_LOGS_DIR,
+)
+
+__all__ = [
+    # Domain constants
+    "TEST_DOMAIN",
+    "TEST_DOMAIN_WITH_SLASH",
+    "TEST_DOC_URL",
+    "TEST_API_URL",
+    "TEST_SKILLS_URL",
+    "TEST_HOOKS_URL",
+    "TEST_NOT_FOUND_URL",
+    "TEST_FORBIDDEN_URL",
+    # HTTP constants
+    "TEST_HTTP_TIMEOUT",
+    "TEST_VALIDATION_TIMEOUT",
+    "TEST_SHORT_TIMEOUT",
+    "HTTP_OK",
+    "HTTP_NOT_FOUND",
+    "HTTP_FORBIDDEN",
+    "HTTP_SERVER_ERROR",
+    "HTTP_SERVICE_UNAVAILABLE",
+    "HTTP_RATE_LIMITED",
+    "TEST_MAX_RETRIES",
+    "TEST_RETRY_DELAY",
+    # Test data
+    "TEST_DOC_ID",
+    "TEST_DOC_ID_2",
+    "TEST_DOC_ID_HOOKS",
+    "TEST_DOC_PATH",
+    "TEST_DOC_PATH_2",
+    "TEST_CONTENT_HASH",
+    "TEST_CONTENT_HASH_2",
+    # Keywords and tags
+    "TEST_KEYWORDS",
+    "TEST_KEYWORDS_HOOKS",
+    "TEST_TAGS",
+    "TEST_TAGS_GUIDE",
+    "TEST_TAGS_HOOKS",
+    "TEST_CATEGORY_DOCS",
+    "TEST_CATEGORY_GUIDE",
+    "TEST_CATEGORY_REFERENCE",
+    # Content templates
+    "TEST_MARKDOWN_MINIMAL",
+    "TEST_MARKDOWN_WITH_SECTIONS",
+    "TEST_HTML_WITH_DATES",
+    # Config values
+    "TEST_CONFIG",
+    "TestConfigValues",
+    # Expected output patterns
+    "EXPECTED_LOG_INFO_PREFIX",
+    "EXPECTED_LOG_WARNING_PREFIX",
+    "EXPECTED_LOG_ERROR_PREFIX",
+    "EXPECTED_INDEX_FIELDS",
+    "EXPECTED_METADATA_FIELDS",
+    # File system constants
+    "MD_EXTENSION",
+    "YAML_EXTENSION",
+    "JSON_EXTENSION",
+    "TEST_CANONICAL_DIR",
+    "TEST_CONFIG_DIR",
+    "TEST_LOGS_DIR",
+]
+

@@ -1,0 +1,57 @@
+{
+  "name": "planning_first",
+  "version": "3.0.0",
+  "description": "Planning First - 强制先规划后执行的思考指导框架",
+  "author": "AIGC Team",
+  "license": "MIT",
+  "homepage": "https://github.com/aigc/planning-first-skill",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aigc/planning-first-skill.git"
+  },
+  "keywords": [
+    "claude",
+    "agent",
+    "planning",
+    "react",
+    "coordination",
+    "thinking"
+  ],
+  "category": "思考指导",
+  "tags": [
+    "claude_skill",
+    "planning_first",
+    "react_paradigm"
+  ],
+  "capabilities": [
+    "planning_guidance",
+    "react_execution",
+    "coordination_framework"
+  ],
+  "requirements": {
+    "python": ">=3.8",
+    "dependencies": []
+  },
+  "entry_point": {
+    "main": "planning_first",
+    "class": "PlanningFirst",
+    "function": "process_request"
+  },
+  "configuration": {
+    "default_config": {
+      "enable_planning_emphasis": true
+    }
+  },
+  "changelog": {
+    "3.0.0": {
+      "release_date": "2024-12-28",
+      "changes": [
+        "初始发布",
+        "强制规划优先",
+        "ReAct执行范式",
+        "5阶段协调框架",
+        "3种思维模式"
+      ]
+    }
+  }
+}

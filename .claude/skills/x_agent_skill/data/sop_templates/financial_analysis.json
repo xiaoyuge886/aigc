@@ -1,0 +1,152 @@
+{
+  "name": "财务分析SOP模板",
+  "description": "专业的财务分析标准作业程序",
+  "version": "1.0.0",
+  "domain": "finance",
+  "complexity_level": "advanced",
+  "steps": [
+    {
+      "step_order": 1,
+      "title": "财务数据收集与验证",
+      "description": "收集并验证财务报表数据的完整性和准确性",
+      "duration_minutes": 30,
+      "tools_required": ["数据提取工具", "数据验证工具"],
+      "key_activities": [
+        "收集三大财务报表（资产负债表、利润表、现金流量表）",
+        "验证数据的一致性和完整性",
+        "识别异常数据和潜在问题",
+        "补充行业基准数据"
+      ],
+      "expected_outputs": [
+        "验证后的财务数据集",
+        "数据质量报告",
+        "异常数据识别记录"
+      ],
+      "success_criteria": [
+        "所有财务报表数据完整收集",
+        "数据异常率低于5%",
+        "关键指标计算准确"
+      ]
+    },
+    {
+      "step_order": 2,
+      "title": "财务比率分析",
+      "description": "计算并分析关键财务比率",
+      "duration_minutes": 45,
+      "tools_required": ["财务计算器", "比率分析工具"],
+      "key_activities": [
+        "计算流动性比率（流动比率、速动比率）",
+        "计算盈利能力比率（毛利率、净利率、ROE、ROA）",
+        "计算偿债能力比率（负债率、利息覆盖率）",
+        "计算运营效率比率（资产周转率、存货周转率）",
+        "与历史数据和行业基准对比"
+      ],
+      "expected_outputs": [
+        "完整财务比率计算表",
+        "趋势分析图表",
+        "行业对比分析报告"
+      ],
+      "success_criteria": [
+        "所有关键比率准确计算",
+        "趋势分析覆盖3-5年历史数据",
+        "行业对比数据来源可靠"
+      ]
+    },
+    {
+      "step_order": 3,
+      "title": "现金流分析",
+      "description": "深入分析现金流的构成和质量",
+      "duration_minutes": 40,
+      "tools_required": ["现金流分析工具", "可视化工具"],
+      "key_activities": [
+        "分析经营活动现金流趋势",
+        "评估投资活动和融资活动现金流",
+        "计算自由现金流",
+        "分析现金流与净利润的差异",
+        "评估现金流的可持续性"
+      ],
+      "expected_outputs": [
+        "现金流分析报告",
+        "现金流趋势图表",
+        "现金流质量评估"
+      ],
+      "success_criteria": [
+        "现金流分解完整准确",
+        "识别出现金流异常变化",
+        "提供改进现金流的具体建议"
+      ]
+    },
+    {
+      "step_order": 4,
+      "title": "风险识别与评估",
+      "description": "识别财务风险并进行定量评估",
+      "duration_minutes": 35,
+      "tools_required": ["风险评估模型", "情景分析工具"],
+      "key_activities": [
+        "识别流动性风险",
+        "评估信用风险",
+        "分析市场风险影响",
+        "评估操作风险",
+        "进行压力测试"
+      ],
+      "expected_outputs": [
+        "风险识别清单",
+        "风险评估矩阵",
+        "压力测试结果"
+      ],
+      "success_criteria": [
+        "主要财务风险全面识别",
+        "风险量化评估合理",
+        "提供风险缓解建议"
+      ]
+    },
+    {
+      "step_order": 5,
+      "title": "综合财务评估与建议",
+      "description": "整合所有分析结果，形成综合评估和改进建议",
+      "duration_minutes": 50,
+      "tools_required": ["报告生成工具", "可视化工具"],
+      "key_activities": [
+        "整合所有财务分析结果",
+        "形成综合财务健康评估",
+        "识别关键改进机会",
+        "制定具体改进建议",
+        "准备管理层汇报材料"
+      ],
+      "expected_outputs": [
+        "综合财务分析报告",
+        "管理层摘要",
+        "改进建议清单",
+        "监控指标建议"
+      ],
+      "success_criteria": [
+        "分析结论基于充分数据支持",
+        "建议具体可操作",
+        "报告适合目标受众"
+      ]
+    }
+  ],
+  "quality_control": {
+    "peer_review_required": true,
+    "data_sources_verification": true,
+    "methodology_documentation": true,
+    "sensitivity_analysis": true
+  },
+  "deliverables": [
+    {
+      "name": "财务分析执行报告",
+      "format": "PDF",
+      "sections": ["执行摘要", "分析方法", "详细分析", "风险评估", "建议", "附录"]
+    },
+    {
+      "name": "财务数据集",
+      "format": "Excel",
+      "content": ["原始数据", "计算结果", "分析图表"]
+    },
+    {
+      "name": "管理层汇报PPT",
+      "format": "PowerPoint",
+      "slides": 15
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "name": "xagent",
+  "version": "2.0.0",
+  "description": "XAgent - 智能跨域分析助手，基于SOP驱动的规划、多工具协调和多层次数据分析框架",
+  "author": "XAgent团队",
+  "license": "MIT",
+  "homepage": "https://github.com/xagent/xagent-skill",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xagent/xagent-skill.git"
+  },
+  "keywords": [
+    "claude",
+    "agent",
+    "prompt",
+    "指导",
+    "分析",
+    "商业智能",
+    "框架",
+    "方法论"
+  ],
+  "category": "智能指导",
+  "tags": [
+    "claude_skill",
+    "prompt工程",
+    "分析指导",
+    "商业分析",
+    "工具协调",
+    "专业建议"
+  ],
+  "capabilities": [
+    "sop_guidance",
+    "analysis_guidance",
+    "tool_coordination_guidance",
+    "domain_expertise",
+    "prompt_engineering",
+    "quality_control"
+  ],
+  "requirements": {
+    "python": ">=3.8",
+    "dependencies": [
+      "jinja2>=3.0.0",
+      "pydantic>=2.0.0",
+      "loguru>=0.7.0",
+      "numpy>=1.20.0",
+      "pandas>=1.3.0"
+    ],
+    "optional_dependencies": [
+      "matplotlib>=3.5.0",
+      "seaborn>=0.11.0",
+      "scikit-learn>=1.0.0"
+    ]
+  },
+  "entry_point": {
+    "main": "xagent_skill",
+    "class": "XAgent",
+    "function": "process_request"
+  },
+  "configuration": {
+    "default_config": {
+      "enable_sop_planning": true,
+      "enable_multi_tool_coordination": true,
+      "enable_conversation_memory": true,
+      "enable_data_analysis": true,
+      "max_parallel_tools": 3,
+      "max_conversation_history": 50,
+      "auto_optimization": true
+    },
+    "configurable_parameters": [
+      "enable_sop_planning",
+      "enable_multi_tool_coordination",
+      "enable_conversation_memory",
+      "enable_data_analysis",
+      "max_parallel_tools",
+      "max_conversation_history",
+      "sop_high_threshold",
+      "sop_low_threshold",
+      "retry_attempts"
+    ]
+  },
+  "api": {
+    "rest_endpoints": [
+      {
+        "path": "/api/chat",
+        "method": "POST",
+        "description": "处理用户查询并返回分析结果"
+      },
+      {
+        "path": "/api/health",
+        "method": "GET",
+        "description": "检查系统健康状态"
+      },
+      {
+        "path": "/api/stats",
+        "method": "GET",
+        "description": "获取系统性能统计"
+      }
+    ],
+    "websocket_endpoints": [
+      {
+        "path": "/ws/{connection_id}",
+        "description": "实时通信，用于实时更新"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "基础销售分析",
+      "description": "分析销售数据趋势并识别增长机会",
+      "code": "agent.process_request('分析Q3销售业绩并识别增长机会', 'user_001')"
+    },
+    {
+      "title": "客户流失分析",
+      "description": "分析客户流失模式并提出保留策略",
+      "code": "agent.process_request('分析客户流失模式并提出保留策略', 'analyst_001')"
+    },
+    {
+      "title": "多轮对话",
+      "description": "带上下文的渐进式分析",
+      "code": "agent.process_request('关注表现不佳的区域', 'user_001', session_id='sales_review')"
+    },
+    {
+      "title": "脚本化分析",
+      "description": "使用脚本进行批量数据分析",
+      "code": "python scripts/analyze_data.py -f data.csv -q '分析销售趋势'"
+    }
+  ],
+  "performance": {
+    "benchmarks": {
+      "gaia_test_set_accuracy": 0.6512,
+      "gaia_validation_set_accuracy": 0.7515,
+      "average_response_time": 3.5,
+      "success_rate": 0.95
+    },
+    "scalability": {
+      "max_dataset_size": 10000,
+      "max_concurrent_users": 50,
+      "memory_requirement": "2GB"
+    }
+  },
+  "security": {
+    "data_privacy": "所有数据本地处理，无外部数据传输",
+    "input_validation": "严格输入验证和清理",
+    "error_handling": "优雅错误处理，无信息泄露"
+  },
+  "compatibility": {
+    "claude_agent": ">=1.0.0",
+    "python_versions": ["3.8", "3.9", "3.10", "3.11"],
+    "operating_systems": ["Windows", "macOS", "Linux"]
+  },
+  "documentation": {
+    "readme": "SKILL_CN.md",
+    "skill_docs": "SKILL.md",
+    "examples": "examples/",
+    "scripts": "scripts/",
+    "templates": "templates/",
+    "references": "references/"
+  },
+  "testing": {
+    "unit_tests": "tests/unit/",
+    "integration_tests": "tests/integration/",
+    "coverage_threshold": 0.85
+  },
+  "changelog": {
+    "1.0.0": {
+      "release_date": "2024-12-14",
+      "changes": [
+        "初始发布作为JoyAgent",
+        "完整SOP规划实现",
+        "四阶段数据分析框架",
+        "多工具协调系统",
+        "对话记忆管理",
+        "WebSocket实时通信",
+        "Vue3 + FastAPI前端",
+        "Java prompt集成"
+      ]
+    },
+    "2.0.0": {
+      "release_date": "2024-12-14",
+      "changes": [
+        "重命名为XAgent，增强跨域能力",
+        "多层次规划框架（大计划分解小计划）",
+        "MCP服务集成支持",
+        "问题拆解和泛化查询能力",
+        "更强的跨域分析指导"
+      ]
+    }
+  }
+}

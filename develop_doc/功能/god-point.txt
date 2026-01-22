@@ -1,0 +1,3 @@
+# point 
+ - Q 1 保存部分结果，2 可以继续恢复 为什么打断是因为，本轮和用户实现不一致，3 我想实现的功能要想人一样是非线性的  以上你认同了解吗 我们探讨一下
+ - A backend/AGENT_NONLINEAR_WORKFLOW_DESIGN.md

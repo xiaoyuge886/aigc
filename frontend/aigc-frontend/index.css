@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+  background-color: #FFFFFF;
+  color: #1D1D1F;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 10px; }
+
+.markdown-content h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin: 1.25rem 0 0.75rem; color: #1d1d1f; }
+.markdown-content h2 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.015em; margin: 1rem 0 0.6rem; color: #1d1d1f; }
+.markdown-content h3 { font-size: 1.05rem; font-weight: 700; margin: 0.8rem 0 0.4rem; color: #1d1d1f; }
+.markdown-content p { font-size: 13px; line-height: 1.55; color: #424245; margin-bottom: 0.75rem; }
+.markdown-content ul, .markdown-content ol { margin-bottom: 0.8rem; padding-left: 1.1rem; }
+.markdown-content li { font-size: 13px; color: #424245; margin-bottom: 0.3rem; }
+
+.markmap-container svg { background: transparent; width: 100%; height: 100%; }
+
+/* Shimmer animation for recommendation cards */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Float animation for recommendation cards */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Float entrance animation */
+@keyframes floatAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(15px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Card disappear animation */
+@keyframes cardDisappear {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) translateY(-10px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) translateY(-50px);
+    filter: blur(10px);
+  }
+}

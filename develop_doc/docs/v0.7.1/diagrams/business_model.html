@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商业模式图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #FF5722;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .revenue-info {
+            background: #fbe9e7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #FF5722;
+        }
+    </style>
+</head>
+<body>
+    <h1>商业模式图</h1>
+    <div class="description">
+        <p>展示多元化的收入模式与成本结构，以及各模式的定价策略。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+graph TD
+    subgraph 收入模式
+        R1[订阅制<br/>SaaS服务]
+        R2[按量计费<br/>API调用]
+        R3[私有化部署<br/>License费用]
+        R4[生态分成<br/>场景/Skill交易]
+    end
+
+    subgraph 定价策略
+        P1[基础版<br/>¥999/月/租户]
+        P2[专业版<br/>¥2999/月/租户]
+        P3[企业版<br/>¥9999/月/租户]
+        P4[定制版<br/>按需报价]
+
+        P1 -->|包含| P1a[10场景<br/>基础功能]
+        P2 -->|包含| P2a[50场景<br/>SSO+审计]
+        P3 -->|包含| P3a[无限场景<br/>私有化部署]
+        P4 -->|包含| P4a[定制开发<br/>专属支持]
+    end
+
+    subgraph 成本结构
+        C1[模型调用成本<br/>30-40%]
+        C2[研发成本<br/>25-30%]
+        C3[运维成本<br/>15-20%]
+        C4[销售与市场<br/>10-15%]
+        C5[客户成功<br/>5-10%]
+    end
+
+    R1 --> P1
+    R1 --> P2
+    R3 --> P3
+    R3 --> P4
+    R2 -.补充.-> P1
+    R2 -.补充.-> P2
+    R4 -.扩展.-> P3
+
+    style 收入模式 fill:#e3f2fd
+    style 定价策略 fill:#fff3e0
+    style 成本结构 fill:#e8f5e9
+        </div>
+    </div>
+
+    <div class="revenue-info">
+        <h3>💰 商业模式亮点</h3>
+        <ul>
+            <li><strong>订阅制</strong>：稳定现金流，客户粘性高，目标续约率≥90%</li>
+            <li><strong>按量计费</strong>：灵活适配客户规模，降低客户使用门槛</li>
+            <li><strong>私有化部署</strong>：满足大型企业数据安全需求，高客单价（¥50-100万/年）</li>
+            <li><strong>生态分成</strong>：场景/Skill市场抽成10-20%，打造飞轮效应</li>
+        </ul>
+        <p><strong>目标客户画像</strong>：</p>
+        <ul>
+            <li>中型企业（100-1000人）：专业版，¥2-4万/年</li>
+            <li>大型企业（1000+人）：企业版，¥10-30万/年</li>
+            <li>政府/国企：定制版，¥50-200万/年</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成功指标与仪表盘</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+        }
+        .metric-card.product { border-color: #2196F3; background: #e3f2fd; }
+        .metric-card.business { border-color: #FF9800; background: #fff3e0; }
+        .metric-card.cost { border-color: #4CAF50; background: #e8f5e9; }
+        .metric-card h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 16px;
+        }
+        .metric-card .target {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+        .metric-card .current {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .metric-card .actions {
+            font-size: 13px;
+            color: #666;
+            padding: 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>成功指标与仪表盘</h1>
+    <div class="description">
+        <p>展示产品、业务、成本三大维度的关键指标，包括目标值、当前值与改进措施。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+graph TB
+    subgraph 产品指标
+        M1[场景匹配准确率<br/>≥85% v0.7.1<br/>≥90% v0.8]
+        M2[用户满意度<br/>≥85% 点赞率<br/>≤5% 点踩率]
+        M3[首字响应时间<br/><2秒 P99]
+        M4[系统可用性<br/>≥99.5% SLA]
+    end
+
+    subgraph 业务指标
+        B1[单客户交付周期<br/>4-6周<br/>传统2-3月]
+        B2[场景复用率<br/>80%<br/>传统20%]
+        B3[客户续约率<br/>≥90%]
+        B4[客户NPS<br/>≥50]
+    end
+
+    subgraph 成本指标
+        C1[单项目交付成本<br/>5-10万<br/>传统30-50万]
+        C2[人效提升<br/>8-10客户/人/年<br/>传统2-3]
+        C3[模型调用成本<br/>降低30%+]
+    end
+
+    M1 -.优化.-> M2
+    M3 -.影响.-> M4
+    B1 -.改善.-> B2
+    B2 -.提升.-> B3
+    C1 -.降低.-> C2
+    C2 -.优化.-> C3
+
+    style 产品指标 fill:#e3f2fd
+    style 业务指标 fill:#fff3e0
+    style 成本指标 fill:#e8f5e9
+        </div>
+    </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card product">
+            <h3>📊 产品指标</h3>
+            <div class="target">场景匹配准确率</div>
+            <div class="current">目标：≥85% (v0.7.1)，≥90% (v0.8)</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 持续优化ScenarioMatcher Prompt<br>
+                • 引入向量检索加速匹配<br>
+                • 建立场景分类知识库<br>
+                • A/B测试不同匹配策略
+            </div>
+        </div>
+
+        <div class="metric-card product">
+            <h3>😊 用户满意度</h3>
+            <div class="target">≥85% 点赞率</div>
+            <div class="current">点踩率：≤5%</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 强化PreferenceLearner学习能力<br>
+                • 快速响应用户反馈<br>
+                • 优化Prompt质量<br>
+                • 提升工具调用准确率
+            </div>
+        </div>
+
+        <div class="metric-card product">
+            <h3>⚡ 首字响应时间</h3>
+            <div class="target"><2秒 (P99)</div>
+            <div class="current">当前：~1.5秒</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 优化场景匹配缓存<br>
+                • 减少网络往返次数<br>
+                • 预热常用场景<br>
+                • 优化Agent启动流程
+            </div>
+        </div>
+
+        <div class="metric-card business">
+            <h3>🚀 交付周期</h3>
+            <div class="target">4-6周</div>
+            <div class="current">传统：2-3月</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 复用场景库≥60%<br>
+                • 模板化配置流程<br>
+                • 并行推进集成测试<br>
+                • 专家全程跟进
+            </div>
+        </div>
+
+        <div class="metric-card business">
+            <h3>🔄 场景复用率</h3>
+            <div class="target">80%</div>
+            <div class="current">传统：20%</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 建设公共场景库<br>
+                • 场景模板化<br>
+                • 行业最佳实践沉淀<br>
+                • 降低定制化比例<30%
+            </div>
+        </div>
+
+        <div class="metric-card business">
+            <h3>💰 客户续约率</h3>
+            <div class="target">≥90%</div>
+            <div class="current">行业平均：70-80%</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 建立客户成功团队<br>
+                • 定期健康度检查<br>
+                • 持续价值交付<br>
+                • 快速响应需求
+            </div>
+        </div>
+
+        <div class="metric-card cost">
+            <h3>💵 交付成本</h3>
+            <div class="target">5-10万/项目</div>
+            <div class="current">传统：30-50万</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 平台化复用<br>
+                • 自动化测试部署<br>
+                • 减少定制开发<br>
+                • 提升人效3-4倍
+            </div>
+        </div>
+
+        <div class="metric-card cost">
+            <h3>👥 人效提升</h3>
+            <div class="target">8-10客户/人/年</div>
+            <div class="current">传统：2-3客户</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 工具化提效<br>
+                • 流程标准化<br>
+                • 知识沉淀复用<br>
+                • 减少重复工作
+            </div>
+        </div>
+
+        <div class="metric-card cost">
+            <h3>🎯 模型调用成本</h3>
+            <div class="target">降低30%+</div>
+            <div class="current">优化前基准</div>
+            <div class="actions">
+                <strong>改进措施：</strong><br>
+                • 智能缓存策略<br>
+                • 多模型路由<br>
+                • Token优化<br>
+                • Prompt精简
+            </div>
+        </div>
+    </div>
+</body>
+</html>

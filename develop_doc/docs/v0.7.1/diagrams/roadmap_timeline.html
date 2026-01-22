@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap时间线</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #E91E63;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .milestone-info {
+            background: #fce4ec;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #E91E63;
+        }
+    </style>
+</head>
+<body>
+    <h1>Roadmap时间线</h1>
+    <div class="description">
+        <p>展示产品从v0.7.1到v0.9+的演进路线，标注关键里程碑与交付时间。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+gantt
+    title 产品演进路线图
+    dateFormat YYYY-MM-DD
+    section v0.7.1 (当前版本)
+    基础对话能力           :done, v071a, 2024-01-01, 2024-02-15
+    场景体系               :done, v071b, 2024-01-15, 2024-02-28
+    Skill体系              :done, v071c, 2024-02-01, 2024-03-15
+    自我进化V1             :done, v071d, 2024-02-15, 2024-03-31
+
+    section v0.7.2-dev
+    偏好可视化             :active, v072a, 2024-04-01, 2024-05-15
+    更多业务场景           :v072b, 2024-04-15, 2024-06-30
+    管理后台完善           :v072c, 2024-05-01, 2024-06-30
+    性能优化               :v072d, 2024-05-15, 2024-07-15
+    用户体验提升           :v072e, 2024-06-01, 2024-07-31
+
+    section v0.8 (企业级)
+    多租户支持             :v08a, 2024-08-01, 2024-10-31
+    SSO集成               :v08b, 2024-08-15, 2024-11-15
+    企业级安全             :v08c, 2024-09-01, 2024-12-15
+    私有化部署             :v08d, 2024-10-01, 2025-01-31
+    API生态               :v08e, 2024-11-01, 2025-02-28
+
+    section v0.9+
+    RAG增强               :v09a, 2025-03-01, 2025-05-31
+    多模态支持             :v09b, 2025-04-01, 2025-07-31
+    Agent市场             :v09c, 2025-06-01, 2025-09-30
+    国际化                :v09d, 2025-08-01, 2025-12-31
+        </div>
+    </div>
+
+    <div class="milestone-info">
+        <h3>🎯 关键里程碑</h3>
+        <ul>
+            <li><strong>v0.7.1 GA</strong>：2024年3月31日，核心功能完整，内部试运行</li>
+            <li><strong>v0.7.2 GA</strong>：2024年7月31日，10+行业场景，完善管理功能</li>
+            <li><strong>v0.8 GA</strong>：2025年2月28日，企业级特性，支持私有化部署</li>
+            <li><strong>v0.9 GA</strong>：2025年12月31日，生态平台，国际化</li>
+        </ul>
+        <p><strong>资源需求</strong>：前端2人、后端3人、算法1人、产品1人、运维1人</p>
+    </div>
+</body>
+</html>

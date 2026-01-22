@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # 前端服务（生产环境）
+  # ============================================
+  frontend:
+    image: xiaoyuge886/aigc-frontend:latest
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.frontend
+    container_name: aigc-frontend-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - aigc-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # 后端服务（生产环境）
+  # ============================================
+  backend:
+    image: xiaoyuge886/aigc-backend:latest
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: aigc-backend-prod
+    ports:
+      - "8000:8000"
+    environment:
+      # API 配置
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.anthropic.com}
+
+      # 服务器配置
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=false
+
+      # Agent 配置
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-sonnet}
+      - MAX_TURNS=${MAX_TURNS:-20}
+      - PERMISSION_MODE=${PERMISSION_MODE:-acceptEdits}
+
+      # 工具配置
+      - DEFAULT_ALLOWED_TOOLS=${DEFAULT_ALLOWED_TOOLS:-Read,Write,Edit,Bash,Glob,Grep,WebSearch,WebFetch,TodoWrite}
+
+      # 工作目录
+      - WORK_DIR=/app/work_dir
+
+      # 数据库配置
+      - DATABASE_URL=${DATABASE_URL}
+      - DB_PATH=/app/data/sessions.db
+
+      # 安全配置
+      - SECRET_KEY=${SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE_DAYS=${ACCESS_TOKEN_EXPIRE_DAYS:-30}
+
+      # 日志配置
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      # 持久化数据目录（指向项目根目录的data）
+      - ../data:/app/data
+      # 持久化工作目录
+      - ../work_dir:/app/work_dir
+      # 持久化日志
+      - ../logs:/app/logs
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - aigc-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # 资源限制（根据实际需求调整）
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+# ============================================
+# 网络配置
+# ============================================
+networks:
+  aigc-network:
+    driver: bridge

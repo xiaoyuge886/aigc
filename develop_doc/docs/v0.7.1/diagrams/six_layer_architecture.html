@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>六层架构图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #3F51B5;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>六层架构图</h1>
+    <div class="description">
+        <p>展示系统的完整分层架构，从基础设施层到接入层的完整技术栈。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+graph TB
+    subgraph Layer1["接入层"]
+        L1_1[Web前端<br/>React Console]
+        L1_2[API Gateway<br/>认证/限流/日志]
+        L1_2 --> L1_1
+    end
+
+    subgraph Layer2["应用层"]
+        L2_1[Agent API]
+        L2_2[Platform API]
+        L2_3[Admin API]
+
+        L2_4[AgentService]
+        L2_5[ScenarioMatcher]
+        L2_6[ScenarioProvider]
+        L2_7[ConfigurationManager]
+        L2_8[PromptComposer]
+        L2_9[PromptEvolver]
+        L2_10[PreferenceLearner]
+        L2_11[FeedbackCollector]
+
+        L2_1 --> L2_4
+        L2_2 --> L2_5
+        L2_2 --> L2_6
+        L2_2 --> L2_7
+        L2_3 --> L2_10
+        L2_3 --> L2_11
+    end
+
+    subgraph Layer3["数据层"]
+        L3_1[关系型数据库<br/>PostgreSQL]
+        L3_2[缓存层<br/>Redis]
+        L3_3[文件存储<br/>MinIO/S3]
+        L3_4[向量数据库<br/>ChromaDB]
+    end
+
+    subgraph Layer4["模型与工具层"]
+        L4_1[LLM路由<br/>Claude/GPT-4]
+        L4_2[Agent SDK]
+        L4_3[工具生态<br/>MCP/Skill]
+        L4_4[任务队列<br/>Celery]
+    end
+
+    subgraph Layer5["基础设施层"]
+        L5_1[容器化<br/>Docker/K8s]
+        L5_2[服务网格<br/>Istio]
+        L5_3[监控告警<br/>Prometheus/Grafana]
+        L5_4[日志中心<br/>ELK/Loki]
+    end
+
+    subgraph Layer6["安全与运维层"]
+        L6_1[数据加密]
+        L6_2[权限控制]
+        L6_3[审计日志]
+        L6_4[备份恢复]
+    end
+
+    Layer1 --> Layer2
+    Layer2 --> Layer3
+    Layer2 --> Layer4
+    Layer4 --> Layer5
+    Layer3 --> Layer5
+    Layer5 --> Layer6
+
+    style Layer1 fill:#e3f2fd
+    style Layer2 fill:#fff3e0
+    style Layer3 fill:#e8f5e9
+    style Layer4 fill:#fce4ec
+    style Layer5 fill:#f3e5f5
+    style Layer6 fill:#ffebee
+        </div>
+    </div>
+</body>
+</html>

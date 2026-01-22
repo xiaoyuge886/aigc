@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIGC Console 整体架构</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      padding: 40px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 40px;
+      color: #1d1d1f;
+    }
+    .architecture-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .layer {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid #e5e5e7;
+    }
+    .layer-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1d1d1f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .layer-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: #0ea5e9;
+      border-radius: 2px;
+    }
+    .layer-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .item {
+      background: #f5f5f7;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #1d1d1f;
+      border: 1px solid #e5e5e7;
+      position: relative;
+    }
+    .item-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .item-group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #86868b;
+      margin-bottom: 4px;
+    }
+    .arrow {
+      text-align: center;
+      color: #86868b;
+      font-size: 20px;
+      margin: 8px 0;
+    }
+    .flow-connections {
+      display: flex;
+      justify-content: space-between;
+      margin: 24px 0;
+      padding: 0 40px;
+      gap: 24px;
+    }
+    .connection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .connection-line {
+      width: 100%;
+      height: 2px;
+      background: #d2d2d7;
+      position: relative;
+    }
+    .connection-line::after {
+      content: '→';
+      position: absolute;
+      right: -8px;
+      top: -10px;
+      color: #86868b;
+      font-size: 16px;
+    }
+    .connection-label {
+      font-size: 12px;
+      color: #86868b;
+      margin-top: 4px;
+      text-align: center;
+    }
+    .sub-item {
+      font-size: 12px;
+      color: #6e6e73;
+      margin-top: 4px;
+      padding-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AIGC Console 整体技术架构</h1>
+    
+    <div class="architecture-layers">
+      <!-- 前端层 -->
+      <div class="layer">
+        <div class="layer-title">前端层（React + TypeScript）</div>
+        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+          <div class="item-group">
+            <div class="item-group-title">核心界面</div>
+            <div class="item">ChatInterface<br><span class="sub-item">对话界面、流式展示、工具调用可视化</span></div>
+            <div class="item">SessionHistory<br><span class="sub-item">会话列表、历史消息、Session偏好</span></div>
+            <div class="item">MessageFeedback<br><span class="sub-item">点赞/点踩/纠正/重生成</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">管理后台</div>
+            <div class="item">AdminDashboard<br><span class="sub-item">用户管理、使用统计</span></div>
+            <div class="item">ResourceCenter<br><span class="sub-item">场景/Prompt/Skill管理</span></div>
+            <div class="item">ScenarioEditor<br><span class="sub-item">场景创建与编辑</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">工作区</div>
+            <div class="item">WorkspacePanel<br><span class="sub-item">实时追踪、工具调用、文件列表</span></div>
+            <div class="item">TodoList<br><span class="sub-item">任务进度展示</span></div>
+            <div class="item">DataFlowTimeline<br><span class="sub-item">数据流时间线</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">↓</div>
+      <div class="connection-label" style="text-align: center; color: #86868b; font-size: 12px; margin: -16px 0 8px 0;">HTTP / SSE 流式响应</div>
+
+      <!-- API层 -->
+      <div class="layer">
+        <div class="layer-title">API 层（FastAPI）</div>
+        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+          <div class="item-group">
+            <div class="item-group-title">对话接口</div>
+            <div class="item">POST /session/query/stream<br><span class="sub-item">流式对话、自动场景匹配</span></div>
+            <div class="item">GET /session/{id}/history<br><span class="sub-item">会话历史、分页加载</span></div>
+            <div class="item">GET /sessions<br><span class="sub-item">会话列表、统计信息</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">平台管理</div>
+            <div class="item">/platform/scenarios<br><span class="sub-item">场景CRUD、可用场景查询</span></div>
+            <div class="item">/platform/system-prompts<br><span class="sub-item">Prompt模板管理</span></div>
+            <div class="item">/platform/skills<br><span class="sub-item">技能管理、可见性控制</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">用户与偏好</div>
+            <div class="item">/platform/users/{id}/config<br><span class="sub-item">用户配置、场景授权</span></div>
+            <div class="item">/platform/users/{id}/preferences<br><span class="sub-item">用户级偏好查询</span></div>
+            <div class="item">/platform/sessions/{id}/preferences<br><span class="sub-item">Session级偏好查询</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">反馈与任务</div>
+            <div class="item">POST /feedback<br><span class="sub-item">显式反馈收集</span></div>
+            <div class="item">POST /cron/batch-learn-preferences<br><span class="sub-item">手动触发偏好学习</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">↓</div>
+
+      <!-- 服务层 -->
+      <div class="layer">
+        <div class="layer-title">服务层（核心业务逻辑）</div>
+        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+          <div class="item-group">
+            <div class="item-group-title">对话与场景</div>
+            <div class="item">AgentService<br><span class="sub-item">Claude SDK封装、流式调用、工具执行</span></div>
+            <div class="item">ScenarioMatcher<br><span class="sub-item">模型驱动场景匹配、缓存机制</span></div>
+            <div class="item">ScenarioProvider<br><span class="sub-item">计算用户可用场景列表</span></div>
+            <div class="item">SessionManager<br><span class="sub-item">会话生命周期管理、连接保持</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">配置与Prompt</div>
+            <div class="item">ConfigurationManager<br><span class="sub-item">Request>Session>User>Scenario>Global优先级合并</span></div>
+            <div class="item">PromptComposer<br><span class="sub-item">组合系统Prompt、场景Prompt、用户Prompt、偏好</span></div>
+            <div class="item">PromptEvolver<br><span class="sub-item">将偏好格式化为Prompt片段</span></div>
+            <div class="item">DefaultConfig<br><span class="sub-item">系统默认配置、默认场景</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">自我进化</div>
+            <div class="item">FeedbackCollector<br><span class="sub-item">反馈收集、行为统计更新</span></div>
+            <div class="item">PreferenceLearner<br><span class="sub-item">用户/Session偏好学习、模型分析</span></div>
+            <div class="item">CronJobs<br><span class="sub-item">定时批量学习、每小时执行</span></div>
+          </div>
+          <div class="item-group">
+            <div class="item-group-title">技能与工具</div>
+            <div class="item">SkillLoader<br><span class="sub-item">技能加载、MCP工具注册</span></div>
+            <div class="item">FileUploadService<br><span class="sub-item">文件上传、MinIO集成</span></div>
+            <div class="item">FileSearchService<br><span class="sub-item">文件搜索、内容加载</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 连接线 -->
+      <div class="flow-connections">
+        <div class="connection">
+          <div class="connection-line"></div>
+          <div class="connection-label">ORM / SQL<br>SQLAlchemy异步查询</div>
+        </div>
+        <div class="connection">
+          <div class="connection-line"></div>
+          <div class="connection-label">模型调用 / 工具<br>Claude Agent SDK<br>流式响应</div>
+        </div>
+        <div class="connection">
+          <div class="connection-line"></div>
+          <div class="connection-label">文件 / API / MCP<br>MinIO上传<br>MCP工具调用</div>
+        </div>
+      </div>
+
+      <!-- 底层 -->
+      <div style="display: flex; gap: 24px;">
+        <div class="layer" style="flex: 1;">
+          <div class="layer-title">数据层</div>
+          <div class="item-group">
+            <div class="item-group-title">会话与消息</div>
+            <div class="item">SessionDB<br><span class="sub-item">会话基础信息</span></div>
+            <div class="item">MessageDB<br><span class="sub-item">消息、tool_use、tool_result</span></div>
+            <div class="item">ConversationTurnConfigDB<br><span class="sub-item">配置快照、审计日志</span></div>
+          </div>
+          <div class="item-group" style="margin-top: 12px;">
+            <div class="item-group-title">场景与配置</div>
+            <div class="item">BusinessScenarioDB<br><span class="sub-item">场景定义、is_default</span></div>
+            <div class="item">SystemPromptDB<br><span class="sub-item">Prompt模板库</span></div>
+            <div class="item">SkillDB<br><span class="sub-item">技能内容、is_public</span></div>
+            <div class="item">UserConfigDB<br><span class="sub-item">用户配置</span></div>
+            <div class="item">UserScenarioConfigDB<br><span class="sub-item">用户场景授权</span></div>
+          </div>
+          <div class="item-group" style="margin-top: 12px;">
+            <div class="item-group-title">自我进化</div>
+            <div class="item">UserFeedbackDB<br><span class="sub-item">反馈记录</span></div>
+            <div class="item">UserPreferencesCacheDB<br><span class="sub-item">用户偏好缓存</span></div>
+            <div class="item">SessionPreferencesDB<br><span class="sub-item">Session偏好</span></div>
+            <div class="item">UserBehaviorStatsDB<br><span class="sub-item">行为统计</span></div>
+          </div>
+          <div style="margin-top: 12px; padding: 8px; background: #f5f5f7; border-radius: 6px; font-size: 12px; color: #6e6e73;">
+            <strong>当前：</strong>SQLite<br>
+            <strong>后续：</strong>PostgreSQL（高并发场景）
+          </div>
+        </div>
+        <div class="layer" style="flex: 1;">
+          <div class="layer-title">模型层</div>
+          <div class="item-group">
+            <div class="item-group-title">Claude Agent SDK</div>
+            <div class="item">ClaudeSDKClient<br><span class="sub-item">多轮对话、上下文保持</span></div>
+            <div class="item">流式响应<br><span class="sub-item">TextBlock、ThinkingBlock、ToolUseBlock</span></div>
+            <div class="item">工具调用<br><span class="sub-item">Read、Write、Bash、Glob、TodoWrite等</span></div>
+          </div>
+          <div class="item-group" style="margin-top: 12px;">
+            <div class="item-group-title">模型能力</div>
+            <div class="item">场景匹配<br><span class="sub-item">ScenarioMatcher调用模型选择场景</span></div>
+            <div class="item">偏好学习<br><span class="sub-item">PreferenceLearner调用模型分析反馈</span></div>
+            <div class="item">对话生成<br><span class="sub-item">基于组合Prompt生成回复</span></div>
+          </div>
+        </div>
+        <div class="layer" style="flex: 1;">
+          <div class="layer-title">外部能力</div>
+          <div class="item-group">
+            <div class="item-group-title">文件存储</div>
+            <div class="item">MinIO<br><span class="sub-item">PPT、报告等文件上传</span></div>
+            <div class="item">本地文件系统<br><span class="sub-item">work_dir/reports/临时文件</span></div>
+          </div>
+          <div class="item-group" style="margin-top: 12px;">
+            <div class="item-group-title">工具生态</div>
+            <div class="item">MCP工具<br><span class="sub-item">自定义工具、内部系统集成</span></div>
+            <div class="item">内置工具<br><span class="sub-item">Read、Write、Bash、Glob、Grep、WebSearch</span></div>
+            <div class="item">技能工具<br><span class="sub-item">PPTX生成、数据分析等</span></div>
+          </div>
+          <div class="item-group" style="margin-top: 12px;">
+            <div class="item-group-title">定时任务</div>
+            <div class="item">CronJobs<br><span class="sub-item">每小时批量学习用户偏好</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

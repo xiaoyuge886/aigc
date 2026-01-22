@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队协作矩阵图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #795548;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .team-info {
+            background: #efebe9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #795548;
+        }
+    </style>
+</head>
+<body>
+    <h1>团队协作矩阵图</h1>
+    <div class="description">
+        <p>展示各团队在项目中的职责边界与协作关系。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+graph TB
+    subgraph 前端团队
+        FE1[Chat界面与交互]
+        FE2[SessionHistory管理]
+        FE3[AdminDashboard]
+        FE4[ResourceCenter]
+        FE5[偏好可视化]
+        FE6[工具调用进度展示]
+    end
+
+    subgraph 后端团队
+        BE1[API设计与实现]
+        BE2[数据模型设计]
+        BE3[服务模块开发]
+        BE4[多租户隔离]
+        BE5[权限控制]
+        BE6[监控告警体系]
+    end
+
+    subgraph 算法团队
+        AI1[ScenarioMatcher优化]
+        AI2[PreferenceLearner设计]
+        AI3[Prompt工程]
+        AI4[效果评估]
+        AI5[模型路由策略]
+    end
+
+    subgraph 产品团队
+        PM1[需求梳理]
+        PM2[功能设计]
+        PM3[用户反馈分析]
+        PM4[产品迭代规划]
+    end
+
+    subgraph 售前团队
+        SA1[需求分析]
+        SA2[方案设计]
+        SA3[PPT与Demo]
+        SA4[客户PoC支持]
+    end
+
+    subgraph 运维团队
+        OPS1[部署架构]
+        OPS2[容器化编排]
+        OPS3[故障处理]
+        OPS4[成本优化]
+    end
+
+    PM1 --> BE1
+    PM1 --> FE1
+    PM2 --> AI3
+    PM3 --> AI4
+    PM4 --> BE3
+
+    SA1 --> PM1
+    SA2 --> AI5
+    SA3 --> FE1
+    SA4 --> BE4
+
+    BE1 --> FE1
+    BE2 --> BE3
+    BE3 --> AI1
+    BE4 --> BE5
+    BE5 --> BE6
+
+    AI1 --> AI2
+    AI2 --> AI4
+    AI3 --> AI5
+
+    OPS1 --> BE4
+    OPS2 --> OPS3
+    OPS3 --> BE6
+
+    FE5 -.需要.-> AI2
+    FE6 -.需要.-> BE3
+
+    style 前端团队 fill:#e3f2fd
+    style 后端团队 fill:#fff3e0
+    style 算法团队 fill:#e8f5e9
+    style 产品团队 fill:#fce4ec
+    style 售前团队 fill:#f3e5f5
+    style 运维团队 fill:#efebe9
+        </div>
+    </div>
+
+    <div class="team-info">
+        <h3>👥 协作要点</h3>
+        <ul>
+            <li><strong>产品-技术</strong>：需求评审 → 技术方案设计 → 开排期</li>
+            <li><strong>售前-产品</strong>：客户需求 → 产品规划 → 功能优先级</li>
+            <li><strong>算法-后端</strong>：算法设计 → API实现 → 效果验证</li>
+            <li><strong>前端-后端</strong>：API接口定义 → 前后端联调 → 集成测试</li>
+            <li><strong>运维-开发</strong>：部署方案 → 监控配置 → 故障响应</li>
+            <li><strong>跨团队协作</strong>：每日站会、周度复盘、里程碑验收</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户交互流程图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .metrics {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>用户交互流程图</h1>
+    <div class="description">
+        <p>展示用户从提问到获得结果的完整交互流程，标注关键体验点和性能目标。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+sequenceDiagram
+    participant User as 👤 用户
+    participant UI as 🖥️ 前端界面
+    participant API as ⚙️ API服务
+    participant Matcher as 🎯 场景匹配器
+    participant Agent as 🤖 Agent引擎
+    participant Model as 🧠 大模型
+
+    User->>UI: 1. 输入自然语言问题
+    Note over User,UI: 关键体验点<br/>输入流畅度
+
+    UI->>API: 2. 发送Query请求
+    API->>Matcher: 3. 智能场景匹配
+    Note over Matcher: 目标准确率 ≥85%<br/>延迟 <200ms (P99)
+
+    Matcher-->>API: 4. 返回匹配场景
+    API->>Agent: 5. 组装Prompt+调用Agent
+    Agent->>Model: 6. 发起推理请求
+
+    Model-->>Agent: 7. 流式返回Token
+    Note over Agent,Model: 目标TTFT <2秒<br/>总响应 5-30秒
+
+    Agent-->>API: 8. 实时推送结果
+    API-->>UI: 9. SSE流式响应
+    UI->>User: 10. 实时渲染Markdown
+
+    User->>UI: 11. 点赞/点踩/纠正
+    UI->>API: 12. 提交反馈
+    Note over User,API: 目标满意度 ≥90%
+        </div>
+    </div>
+
+    <div class="metrics">
+        <h3>📊 关键性能指标</h3>
+        <ul>
+            <li><strong>场景匹配准确率</strong>：≥85%（v0.7.1），≥90%（v0.8）</li>
+            <li><strong>首字响应时间（TTFT）</strong>：<2秒（P99）</li>
+            <li><strong>场景匹配延迟</strong>：<200ms（P99）</li>
+            <li><strong>结果满意度</strong>：≥90%（点赞率）</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自我进化闭环</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      padding: 40px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 40px;
+      color: #1d1d1f;
+      text-align: center;
+    }
+    .flywheel-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 800px;
+      margin-bottom: 40px;
+    }
+    .flywheel {
+      position: relative;
+      width: 900px;
+      height: 900px;
+    }
+    .center-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      background: #e8f4f8;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #0ea5e9;
+      z-index: 10;
+      border: 3px solid #0ea5e9;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+    }
+    .center-circle-subtitle {
+      font-size: 14px;
+      color: #6e6e73;
+      margin-top: 8px;
+      font-weight: 400;
+    }
+    .step {
+      position: absolute;
+      width: 240px;
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 2px solid;
+      text-align: center;
+    }
+    .step-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #1d1d1f;
+    }
+    .step-desc {
+      font-size: 13px;
+      color: #86868b;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .step-details {
+      font-size: 11px;
+      color: #6e6e73;
+      background: #f5f5f7;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+      line-height: 1.4;
+      text-align: left;
+    }
+    .step-details-title {
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+    /* 6个步骤的位置（圆形排列，半径约280px） */
+    .step-1 { 
+      top: 0; 
+      left: 50%; 
+      transform: translateX(-50%);
+    }
+    .step-2 { 
+      top: 80px; 
+      right: 50px;
+    }
+    .step-3 { 
+      bottom: 80px; 
+      right: 50px;
+    }
+    .step-4 { 
+      bottom: 0; 
+      left: 50%; 
+      transform: translateX(-50%);
+    }
+    .step-5 { 
+      bottom: 80px; 
+      left: 50px;
+    }
+    .step-6 { 
+      top: 80px; 
+      left: 50px;
+    }
+    /* 箭头连接 - 使用SVG路径 */
+    .arrow-line {
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+    }
+    /* 颜色区分 */
+    .step-1 { background: #e8f4f8; border-color: #0ea5e9; }
+    .step-2 { background: #f0fdf4; border-color: #22c55e; }
+    .step-3 { background: #faf5ff; border-color: #a855f7; }
+    .step-4 { background: #fff7ed; border-color: #f97316; }
+    .step-5 { background: #fefce8; border-color: #eab308; }
+    .step-6 { background: #e0f2fe; border-color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>反馈 → 偏好学习 → Prompt 进化 闭环</h1>
+    
+    <div class="flywheel-container">
+      <div class="flywheel">
+        <!-- 中心 -->
+        <div class="center-circle">
+          自我进化
+          <div class="center-circle-subtitle">持续优化</div>
+        </div>
+        
+        <!-- 箭头连接线 - 使用SVG绘制清晰的箭头 -->
+        <svg class="arrow-line" style="position: absolute; top: 0; left: 0; width: 900px; height: 900px; z-index: 5; pointer-events: none;">
+          <!-- 1→2: 从顶部到右上 -->
+          <path d="M 450 120 Q 550 120, 650 180" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrowhead-1)"/>
+          <!-- 2→3: 从右上到右下 -->
+          <path d="M 650 180 Q 650 450, 650 720" stroke="#22c55e" stroke-width="2.5" fill="none" marker-end="url(#arrowhead-2)"/>
+          <!-- 3→4: 从右下到底部 -->
+          <path d="M 650 720 Q 550 780, 450 780" stroke="#a855f7" stroke-width="2.5" fill="none" marker-end="url(#arrowhead-3)"/>
+          <!-- 4→5: 从底部到左下 -->
+          <path d="M 450 780 Q 350 780, 250 720" stroke="#f97316" stroke-width="2.5" fill="none" marker-end="url(#arrowhead-4)"/>
+          <!-- 5→6: 从左下到左上 -->
+          <path d="M 250 720 Q 250 450, 250 180" stroke="#eab308" stroke-width="2.5" fill="none" marker-end="url(#arrowhead-5)"/>
+          <!-- 6→1: 从左上到顶部 -->
+          <path d="M 250 180 Q 350 120, 450 120" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#arrowhead-6)"/>
+          
+          <!-- 箭头标记定义 -->
+          <defs>
+            <marker id="arrowhead-1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#0ea5e9"/>
+            </marker>
+            <marker id="arrowhead-2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#22c55e"/>
+            </marker>
+            <marker id="arrowhead-3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#a855f7"/>
+            </marker>
+            <marker id="arrowhead-4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#f97316"/>
+            </marker>
+            <marker id="arrowhead-5" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#eab308"/>
+            </marker>
+            <marker id="arrowhead-6" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#38bdf8"/>
+            </marker>
+          </defs>
+        </svg>
+        
+        <!-- 6个步骤 -->
+        <div class="step step-1">
+          <div class="step-title">① 用户反馈</div>
+          <div class="step-desc">like / dislike<br>纠正 / 重生成</div>
+          <div class="step-details">
+            <div class="step-details-title">反馈类型：</div>
+            • like：点赞<br>
+            • dislike：点踩（含原因）<br>
+            • correct：纠正内容<br>
+            • regenerate：重新生成<br>
+            <div style="margin-top: 4px; font-size: 10px;"><strong>触发：</strong>前端 MessageFeedback 组件</div>
+          </div>
+        </div>
+        
+        <div class="step step-2">
+          <div class="step-title">② 反馈收集</div>
+          <div class="step-desc">FeedbackCollector<br>写入数据库</div>
+          <div class="step-details">
+            <div class="step-details-title">处理逻辑：</div>
+            • 写入 UserFeedbackDB<br>
+            • 更新 UserBehaviorStatsDB<br>
+            • 更新 SessionPreferences<br>
+            （反馈统计）<br>
+            <div style="margin-top: 4px; font-size: 10px;"><strong>API：</strong>POST /feedback</div>
+          </div>
+        </div>
+        
+        <div class="step step-3">
+          <div class="step-title">③ 偏好学习</div>
+          <div class="step-desc">PreferenceLearner<br>模型分析</div>
+          <div class="step-details">
+            <div class="step-details-title">学习方式：</div>
+            <strong>用户级：</strong><br>
+            • 聚合最近50条反馈<br>
+            • 调用模型提取偏好<br>
+            • 写入 UserPreferencesCacheDB<br>
+            <strong>Session级：</strong><br>
+            • 聚合Session反馈<br>
+            • 模型分析纠正/上下文偏好<br>
+            • 写入 SessionPreferencesDB<br>
+            <div style="margin-top: 4px; font-size: 10px;"><strong>触发：</strong>CronJob（每小时）或 PromptComposer（按需）</div>
+          </div>
+        </div>
+        
+        <div class="step step-4">
+          <div class="step-title">④ 偏好缓存</div>
+          <div class="step-desc">User / Session<br>Preferences</div>
+          <div class="step-details">
+            <div class="step-details-title">缓存内容：</div>
+            <strong>用户级：</strong><br>
+            • preferred_style<br>
+            • learned_rules<br>
+            • preferred_scenarios<br>
+            <strong>Session级：</strong><br>
+            • corrections（纠正列表）<br>
+            • context_preferences<br>
+            • feedback_summary<br>
+            <div style="margin-top: 4px; font-size: 10px;"><strong>优化：</strong>data_summary_hash 判断是否需要重新分析</div>
+          </div>
+        </div>
+        
+        <div class="step step-5">
+          <div class="step-title">⑤ Prompt 进化</div>
+          <div class="step-desc">PromptEvolver<br>注入偏好</div>
+          <div class="step-details">
+            <div class="step-details-title">进化逻辑：</div>
+            • PromptComposer 读取偏好<br>
+            • PromptEvolver 格式化偏好<br>
+            • 将偏好片段插入 system_prompt<br>
+            • 限制长度，避免干扰主任务<br>
+            <div style="margin-top: 4px; font-size: 10px;"><strong>效果：</strong>下次对话自动融入偏好</div>
+          </div>
+        </div>
+        
+        <div class="step step-6">
+          <div class="step-title">⑥ 下次对话</div>
+          <div class="step-desc">更符合<br>用户偏好</div>
+          <div class="step-details">
+            <div class="step-details-title">实际效果：</div>
+            • AI回复更符合用户风格<br>
+            • 自动应用纠正内容<br>
+            • 遵循上下文偏好<br>
+            • 持续优化体验<br>
+            <div style="margin-top: 4px; font-size: 10px;"><strong>闭环：</strong>用户继续反馈，形成持续优化</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="padding: 20px; background: white; border-radius: 12px; border: 1px solid #e5e5e7;">
+      <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #1d1d1f;">关键机制：</div>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; font-size: 13px; color: #6e6e73;">
+        <div>
+          <strong style="color: #1d1d1f;">分级学习</strong><br>
+          用户级（长期偏好） + Session级（临时偏好），分别缓存和应用
+        </div>
+        <div>
+          <strong style="color: #1d1d1f;">模型驱动</strong><br>
+          使用AI模型智能提取偏好，不依赖硬编码规则
+        </div>
+        <div>
+          <strong style="color: #1d1d1f;">缓存优化</strong><br>
+          通过 data_summary_hash 判断是否需要重新分析，避免重复计算
+        </div>
+        <div>
+          <strong style="color: #1d1d1f;">异步触发</strong><br>
+          CronJob定时批量学习，PromptComposer按需触发Session级学习
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

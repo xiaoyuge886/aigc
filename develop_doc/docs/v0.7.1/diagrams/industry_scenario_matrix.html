@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行业-场景矩阵图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #9C27B0;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .legend {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #9C27B0;
+        }
+    </style>
+</head>
+<body>
+    <h1>行业-场景矩阵图</h1>
+    <div class="description">
+        <p>展示不同行业客户与典型应用场景的对应关系，以及各场景所需的核心Skill支撑。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+graph TB
+    subgraph 水利规划局
+        W1[工程设计场景]
+        W2[数据分析场景]
+        W3[监管报表场景]
+        W4[办公场景]
+
+        W1 --> WS1[图纸识别Skill]
+        W1 --> WS2[工程量计算Skill]
+        W2 --> WS3[水文数据分析Skill]
+        W2 --> WS4[水资源评估Skill]
+        W3 --> WS5[合规性检查Skill]
+        W4 --> WS6[公文写作Skill]
+    end
+
+    subgraph 宁夏交建
+        T1[施工管理场景]
+        T2[文档管理场景]
+
+        T1 --> TS1[方案优化Skill]
+        T1 --> TS2[进度计划Skill]
+        T2 --> TS3[合同审查Skill]
+        T2 --> TS4[资料整理Skill]
+    end
+
+    subgraph 标书写作通用
+        B1[技术标撰写]
+        B2[商务标生成]
+        B3[资质文件整理]
+        B4[合规性检查]
+        B5[多格式输出]
+
+        B1 --> BS1[技术方案生成Skill]
+        B2 --> BS2[报价计算Skill]
+        B3 --> BS3[资质匹配Skill]
+        B4 --> BS5[合规性检查Skill]
+        B5 --> BS6[文档转换Skill]
+    end
+
+    style 水利规划局 fill:#e3f2fd
+    style 宁夏交建 fill:#fff3e0
+    style 标书写作通用 fill:#e8f5e9
+        </div>
+    </div>
+
+    <div class="legend">
+        <h3>📋 场景复用策略</h3>
+        <ul>
+            <li><strong>公共场景库</strong>：办公场景、合规性检查、文档转换等可跨行业复用</li>
+            <li><strong>行业场景</strong>：针对特定行业深度定制的专业场景</li>
+            <li><strong>复用率目标</strong>：从传统20%提升到80%</li>
+            <li><strong>Skill复用</strong>：基础Skill（如写作、分析）可跨场景复用，专业Skill需定制</li>
+        </ul>
+    </div>
+</body>
+</html>

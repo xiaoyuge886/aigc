@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品演进图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #3F51B5;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .evolution-info {
+            background: #e8eaf6;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #3F51B5;
+        }
+    </style>
+</head>
+<body>
+    <h1>产品演进图</h1>
+    <div class="description">
+        <p>展示产品从MVP到企业级平台再到生态平台的演进路径。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+graph LR
+    subgraph Phase1["MVP阶段 (v0.7.1)"]
+        P1_1[基础对话能力]
+        P1_2[场景匹配]
+        P1_3[Skill调用]
+        P1_4[自我进化V1]
+
+        P1_1 --> P1_2
+        P1_2 --> P1_3
+        P1_3 --> P1_4
+    end
+
+    subgraph Phase2["企业级平台 (v0.8)"]
+        P2_1[多租户隔离]
+        P2_2[SSO集成]
+        P2_3[企业级安全]
+        P2_4[私有化部署]
+
+        P2_1 --> P2_2
+        P2_2 --> P2_3
+        P2_3 --> P2_4
+    end
+
+    subgraph Phase3["生态平台 (v0.9+)"]
+        P3_1[场景市场]
+        P3_2[Skill市场]
+        P3_3[开放API]
+        P3_4[伙伴生态]
+
+        P3_1 --> P3_2
+        P3_2 --> P3_3
+        P3_3 --> P3_4
+    end
+
+    Phase1 -.演进.-> Phase2
+    Phase2 -.扩展.-> Phase3
+
+    style Phase1 fill:#e8f5e9
+    style Phase2 fill:#fff3e0
+    style Phase3 fill:#e3f2fd
+        </div>
+    </div>
+
+    <div class="evolution-info">
+        <h3>📈 演进策略</h3>
+        <ul>
+            <li><strong>MVP阶段</strong>：验证核心价值（场景匹配+自我进化），快速迭代</li>
+            <li><strong>企业级平台</strong>：满足企业客户需求（安全、隔离、合规），支持规模化</li>
+            <li><strong>生态平台</strong>：构建AI能力市场，引入ISV合作伙伴，形成飞轮效应</li>
+        </ul>
+        <p><strong>关键里程碑</strong>：</p>
+        <ul>
+            <li>MVP验证：3-5个友好客户，满意度≥85%</li>
+            <li>企业级：10+付费客户，续约率≥90%</li>
+            <li>生态平台：50+场景，100+Skill，ISV≥20家</li>
+        </ul>
+    </div>
+</body>
+</html>

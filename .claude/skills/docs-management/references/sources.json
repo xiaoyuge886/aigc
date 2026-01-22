@@ -1,0 +1,72 @@
+[
+  {
+    "name": "platform.claude.com /docs/en/",
+    "type": "sitemap",
+    "url": "https://platform.claude.com/sitemap.xml",
+    "filter": "/docs/en/",
+    "skip_existing": false,
+    "timeout": 1800,
+    "comment": "Migrated from docs.claude.com on 2025-12-05. Consolidated single source for all English docs (about-claude, build-with-claude, agents-and-tools, agent-sdk, api, resources, test-and-evaluate). Previous 4 separate sources combined."
+  },
+  {
+    "name": "code.claude.com (docs-map-categories)",
+    "type": "docs-map-metadata",
+    "url": "https://code.claude.com/docs/en/claude_code_docs_map.md",
+    "purpose": "category-enrichment",
+    "enabled": true,
+    "comment": "Used to enrich index with hierarchical categories from official docs map. URLs from llms.txt, categories from here. Categories: Getting started, Build with Claude Code, Deployment, Administration, Configuration, Reference, Resources."
+  },
+  {
+    "name": "code.claude.com (llms-txt)",
+    "type": "llms-txt",
+    "url": "https://code.claude.com/docs/llms.txt",
+    "skip_existing": true,
+    "expected_count": 46,
+    "timeout": 300,
+    "comment": "llms.txt is a superset of docs-map with 2 additional URLs (desktop.md, microsoft-foundry.md)"
+  },
+  {
+    "name": "anthropic.com /engineering/",
+    "type": "sitemap",
+    "url": "https://www.anthropic.com/sitemap.xml",
+    "filter": "/engineering/",
+    "skip_existing": true,
+    "try_markdown": false,
+    "max_age_days": 180,
+    "expected_count": 10,
+    "timeout": 1800,
+    "last_scraped": "2025-11-25"
+  },
+  {
+    "name": "anthropic.com /news/",
+    "type": "sitemap",
+    "url": "https://www.anthropic.com/sitemap.xml",
+    "filter": "/news/",
+    "skip_existing": true,
+    "try_markdown": false,
+    "max_age_days": 180,
+    "expected_count": 153,
+    "expected_count_tolerance": 10,
+    "timeout": 1800,
+    "last_scraped": "2025-11-18"
+  },
+  {
+    "name": "anthropic.com /research/",
+    "type": "sitemap",
+    "url": "https://www.anthropic.com/sitemap.xml",
+    "filter": "/research/",
+    "skip_existing": true,
+    "try_markdown": false,
+    "max_age_days": 180,
+    "expected_count": 79,
+    "timeout": 1800
+  },
+  {
+    "name": "claude-code CHANGELOG",
+    "type": "url",
+    "url": "https://raw.githubusercontent.com/anthropics/claude-code/refs/heads/main/CHANGELOG.md",
+    "output": "code-claude-com/CHANGELOG.md",
+    "skip_existing": true,
+    "timeout": 1800
+  }
+]

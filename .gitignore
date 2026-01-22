@@ -1,0 +1,96 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+backend/data/*.db
+data/*.db
+data/sessions.db*
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.swp
+~$*
+
+# Build artifacts
+build/
+dist/
+
+# Frontend
+frontend/aigc-frontend/node_modules/
+frontend/aigc-frontend/dist/
+frontend/aigc-frontend/.next/
+frontend/aigc-frontend/src-tauri/target/
+
+work_dir
+*/work_dir
+
+# Development documentation (temporary analysis docs)
+docs/development/
+
+# Database backups
+*.db.backup
+*.db.backup_*
+
+# Debug scripts
+scripts/debug/
+check_admin_scenario_config.py
+debug_scenario_matcher.py.claude/skills/docs-management/references/llms/
+.claude/settings.local.json

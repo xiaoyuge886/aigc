@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户旅程地图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .diagram-container .node {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>用户旅程地图</h1>
+    <div class="description">
+        <p>展示用户从登录到获得结果的完整旅程，包括场景匹配、对话交互、获得结果和反馈优化等关键节点。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+flowchart LR
+    subgraph Phase1["🔐 登录进入"]
+        A1[访问系统<br/>5★] --> A2[身份验证<br/>4★]
+        A2 --> A3[进入首页<br/>5★]
+    end
+
+    subgraph Phase2["🎯 场景匹配"]
+        B1[输入问题<br/>4★] --> B2[智能匹配<br/>3★]
+    end
+
+    subgraph Phase3["💬 对话交互"]
+        C1[Prompt组装<br/>3★] --> C2[Agent执行<br/>4★]
+        C2 --> C3[流式响应<br/>5★]
+    end
+
+    subgraph Phase4["✅ 获得结果"]
+        D1[结果展示<br/>5★] --> D2[查看工具<br/>4★]
+        D2 --> D3[保存工作区<br/>3★]
+    end
+
+    subgraph Phase5["🔄 反馈优化"]
+        E1[满意度反馈<br/>4★] --> E2[系统学习<br/>3★]
+        E2 -.-> E3[持续优化<br/>5★]
+    end
+
+    A3 --> B1
+    B2 --> C1
+    C3 --> D1
+    D3 --> E1
+
+    style Phase1 fill:#e3f2fd
+    style Phase2 fill:#fff3e0
+    style Phase3 fill:#e8f5e9
+    style Phase4 fill:#fce4ec
+    style Phase5 fill:#f3e5f5
+        </div>
+    </div>
+</body>
+</html>

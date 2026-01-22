@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #FFFFFF;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.header-bar {
+  position: absolute;
+  left: 0; top: 0;
+  width: 720pt; height: 60pt;
+  background: #181B24;
+}
+.header-title {
+  position: absolute;
+  left: 40pt; top: 18pt;
+  color: #FFFFFF;
+  font-size: 22pt;
+  font-weight: bold;
+  margin: 0;
+}
+.accent {
+  position: absolute;
+  left: 0; top: 60pt;
+  width: 8pt; height: 345pt;
+  background: #40695B;
+}
+.content {
+  margin-left: 50pt;
+  margin-top: 85pt;
+  margin-right: 40pt;
+}
+.trigger-box {
+  background: #FFF4E6;
+  border: 2pt solid #F39C12;
+  padding: 15pt 20pt;
+  margin-bottom: 20pt;
+  border-radius: 6pt;
+}
+.section-title {
+  color: #F39C12;
+  font-size: 18pt;
+  font-weight: bold;
+  margin: 0 0 10pt 0;
+}
+.trigger-list {
+  margin: 0;
+  padding-left: 20pt;
+  font-size: 13pt;
+  color: #333;
+}
+.code-section {
+  background: #2C3E50;
+  padding: 15pt 18pt;
+  border-radius: 6pt;
+}
+.code-title {
+  color: #40695B;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 0 0 10pt 0;
+}
+.code {
+  color: #00FF00;
+  font-family: Courier New, monospace;
+  font-size: 10pt;
+  margin: 0;
+  line-height: 1.5;
+}
+.highlight {
+  color: #B165FB;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="header-bar"></div>
+<p class="header-title">用户交互流程</p>
+<div class="accent"></div>
+<div class="content">
+  <div class="trigger-box">
+    <p class="section-title">🖱️ 触发方式</p>
+    <ul class="trigger-list">
+      <li>点击 AI 消息（长消息按钮）</li>
+      <li>点击 AI 消息（短消息内容）</li>
+      <li>点击用户消息</li>
+    </ul>
+  </div>
+
+  <div class="code-section">
+    <p class="code-title">⚡ 设置逻辑</p>
+    <p class="code">onClick={() => {<br/>
+  <span style="color: #FF6B6B;">if</span> (m.conversation_turn_id) {<br/>
+    &nbsp;&nbsp;setSelectedTurnId(m.conversation_turn_id);<br/>
+    &nbsp;&nbsp;console.<span class="highlight">log</span>(<span style="color: #F9E79F;">'✅ 已设置 selectedTurnId:'</span>,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;m.conversation_turn_id);<br/>
+  }<br/>
+}}</p>
+  </div>
+
+  <div style="margin-top: 20pt; padding: 15pt; background: #E8F8F5; border-radius: 4pt;">
+    <p style="margin: 0; color: #40695B; font-size: 13pt;">
+      <span style="font-weight: bold;">📍 位置:</span> frontend/aigc-frontend/components/ChatInterface.tsx:2112-2171
+    </p>
+  </div>
+</div>
+</body>
+</html>

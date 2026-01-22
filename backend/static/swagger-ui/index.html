@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Swagger UI</title>
+  <link rel="stylesheet" type="text/css" href="/static/swagger-ui/swagger-ui.css" />
+  <link rel="icon" type="image/png" href="/static/swagger-ui/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/static/swagger-ui/favicon-16x16.png" sizes="16x16" />
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      margin:0;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="/static/swagger-ui/swagger-ui-bundle.js"></script>
+  <script src="/static/swagger-ui/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      // 从当前页面获取 OpenAPI JSON 的 URL
+      const url = window.location.origin + '/openapi.json';
+      
+      // Swagger UI 配置
+      const ui = SwaggerUIBundle({
+        url: url,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        persistAuthorization: true
+      });
+      
+      window.ui = ui;
+    };
+  </script>
+</body>
+</html>

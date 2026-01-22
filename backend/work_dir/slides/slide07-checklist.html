@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #FFFFFF;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.header-bar {
+  position: absolute;
+  left: 0; top: 0;
+  width: 720pt; height: 60pt;
+  background: #181B24;
+}
+.header-title {
+  position: absolute;
+  left: 40pt; top: 18pt;
+  color: #FFFFFF;
+  font-size: 22pt;
+  font-weight: bold;
+  margin: 0;
+}
+.accent {
+  position: absolute;
+  left: 0; top: 60pt;
+  width: 8pt; height: 345pt;
+  background: #40695B;
+}
+.content {
+  display: flex;
+  margin-left: 50pt;
+  margin-top: 85pt;
+  margin-right: 40pt;
+  gap: 20pt;
+}
+.column {
+  flex: 1;
+}
+.check-item {
+  background: #F8F9FA;
+  padding: 10pt 12pt;
+  margin-bottom: 10pt;
+  border-radius: 4pt;
+  border-left: 3pt solid #40695B;
+}
+.check-num {
+  color: #40695B;
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 0 0 5pt 0;
+}
+.check-text {
+  color: #333;
+  font-size: 11pt;
+  margin: 0 0 5pt 0;
+}
+.console-box {
+  background: #2C3E50;
+  padding: 8pt 10pt;
+  border-radius: 3pt;
+  margin-top: 5pt;
+}
+.console-text {
+  color: #00FF00;
+  font-family: Courier New, monospace;
+  font-size: 8pt;
+  margin: 0;
+  line-height: 1.3;
+}
+</style>
+</head>
+<body>
+<div class="header-bar"></div>
+<p class="header-title">调试检查清单</p>
+<div class="accent"></div>
+<div class="content">
+  <div class="column">
+    <div class="check-item">
+      <p class="check-num">✅ 步骤 1</p>
+      <p class="check-text">检查数据获取</p>
+      <div class="console-box">
+        <p class="console-text">[getConversationHistory]<br/>Fetching history...</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p class="check-num">✅ 步骤 2</p>
+      <p class="check-text">检查消息渲染</p>
+      <div class="console-box">
+        <p class="console-text">[ChatInterface]<br/>Rendering message...</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p class="check-num">✅ 步骤 3</p>
+      <p class="check-text">检查点击事件</p>
+      <div class="console-box">
+        <p class="console-text">🖱️ 点击短消息:<br/>✅ 已设置 selectedTurnId</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="check-item">
+      <p class="check-num">✅ 步骤 4</p>
+      <p class="check-text">检查状态变化</p>
+      <div class="console-box">
+        <p class="console-text">🎯 selectedTurnId<br/>状态变化</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p class="check-num">✅ 步骤 5</p>
+      <p class="check-text">检查工具调用匹配</p>
+      <div class="console-box">
+        <p class="console-text">🔍 工具调用轮次<br/>匹配检查</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p class="check-num">✅ 步骤 6</p>
+      <p class="check-text">检查最终状态</p>
+      <div class="console-box">
+        <p class="console-text">🔧 工具调用<br/>状态更新</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

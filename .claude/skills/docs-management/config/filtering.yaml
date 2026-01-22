@@ -1,0 +1,352 @@
+# Version: 1.4 (Added changelog/release technical phrases 2025-12-04)
+# Domain-Specific Filtering Configuration
+# Terms that should be filtered out or handled specially for Claude/Anthropic documentation
+
+# Technical phrases to preserve as single keywords (bigrams/trigrams)
+# These multi-word terms should not be split during keyword extraction
+technical_phrases:
+  - 'CLAUDE.md'
+  - 'progressive disclosure'
+  - 'context window'
+  - 'prompt caching'
+  - 'agent skills'
+  - 'model context protocol'
+  - 'code execution'
+  - 'extended thinking'
+  - 'system prompt'
+  - 'context editing'
+  - 'prompt engineering'
+  - 'rate limits'
+  - 'batch processing'
+  - 'tool use'
+  - 'message batches'
+  - 'web search'
+  - 'web fetch'
+  - 'bash tool'
+  - 'memory tool'
+  - 'text editor'
+  - 'computer use'
+  - 'slash commands'
+  - 'agent sdk'
+  - 'mcp servers'
+  - 'mcp connector'
+  - 'remote mcp'
+  - 'visual studio'
+  - 'amazon bedrock'
+  - 'google vertex'
+  - 'llm gateway'
+  - 'github actions'
+  - 'gitlab ci'
+  - 'version control'
+  - 'plugin marketplace'
+  - 'user agent'
+  - 'api keys'
+  - 'token counting'
+  - 'natural language'
+  - 'search results'
+  - 'yaml frontmatter'
+  # Changelog/release related phrases (2025-12-04)
+  - 'release notes'
+  - 'version history'
+  - 'what''s new'
+  - 'latest version'
+  - 'recent changes'
+  - 'breaking changes'
+  - 'new features'
+
+# Stop phrases (phrases to completely exclude from keyword extraction)
+# These are noise patterns that should never appear as keywords
+stop_phrases:
+  - 'measuring political'
+  - 'orchestrated cyber'
+  - 'espionage campaign'
+  - 'maryland partners'
+  - 'reported'
+  - 'min read'  # From article footers
+  - 'read more'  # Generic link text
+  - 'learn more'  # Generic link text
+
+# Domain-specific stop words (brand names, product names, URL domains)
+# These should never appear as keywords - they're noise from paths/URLs
+# "code" is filtered because in Claude Code documentation context, it appears in almost every document
+domain_stop_words:
+  - 'claude'
+  - 'anthropic'
+  - 'code'
+  # Domain prefixes from file paths (Issue #1 from 2025-11-25 audit)
+  - 'code-claude-com'
+  - 'platform-claude-com'
+  - 'anthropic-com'
+  - 'raw-githubusercontent-com'
+  - 'modelcontextprotocol-io'
+
+# Query stop words - stripped from search queries before processing
+# These words are common in natural language queries but provide no search value
+# Example: "when to use subagents" → search for "subagents" only
+query_stop_words:
+  # Question words
+  - 'when'
+  - 'how'
+  - 'what'
+  - 'why'
+  - 'which'
+  - 'who'
+  - 'where'
+  # Articles and prepositions
+  - 'to'
+  - 'is'
+  - 'are'
+  - 'the'
+  - 'a'
+  - 'an'
+  - 'and'
+  - 'or'
+  - 'for'
+  - 'in'
+  - 'on'
+  - 'of'
+  - 'with'
+  - 'about'
+  - 'from'
+  # Modal verbs
+  - 'can'
+  - 'i'
+  - 'do'
+  - 'does'
+  - 'should'
+  - 'would'
+  - 'could'
+  # Generic verbs (noise in queries like "how to use X", "create X")
+  - 'use'
+  - 'create'
+  - 'get'
+  - 'add'
+  - 'set'
+  - 'make'
+  - 'run'
+  - 'configure'
+  - 'implement'
+  # Common query phrases without topic value
+  - 'best'  # "best practices" → "practices" (which often matches better)
+  - 'practices'  # "best practices" without topic → filter out
+
+# Generic verbs that often start incomplete phrases
+generic_verbs:
+  - 'start'
+  - 'ask'
+  - 'get'
+  - 'use'
+  - 'make'
+  - 'create'
+  - 'add'
+  - 'set'
+  - 'learn'
+  - 'see'
+  - 'read'
+  - 'view'
+  - 'check'
+  - 'love'
+  - 'look'
+  # Added from 2025-11-25 audit (Issue #4)
+  - 'determine'
+  - 'directly'
+
+# Generic configuration terms - penalize docs that ONLY match these generic terms
+# Docs matching specific + generic terms are not penalized as heavily
+# Extracted from doc_resolver.py to centralize magic strings (2025-11-26 audit)
+generic_config_terms:
+  - 'configuration'
+  - 'config'
+  - 'setup'
+  - 'installation'
+  - 'getting started'
+  - 'guide'
+  - 'tutorial'
+  - 'documentation'
+  - 'docs'
+  - 'reference'
+
+# Incomplete phrase endings (words that make phrases incomplete)
+incomplete_endings:
+  - 'your'
+  - 'the'
+  - 'a'
+  - 'an'
+  - 'this'
+  - 'that'
+  - 'these'
+  - 'those'
+  - 'their'
+  - 'about'
+  - 'with'
+  - 'from'
+  - 'opening'
+
+# Generic single words to exclude (even if 5+ chars)
+generic_single_words:
+  - 'terminal'
+  - 'faster'
+  - 'lives'
+  - 'turned'
+  - 'ideas'
+  - 'helps'
+  - 'closing'
+  - 'messages'
+  - 'developer'
+  - 'developers'
+  - 'based'
+  - 'benefits'
+  - 'reduce'
+  - 'across'
+  - 'team'
+  - 'git'
+  - 'different'
+  - 'explicitly'
+  - 'type'
+  - 'trigger'
+  - 'decides'
+  - 'autonomously'
+  - 'request'
+  - 'description'
+  - 'relevant'
+  - 'reads'
+  - 'containing'
+  - 'optional'
+  - 'supporting'
+  - 'files'
+  - 'scripts'
+  - 'directory'
+  - 'directories'
+  - 'tasks'
+  - 'complex'
+  - 'repetitive'
+  - 'compose'
+  - 'specific'
+  - 'slash'
+  - 'commands'
+  - 'model'
+  - 'invoked'
+  - 'common'
+  - 'follow'
+  - 'recent'
+  - 'present'
+  - 'summary'
+  - 'models'
+  - 'closer'
+  - 'overlapping'
+  # Weak keywords that shouldn't appear in search results
+  - 'seconds'  # Too generic (time reference)
+  - 'started'  # Past tense verb, not useful for search
+  - 'tutorial'  # Generic documentation term
+  - 'broadly'  # Adverb, not meaningful
+  - 'quickly'  # Adverb
+  - 'easily'  # Adverb
+  - 'properly'  # Adverb
+  - 'manually'  # Adverb
+  - 'persisting'  # Verb form, not as useful as noun
+  - 'notification'  # Too generic without context
+  - 'decision'  # Too generic
+  - 'permission'  # Too generic, prefer "permissions" (plural)
+  - 'intelligent'  # Adjective, not specific
+  - 'normal'  # Too generic
+
+# Weak adverbs/adjectives for phrase filtering
+# Phrases containing these words are typically not useful as keywords
+weak_phrase_words:
+  - 'persisting'
+  - 'notification'
+  - 'decision'
+  - 'permission'
+  - 'intelligent'
+  - 'normal'
+  - 'broadly'
+  - 'seconds'
+  - 'started'
+  - 'tutorial'
+  - 'quickly'
+  - 'easily'
+  - 'properly'
+  - 'manually'
+
+# Weak adverbs for 2-word phrase filtering
+# Two-word phrases ending with these are rejected (e.g., "skills automatically")
+weak_two_word_adverbs:
+  - 'automatically'
+  - 'manually'
+  - 'quickly'
+  - 'easily'
+  - 'properly'
+
+# Specific single-word exclusions (domain-specific)
+single_word_exclusions:
+  - 'skills'  # Too common in Claude docs, not distinctive
+
+# Keyword filtering configuration
+keyword_filtering_config:
+  # Minimum lengths for keywords
+  min_length_general: 3      # All keywords must be at least 3 chars
+  min_length_single_word: 5  # Single-word keywords must be 5+ chars (lowered from 6 to include terms like "hooks")
+
+  # NOTE: max_keywords is now centralized in defaults.yaml as max_total_keywords
+  # Single source of truth: defaults.yaml → keyword_extraction.limits.max_total_keywords (12)
+  # Removed duplicate max_keywords: 15 here (was causing inconsistency - 2025-11-26 audit fix)
+
+# Generic words that aren't useful for search
+# NOTE: Duplicates removed 2025-11-16 - terms kept in more specific categories above
+generic_words:
+  - 'automatically'
+  - 'personal'
+  - 'access'
+  - 'list'
+  - 'manage'
+  - 'share'
+  - 'extend'
+  - 'using'
+  - 'available'
+  - 'surface'
+  - 'generating'
+  - 'processing'
+  - 'document'
+  - 'members'
+  - 'errors'
+  - 'yaml'
+  - 'project'
+  - 'next'
+  - 'steps'
+  - 'quick'
+  - 'structure'
+  - 'constraints'
+  - 'limitations'
+  - 'resources'
+  - 'additional'
+  - 'related'
+  - 'guide'
+  - 'overview'
+  - 'intro'
+  - 'welcome'
+  - 'getting'
+  - 'help'
+  - 'first'
+  - 'second'
+  - 'third'
+  - 'before'
+  - 'after'
+  - 'during'
+  - 'example'
+  - 'examples'
+  - 'important'
+  - 'note'
+  - 'notes'
+  - 'also'
+  - 'more'
+  - 'most'
+  - 'better'
+  - 'best'
+  - 'good'
+  - 'well'
+  - 'way'
+  - 'ways'
+  - 'part'
+  - 'parts'
+  - 'thing'
+  - 'things'

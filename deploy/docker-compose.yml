@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # 前端服务（React + Nginx）
+  # ============================================
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.frontend
+    container_name: aigc-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - aigc-network
+
+  # ============================================
+  # 后端服务（FastAPI + Python）
+  # ============================================
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.alpine
+    container_name: aigc-backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      # API 配置
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.anthropic.com}
+
+      # 服务器配置
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=${DEBUG:-false}
+
+      # Agent 配置
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-sonnet}
+      - MAX_TURNS=${MAX_TURNS:-20}
+      - PERMISSION_MODE=${PERMISSION_MODE:-acceptEdits}
+
+      # 工具配置
+      - DEFAULT_ALLOWED_TOOLS=${DEFAULT_ALLOWED_TOOLS:-Read,Write,Edit,Bash,Glob,Grep,WebSearch,WebFetch,TodoWrite}
+
+      # 工作目录
+      - WORK_DIR=/app/work_dir
+
+      # 数据库配置（SQLite，数据持久化到宿主机）
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./data/sessions.db}
+    volumes:
+      # 持久化数据目录
+      - ./data:/app/data
+      # 持久化工作目录
+      - ./work_dir:/app/work_dir
+      # 持久化日志
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - aigc-network
+
+# ============================================
+# 网络配置
+# ============================================
+networks:
+  aigc-network:
+    driver: bridge

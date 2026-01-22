@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场景与Skill快速扩展流程图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #009688;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .time-target {
+            background: #e0f2f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #009688;
+        }
+    </style>
+</head>
+<body>
+    <h1>场景与Skill快速扩展流程图</h1>
+    <div class="description">
+        <p>展示从场景创建到上线的完整流程，以及Skill开发与复用的最佳实践。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+flowchart TD
+    subgraph 场景扩展流程
+        S1[管理员创建新场景] --> S2[填写元数据<br/>名称/分类/描述]
+        S2 --> S3[编写场景Prompt]
+        S3 --> S4[绑定Skill与工具]
+        S4 --> S5[配置参数<br/>温度/MaxTokens等]
+        S5 --> S6[设置可见性<br/>公共/私有]
+        S6 --> S7{测试验证}
+        S7 -->|失败| S3
+        S7 -->|通过| S8[发布场景]
+        S8 --> S9[授权用户/团队]
+        S9 --> S10[监控效果]
+    end
+
+    subgraph Skill开发流程
+        SK1[识别业务需求] --> SK2{Skill类型}
+        SK2 -->|MCP工具| SK3[遵循MCP协议<br/>封装标准工具]
+        SK2 -->|自定义Skill| SK4[编写Python函数]
+        SK4 --> SK5[注册到Skill仓库]
+        SK3 --> SK5
+        SK5 --> SK6[测试与文档]
+        SK6 --> SK7[发布到Skill库]
+    end
+
+    subgraph 复用与共享
+        R1[场景市场]
+        R2[Skill市场]
+        R1 -.复用.-> S1
+        R2 -.调用.-> S4
+    end
+
+    S10 -.优化.-> S3
+    SK7 -.新Skill.-> S4
+
+    style 场景扩展流程 fill:#e3f2fd
+    style Skill开发流程 fill:#fff3e0
+    style 复用与共享 fill:#e8f5e9
+        </div>
+    </div>
+
+    <div class="time-target">
+        <h3>⏱️ 效率提升目标</h3>
+        <ul>
+            <li><strong>新场景配置</strong>：从1-2周（传统workflow）→ <1天（平台化）</li>
+            <li><strong>Skill开发</strong>：标准化开发流程，<2小时完成基础Skill</li>
+            <li><strong>测试验证</strong>：沙盒测试 + A/B对比，<5分钟完成验证</li>
+            <li><strong>复用率</strong>：从20%（传统）→ 80%（平台化）</li>
+        </ul>
+    </div>
+</body>
+</html>

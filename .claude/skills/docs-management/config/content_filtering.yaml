@@ -1,0 +1,174 @@
+# Content Section Filtering Configuration
+# Version: 1.0 (2025-11-17)
+# 
+# Purpose: Filter out non-primary content from scraped documentation
+# Strategy: Source-aware filtering - different rules for different content types
+#
+# Design principles:
+# 1. Be conservative - only filter obvious non-content sections
+# 2. Use source-specific rules - news/blog needs aggressive filtering, docs need minimal
+# 3. Filter by heading patterns AND position (e.g., stop after "Related articles")
+# 4. Make it easy to add new patterns without code changes
+
+# Global patterns (apply to ALL sources)
+# These are universally non-content sections
+global_stop_sections:
+  # Social media and external links
+  - pattern: '^##\s+Follow us on'
+    regex: true
+    reason: 'Social media links'
+  - pattern: '^##\s+Connect with'
+    regex: true
+    reason: 'Social media links'
+  # Generic footer markers
+  - pattern: '^##\s+\[.*\]\(https?://(x\.com|twitter\.com|linkedin\.com|youtube\.com|instagram\.com|facebook\.com)'
+    regex: true
+    reason: 'Social media link sections'
+
+# News and blog content filtering (anthropic.com/news, anthropic.com/engineering)
+# These pages have extensive site navigation and marketing content
+news_blog_stop_sections:
+  # Marketing and call-to-action sections
+  - pattern: '^## Related articles'
+    regex: true
+    stop_after: true  # Everything after this is navigation/footer
+    reason: 'Related articles are cross-links, not primary content'
+  - pattern: '^## Related content'
+    regex: true
+    stop_after: true
+    reason: 'Related content cross-links, not primary content'
+  # Footer link sections without heading (standalone [Category] lines)
+  # These appear at bottom: "[News" on its own line (not complete links like "[Engineering at Anthropic](/link)")
+  - pattern: '^\[News\s*$'
+    regex: true
+    stop_after: true
+    reason: 'Footer navigation links (news articles)'
+  - pattern: '^\[Engineering\s*$'
+    regex: true
+    stop_after: true
+    reason: 'Footer navigation links (engineering articles)'
+  - pattern: '^\[Policy\s*$'
+    regex: true
+    stop_after: true
+    reason: 'Footer navigation links (policy articles)'
+  - pattern: '^## Transform how your organization'
+    regex: true
+    stop_after: true
+    reason: 'Marketing call-to-action'
+  - pattern: '^## Get the developer newsletter'
+    regex: true
+    stop_after: true
+    reason: 'Newsletter signup form'
+  - pattern: '^## Subscribe'
+    regex: true
+    stop_after: true
+    reason: 'Newsletter/subscription forms'
+  
+  # Site navigation sections (typically at bottom of page)
+  - pattern: '^## Products?$'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Features?$'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Solutions?$'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Models?$'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Claude Developer Platform'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Learn$'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Company$'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Help and security'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  - pattern: '^## Terms and policies'
+    regex: true
+    stop_after: true
+    reason: 'Site navigation footer'
+  
+  # Empty/placeholder sections common in blog templates
+  - pattern: '^## FAQ$'
+    regex: true
+    exclude_if_empty: true  # Only exclude if section is empty/has "No items found"
+    reason: 'Empty FAQ sections'
+  - pattern: '^## No items found'
+    regex: true
+    reason: 'Empty placeholder sections'
+
+# Documentation content filtering (docs.claude.com, code.claude.com)
+# These are technical docs - be very conservative, only filter obvious non-content
+docs_stop_sections:
+  # Only filter obvious non-content like empty placeholders
+  - pattern: '^## No items found'
+    regex: true
+    reason: 'Empty placeholder sections'
+
+# Source mapping - which filter set to apply to which sources
+source_filters:
+  # Blog and news content - aggressive filtering
+  'anthropic-com/news':
+    applies:
+      - global_stop_sections
+      - news_blog_stop_sections
+  'anthropic-com/engineering':
+    applies:
+      - global_stop_sections
+      - news_blog_stop_sections
+  
+  # Technical documentation - minimal filtering  
+  'docs-claude-com':
+    applies:
+      - global_stop_sections
+      - docs_stop_sections
+  'code-claude-com':
+    applies:
+      - global_stop_sections
+      - docs_stop_sections
+  
+  # Research papers - same structure as news/blog, needs aggressive filtering
+  'anthropic-com/research':
+    applies:
+      - global_stop_sections
+      - news_blog_stop_sections
+
+# Behavior configuration
+filtering_behavior:
+  # When stop_after: true, should we keep the matched heading itself?
+  keep_stop_heading: false
+  
+  # Should we log what was filtered for auditing?
+  log_filtered_content: true
+  
+  # Should we add a comment to the markdown showing content was filtered?
+  add_filtered_marker: true
+  marker_text: '<!-- Content filtered: site navigation/footer -->'
+
+# Empty section detection patterns
+# Used with exclude_if_empty to detect truly empty sections
+empty_section_patterns:
+  - 'No items found'
+  - 'Coming soon'
+  - '^\s*$'  # Just whitespace
+
+# Version history
+# 1.0 (2025-11-17): Initial implementation
+#   - Source-aware filtering (news/blog vs docs)
+#   - Stop-after behavior for footer sections
+#   - Empty section detection
+

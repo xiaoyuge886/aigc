@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据安全与权限控制流程图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagram-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #F44336;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .security-notes {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #F44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>数据安全与权限控制流程图</h1>
+    <div class="description">
+        <p>展示从认证到审计的完整安全链路，确保企业级数据安全与合规性。</p>
+    </div>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+flowchart TD
+    Start([用户访问]) --> Auth{认证方式}
+
+    Auth -->|用户名密码| A1[本地认证]
+    Auth -->|SSO| A2[OAuth2/LDAP/SAML]
+
+    A1 --> Token[颁发JWT Token]
+    A2 --> Token
+
+    Token --> Verify{验证Token}
+
+    Verify -->|无效| Reject[拒绝访问]
+    Verify -->|有效| Extract[提取信息<br/>租户ID/用户ID/角色]
+
+    Extract --> APIGateway[API Gateway<br/>鉴权+限流]
+
+    APIGateway --> Business{业务鉴权}
+
+    Business -->|无权限| Reject
+    Business -->|有权限| DataLayer[数据层访问]
+
+    DataLayer --> Isolation{数据隔离}
+
+    Isolation -->|租户级| I1[Schema隔离]
+    Isolation -->|场景级| I2[Row-level Security]
+
+    I1 --> Access[访问数据]
+    I2 --> Access
+
+    Access --> Sensitive{敏感数据?}
+
+    Sensitive -->|是| Mask[数据脱敏]
+    Sensitive -->|否| Return[返回结果]
+
+    Mask --> Return
+
+    Return --> Audit[审计日志]
+
+    Audit --> End([完成])
+
+    style Auth fill:#ffebee
+    style Verify fill:#fff3e0
+    style Business fill:#e8f5e9
+    style Isolation fill:#e3f2fd
+    style Sensitive fill:#fce4ec
+    style Audit fill:#f3e5f5
+        </div>
+    </div>
+
+    <div class="security-notes">
+        <h3>🔒 企业级安全特性</h3>
+        <ul>
+            <li><strong>认证</strong>：支持用户名密码、OAuth2、LDAP、SAML多种方式</li>
+            <li><strong>Token管理</strong>：JWT Token + Refresh Token机制，支持无感刷新</li>
+            <li><strong>鉴权</strong>：API Gateway统一鉴权 + 业务层细粒度权限控制</li>
+            <li><strong>数据隔离</strong>：租户级Schema隔离 + 场景级Row-level Security</li>
+            <li><strong>敏感数据保护</strong>：日志脱敏、传输加密、存储加密</li>
+            <li><strong>审计合规</strong>：全链路审计日志，保留至少6个月（可配置）</li>
+        </ul>
+    </div>
+</body>
+</html>

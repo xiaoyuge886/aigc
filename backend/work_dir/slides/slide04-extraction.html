@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #FFFFFF;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.header-bar {
+  position: absolute;
+  left: 0; top: 0;
+  width: 720pt; height: 60pt;
+  background: #181B24;
+}
+.header-title {
+  position: absolute;
+  left: 40pt; top: 18pt;
+  color: #FFFFFF;
+  font-size: 22pt;
+  font-weight: bold;
+  margin: 0;
+}
+.accent {
+  position: absolute;
+  left: 0; top: 60pt;
+  width: 8pt; height: 345pt;
+  background: #B165FB;
+}
+.content {
+  margin-left: 50pt;
+  margin-top: 85pt;
+  margin-right: 40pt;
+}
+.step-box {
+  background: #F8F9FA;
+  border-left: 4pt solid #B165FB;
+  padding: 12pt 15pt;
+  margin-bottom: 12pt;
+  border-radius: 4pt;
+}
+.step-num {
+  color: #B165FB;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 0 0 5pt 0;
+}
+.step-desc {
+  color: #181B24;
+  font-size: 13pt;
+  margin: 0;
+}
+.code-box {
+  background: #2C3E50;
+  padding: 10pt 12pt;
+  border-radius: 4pt;
+  margin-top: 8pt;
+}
+.code {
+  color: #00FF00;
+  font-family: Courier New, monospace;
+  font-size: 10pt;
+  margin: 0;
+  line-height: 1.4;
+}
+</style>
+</head>
+<body>
+<div class="header-bar"></div>
+<p class="header-title">工具调用提取流程</p>
+<div class="accent"></div>
+<div class="content">
+  <div class="step-box">
+    <p class="step-num">步骤 1: 确定目标轮次</p>
+    <p class="step-desc">优先使用 selectedTurnId，否则使用最新 AI 消息的 conversation_turn_id</p>
+    <div class="code-box">
+      <p class="code">targetTurnId = selectedTurnId ||<br/>latestAIMessage.conversation_turn_id</p>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <p class="step-num">步骤 2: 遍历消息提取工具调用</p>
+    <p class="step-desc">匹配 tool_call.conversation_turn_id 与 targetTurnId</p>
+    <div class="code-box">
+      <p class="code">if (toolTurnIdStr === targetTurnIdStr) {<br/>  extractedToolCalls.push(toolCall);<br/>}</p>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <p class="step-num">步骤 3: 更新状态</p>
+    <p class="step-desc">将提取的工具调用列表设置到状态中</p>
+    <div class="code-box">
+      <p class="code">setToolCalls(extractedToolCalls);</p>
+    </div>
+  </div>
+
+  <div class="step-box" style="border-left-color: #40695B;">
+    <p class="step-num" style="color: #40695B;">依赖项</p>
+    <p class="step-desc">useEffect 依赖: [messages, sessionId, selectedTurnId]</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #FFFFFF;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.header-bar {
+  position: absolute;
+  left: 0; top: 0;
+  width: 720pt; height: 55pt;
+  background: #181B24;
+}
+.header-title {
+  position: absolute;
+  left: 40pt; top: 16pt;
+  color: #FFFFFF;
+  font-size: 20pt;
+  font-weight: bold;
+  margin: 0;
+}
+.accent {
+  position: absolute;
+  left: 0; top: 55pt;
+  width: 8pt; height: 350pt;
+  background: #B165FB;
+}
+.content {
+  margin-left: 50pt;
+  margin-top: 75pt;
+  margin-right: 40pt;
+  margin-bottom: 50pt;
+}
+.flow-row {
+  display: flex;
+  gap: 15pt;
+  margin-bottom: 12pt;
+}
+.flow-box {
+  flex: 1;
+  background: #F8F9FA;
+  border-left: 4pt solid #B165FB;
+  padding: 10pt 12pt;
+  border-radius: 4pt;
+}
+.label {
+  color: #181B24;
+  font-size: 13pt;
+  font-weight: bold;
+  margin: 0 0 4pt 0;
+}
+.detail {
+  color: #666666;
+  font-size: 9pt;
+  margin: 0;
+  font-family: Courier New, monospace;
+}
+</style>
+</head>
+<body>
+<div class="header-bar"></div>
+<p class="header-title">数据流概览</p>
+<div class="accent"></div>
+<div class="content">
+  <div class="flow-row">
+    <div class="flow-box">
+      <p class="label">1. 后端 API</p>
+      <p class="detail">GET /api/v1/session/{id}/conversation</p>
+    </div>
+    <div class="flow-box">
+      <p class="label">2. getConversationHistory()</p>
+      <p class="detail">转换格式，保留 conversation_turn_id</p>
+    </div>
+  </div>
+
+  <div class="flow-row">
+    <div class="flow-box">
+      <p class="label">3. ChatInterface 组件</p>
+      <p class="detail">setMessages(history.messages)</p>
+    </div>
+    <div class="flow-box">
+      <p class="label">4. useEffect 提取</p>
+      <p class="detail">根据 selectedTurnId 过滤</p>
+    </div>
+  </div>
+
+  <div class="flow-row">
+    <div class="flow-box">
+      <p class="label">5. UI 渲染</p>
+      <p class="detail">Tool Calls 标签页显示</p>
+    </div>
+    <div class="flow-box">
+      <p class="label">6. 用户交互</p>
+      <p class="detail">点击消息设置 selectedTurnId</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
