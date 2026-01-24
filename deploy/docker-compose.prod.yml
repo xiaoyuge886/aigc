@@ -72,6 +72,17 @@ services:
 
       # 日志配置
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+
+      # Tavily Search API
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+
+      # MinIO 配置
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME:-agentic}
+      - MINIO_REGION=${MINIO_REGION:-us-east-1}
+      - MINIO_SECURE=${MINIO_SECURE:-false}
     volumes:
       # 持久化数据目录（指向项目根目录的data）
       - ../data:/app/data
