@@ -50,6 +50,7 @@ export interface FileEvent {
   file_type?: string;
   conversation_turn_id?: string;
   doc_id?: string; // 添加 doc_id 字段
+  file_content?: string; // 🔧 新增：文件内容字段（可选，用于直接从 event 获取文件内容）
 }
 
 // 流式响应的 chunk
@@ -250,7 +251,7 @@ export async function* streamAgentQuery(
             // 处理文件事件（file_created 或 file_uploaded）
             // 后端发送格式（StreamChunk）: { type: 'file_uploaded', data: { doc_id: ..., file_name: ..., ... } }
             // 从 message.data 中提取实际的事件数据
-            const eventData = message.data || {};
+            const eventData: any = message.data || {};
             
             const fileEvent: FileEvent = {
               type: (eventData.type || message.type) as 'file_created' | 'file_uploaded',
@@ -261,6 +262,7 @@ export async function* streamAgentQuery(
               file_type: eventData.file_type,
               conversation_turn_id: eventData.conversation_turn_id,
               doc_id: eventData.doc_id, // 添加 doc_id 字段（后端直接提供）
+              file_content: eventData.file_content, // 🔧 新增：如果 event 中包含文件内容，直接使用
             };
             console.log('%c📁 [agentService] 收到文件事件:', 'color: #5856D6; font-weight: bold', {
               message_type: message.type,
@@ -446,6 +448,8 @@ export async function* streamAgentQuery(
                       file_size: block.file_size,
                       file_type: block.file_type,
                       conversation_turn_id: block.conversation_turn_id,
+                      doc_id: block.doc_id, // 🔧 新增：添加 doc_id 字段
+                      file_content: block.file_content, // 🔧 新增：如果 event 中包含文件内容，直接使用
                     };
                     console.log('%c📁 检测到文件事件 (from assistant):', 'color: #5856D6; font-weight: bold', fileEvent);
                     yield {

@@ -13,6 +13,7 @@ interface FileInfo {
   type?: string;
   conversation_turn_id?: string;
   created_at?: Date;
+  file_content?: string; // 🔧 新增：文件内容（如果已在 event 中推送）
 }
 
 interface PreviewFile {
@@ -152,17 +153,13 @@ export const FilesTab: React.FC<FilesTabProps> = ({
                 if (file.url) {
                   window.open(file.url, '_blank');
                 } else if (file.path) {
-                  // 本地文件预览（从后端加载内容）
-                  try {
-                    onSetPreviewFile({
-                      id: file.id,
-                      name: file.name,
-                      type: 'document',
-                      content: '加载中...',
-                      lang: 'text',
+                  // 🔧 优化：优先使用 file_event 中推送的文件内容
+                  if (file.file_content !== undefined && file.file_content !== null) {
+                    // 文件内容已在 event 中推送，直接使用
+                    console.log('%c📥 [FilesTab] 使用 event 中的文件内容:', 'color: #00BC8C; font-weight: bold', {
+                      file_name: file.name,
+                      content_length: file.file_content.length
                     });
-
-                    const fileData = await onGetFileContent(file.path);
 
                     // 判断文件类型
                     const isCodeFile =
@@ -174,24 +171,55 @@ export const FilesTab: React.FC<FilesTabProps> = ({
                       file.path.endsWith('.jsx') ||
                       file.path.endsWith('.java') ||
                       file.path.endsWith('.cpp') ||
-                      file.path.endsWith('.c');
+                      file.path.endsWith('.c') ||
+                      file.path.endsWith('.json') ||
+                      file.path.endsWith('.html') ||
+                      file.path.endsWith('.css');
 
                     onSetPreviewFile({
                       id: file.id,
                       name: file.name,
                       type: isCodeFile ? 'code' : 'document',
-                      content: fileData.content,
+                      content: file.file_content,
                       lang: file.path.split('.').pop() || 'text',
                     });
-                  } catch (error) {
-                    console.error('读取文件失败:', error);
-                    onSetPreviewFile({
-                      id: file.id,
-                      name: file.name,
-                      type: 'document',
-                      content: `读取文件失败: ${error instanceof Error ? error.message : '未知错误'}`,
-                      lang: 'text',
-                    });
+                  } else {
+                    // 降级：本地文件预览（从后端加载内容）
+                    console.log('%c⚠️ [FilesTab] event 中无文件内容，请求 API:', 'color: #FF9500; font-weight: bold', file.path);
+                    try {
+                      onSetPreviewFile({
+                        id: file.id,
+                        name: file.name,
+                        type: 'document',
+                        content: '加载中...',
+                        lang: 'text',
+                      });
+
+                      const fileData = await onGetFileContent(file.path);
+
+                      // 判断文件类型
+                      const isCodeFile =
+                        file.type?.includes('code') ||
+                        file.path.endsWith('.py') ||
+                        file.path.endsWith('.js') ||
+                        file.path.endsWith('.ts') ||
+                        file.path.endsWith('.tsx') ||
+                        file.path.endsWith('.jsx') ||
+                        file.path.endsWith('.java') ||
+                        file.path.endsWith('.cpp') ||
+                        file.path.endsWith('.c');
+
+                      onSetPreviewFile({
+                        id: file.id,
+                        name: file.name,
+                        type: isCodeFile ? 'code' : 'document',
+                        content: fileData.content,
+                        lang: file.path.split('.').pop() || 'text',
+                      });
+                    } catch (error) {
+                      console.error('[FilesTab] 加载文件内容失败:', error);
+                      onSetPreviewFile(null);
+                    }
                   }
                 }
               }}

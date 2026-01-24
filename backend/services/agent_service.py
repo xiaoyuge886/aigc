@@ -1150,6 +1150,57 @@ Write 工具创建文件 → 立即执行 minio_uploader 上传 → 获取 URL �
                             tool_use_id=block.id,
                             tool_input=block.input
                         ))
+
+                        # 🔧 新增：检测 Write 工具，立即推送文件内容到前端
+                        if block.name == "Write":
+                            file_path = block.input.get("file_path", "")
+                            file_content = block.input.get("content", "")
+
+                            if file_path and file_content:
+                                import os
+                                file_name = os.path.basename(file_path)
+
+                                # 推断文件类型
+                                file_type = None
+                                if file_path.endswith('.md') or file_path.endswith('.markdown'):
+                                    file_type = 'text/markdown'
+                                elif file_path.endswith('.txt'):
+                                    file_type = 'text/plain'
+                                elif file_path.endswith('.html') or file_path.endswith('.htm'):
+                                    file_type = 'text/html'
+                                elif file_path.endswith('.json'):
+                                    file_type = 'application/json'
+                                elif file_path.endswith('.py'):
+                                    file_type = 'text/x-python'
+                                elif file_path.endswith('.js'):
+                                    file_type = 'text/javascript'
+                                elif file_path.endswith('.ts'):
+                                    file_type = 'text/typescript'
+                                elif file_path.endswith('.css'):
+                                    file_type = 'text/css'
+                                elif file_path.endswith('.svg'):
+                                    file_type = 'image/svg+xml'
+
+                                # 立即生成包含文件内容的 event
+                                converted_blocks.append(ContentBlock(
+                                    type="file_created",
+                                    file_path=file_path,
+                                    file_name=file_name,
+                                    file_size=len(file_content),
+                                    file_type=file_type,
+                                    file_content=file_content,  # ✅ 添加完整内容
+                                    conversation_turn_id=getattr(self, 'current_conversation_turn_id', None)
+                                ))
+
+                                logger.info(
+                                    f"[_convert_sdk_message] 📤 立即推送文件内容到前端: "
+                                    f"{file_path} ({len(file_content)} 字符)"
+                                )
+
+                                # 🔧 标记此工具已推送过文件事件，避免 ToolResultBlock 阶段重复推送
+                                if not hasattr(self, '_pushed_file_events'):
+                                    self._pushed_file_events = set()
+                                self._pushed_file_events.add(block.id)
                     elif isinstance(block, ToolResultBlock):
                         # 转换 ToolResultBlock
                         content_text = self._format_tool_result(block.content)
@@ -1166,42 +1217,52 @@ Write 工具创建文件 → 立即执行 minio_uploader 上传 → 获取 URL �
                         )
                         
                         # 检测 Write 工具成功执行，生成文件创建事件
+                        # 🔧 新增：检查是否已经在 ToolUseBlock 阶段推送过文件内容，避免重复
+                        pushed_file_events = getattr(self, '_pushed_file_events', set())
                         if block.tool_use_id in self._write_tool_context and not getattr(block, 'is_error', False):
                             context = self._write_tool_context[block.tool_use_id]
                             file_path = context.get("file_path", "")
-                            if file_path:
-                                import os
-                                try:
-                                    file_name = os.path.basename(file_path)
-                                    # 检查文件是否存在（处理相对路径）
-                                    if not os.path.isabs(file_path):
-                                        # 相对路径：尝试从当前工作目录解析
-                                        full_path = os.path.abspath(file_path)
-                                    else:
-                                        full_path = file_path
-                                    file_size = os.path.getsize(full_path) if os.path.exists(full_path) else None
-                                    
-                                    # 从文件路径推断文件类型
-                                    file_type = None
-                                    if file_path.endswith('.md') or file_path.endswith('.markdown'):
-                                        file_type = 'text/markdown'
-                                    elif file_path.endswith('.txt'):
-                                        file_type = 'text/plain'
-                                    elif file_path.endswith('.html') or file_path.endswith('.htm'):
-                                        file_type = 'text/html'
-                                    elif file_path.endswith('.pdf'):
-                                        file_type = 'application/pdf'
-                                    
-                                    logger.info(f"[_convert_sdk_message] Generated file_created event (UserMessage): file_path={file_path}")
-                                    converted_blocks.append(ContentBlock(
-                                        type="file_created",
-                                        file_path=file_path,
-                                        file_name=file_name,
-                                        file_size=file_size,
-                                        file_type=file_type
-                                    ))
-                                except Exception as e:
-                                    logger.warning(f"[_convert_sdk_message] Error creating file_created event (UserMessage): {e}")
+
+                            # 如果已经在 ToolUseBlock 阶段推送过，跳过此次 file_created 事件
+                            if block.tool_use_id not in pushed_file_events:
+                                if file_path:
+                                    import os
+                                    try:
+                                        file_name = os.path.basename(file_path)
+                                        # 检查文件是否存在（处理相对路径）
+                                        if not os.path.isabs(file_path):
+                                            # 相对路径：尝试从当前工作目录解析
+                                            full_path = os.path.abspath(file_path)
+                                        else:
+                                            full_path = file_path
+                                        file_size = os.path.getsize(full_path) if os.path.exists(full_path) else None
+
+                                        # 从文件路径推断文件类型
+                                        file_type = None
+                                        if file_path.endswith('.md') or file_path.endswith('.markdown'):
+                                            file_type = 'text/markdown'
+                                        elif file_path.endswith('.txt'):
+                                            file_type = 'text/plain'
+                                        elif file_path.endswith('.html') or file_path.endswith('.htm'):
+                                            file_type = 'text/html'
+                                        elif file_path.endswith('.pdf'):
+                                            file_type = 'application/pdf'
+
+                                        logger.info(f"[_convert_sdk_message] Generated file_created event (UserMessage): file_path={file_path}")
+                                        converted_blocks.append(ContentBlock(
+                                            type="file_created",
+                                            file_path=file_path,
+                                            file_name=file_name,
+                                            file_size=file_size,
+                                            file_type=file_type
+                                            # 注意：此时没有 file_content，因为已经在 ToolUseBlock 阶段推送过
+                                        ))
+                                    except Exception as e:
+                                        logger.warning(f"[_convert_sdk_message] Error creating file_created event (UserMessage): {e}")
+                            else:
+                                # 已经在 ToolUseBlock 阶段推送过文件内容和 file_created 事件
+                                logger.debug(f"[_convert_sdk_message] 跳过重复的 file_created 事件（已通过 ToolUseBlock 推送）: tool_use_id={block.tool_use_id}")
+
                             # 清理上下文
                             del self._write_tool_context[block.tool_use_id]
                         
@@ -1400,6 +1461,22 @@ Write 工具创建文件 → 立即执行 minio_uploader 上传 → 获取 URL �
                     # 如果是 Write 工具，保存文件路径信息以便后续生成文件事件
                     if block.name == "Write":
                         file_path = block.input.get("file_path", "")
+                        file_content = block.input.get("content", "")
+
+                        # 📝 输出文件内容到日志（在写入之前）
+                        logger.info(f"[Write Tool] 📝 准备写入文件:")
+                        logger.info(f"  📂 文件路径: {file_path}")
+                        logger.info(f"  📏 内容长度: {len(file_content)} 字符")
+
+                        # 如果内容不太长，输出完整内容
+                        if len(file_content) <= 2000:
+                            logger.info(f"  📄 文件完整内容:\n{file_content}")
+                        else:
+                            # 内容太长，分段输出
+                            logger.info(f"  📄 文件内容 (前2000字符):\n{file_content[:2000]}")
+                            logger.info(f"  📄 文件内容 (后500字符):\n{file_content[-500:]}")
+                            logger.info(f"  ℹ️  中间省略 {len(file_content) - 2500} 字符")
+
                         self._write_tool_context[block.id] = {
                             "file_path": file_path,
                             "tool_name": block.name

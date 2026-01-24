@@ -300,6 +300,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     type?: string;
     conversation_turn_id: string;
     created_at: Date;
+    file_content?: string; // 🔧 新增：文件内容（如果已在 event 中推送）
   }
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [expandedStats, setExpandedStats] = useState<Set<string>>(new Set()); // 存储已展开统计信息的消息ID
@@ -1516,6 +1517,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               type: fileEvent.file_type,
               conversation_turn_id: fileEvent.conversation_turn_id || '',
               created_at: new Date(),
+              file_content: fileEvent.file_content, // 🔧 新增：如果 event 中包含文件内容，直接保存
             };
             
             setFiles(prev => [...prev, fileInfo]);

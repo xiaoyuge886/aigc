@@ -92,6 +92,8 @@ class ContentBlock(BaseModel):
     file_size: Optional[int] = Field(default=None, description="File size in bytes")
     file_type: Optional[str] = Field(default=None, description="File MIME type")
     conversation_turn_id: Optional[str] = Field(default=None, description="Conversation turn ID for file event")
+    # 🔧 新增：文件内容字段（可选，用于直接推送文件内容到前端）
+    file_content: Optional[str] = Field(default=None, description="File content (optional, for streaming file content to frontend)")
 
 
 class AssistantMessage(BaseModel):

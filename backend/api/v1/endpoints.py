@@ -2464,6 +2464,13 @@ async def get_file_content(
                 detail="Invalid file path: must be relative to work_dir"
             )
 
+        # 🔧 修复：移除 work_dir/ 前缀，避免两层 work_dir 嵌套
+        # AI agent 使用相对路径 work_dir/reports/xxx.md，但后端会在 settings.work_dir 基础上拼接
+        # 所以需要先移除 work_dir/ 前缀，避免 work_dir/work_dir/xxx.md 的问题
+        if file_path.startswith('work_dir/'):
+            file_path = file_path[len('work_dir/'):]
+            logger.info(f"[get_file_content] Removed 'work_dir/' prefix, cleaned path: {file_path}")
+
         # 构建完整路径：aigc/work_dir/file_path
         full_path = settings.work_dir / file_path
 
@@ -2471,10 +2478,17 @@ async def get_file_content(
 
         # 检查文件是否存在
         if not full_path.exists():
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"File not found: {file_path} (in {settings.work_dir})"
-            )
+            # 🔧 回退机制：尝试在 work_dir/work_dir/ 下查找（向后兼容历史文件）
+            # 这是为了处理之前保存到 work_dir/work_dir/ 的旧文件
+            fallback_path = settings.work_dir / "work_dir" / file_path
+            if fallback_path.exists() and fallback_path.is_file():
+                logger.warning(f"[get_file_content] File found in legacy location: {fallback_path}")
+                full_path = fallback_path
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"File not found: {file_path} (in {settings.work_dir})"
+                )
 
         # 检查是否为文件（不是目录）
         if not full_path.is_file():

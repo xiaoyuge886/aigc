@@ -122,7 +122,7 @@ class ConfigurationManager:
             "model": settings.default_model,
             "permission_mode": settings.permission_mode,
             "max_turns": settings.max_turns,
-            "cwd": str(settings.work_dir),
+            "cwd": str(settings.work_dir.parent),  # 🔧 修复：使用项目根目录 aigc/ 而不是 aigc/work_dir
             "custom_tools": None,
             "setting_sources": None,  # 默认不加载 skill，需要用户明确配置
             "enabled_skill_ids": None,  # 指定要启用的技能ID列表（用于精细控制）
