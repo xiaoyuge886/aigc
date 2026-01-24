@@ -153,7 +153,7 @@ def custom_openapi():
     # The token will then be automatically added to all requests
     public_paths = [
         "/api/v1/auth/login",
-        "/api/v1/auth/register",
+        # "/api/v1/auth/register",  # 注册接口已禁用
         "/",
         "/health",
         "/api/v1/health",
@@ -188,25 +188,25 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-# 挂载静态文件目录（Swagger UI 资源）
-static_dir = Path(__file__).parent / "static"
-if static_dir.exists():
-    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
-
-# 自定义 Swagger UI 路由，使用本地资源
-from fastapi.responses import HTMLResponse
-
-@app.get("/docs", include_in_schema=False)
-async def custom_swagger_ui_html():
-    """自定义 Swagger UI HTML，使用本地静态资源"""
-    html_file = static_dir / "swagger-ui" / "index.html"
-    if html_file.exists():
-        logger.info(f"使用本地 Swagger UI: {html_file}")
-        return HTMLResponse(content=html_file.read_text(encoding="utf-8"))
-    # 如果本地文件不存在，回退到默认的 Swagger UI
-    logger.warning(f"本地 Swagger UI 文件不存在: {html_file}，使用默认版本")
-    from fastapi.openapi.docs import get_swagger_ui_html
-    return get_swagger_ui_html(openapi_url=app.openapi_url, title=app.title + " - Swagger UI")
+# # 挂载静态文件目录（Swagger UI 资源）
+# static_dir = Path(__file__).parent / "static"
+# if static_dir.exists():
+#     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+#
+# # 自定义 Swagger UI 路由，使用本地资源
+# from fastapi.responses import HTMLResponse
+#
+# @app.get("/docs", include_in_schema=False)
+# async def custom_swagger_ui_html():
+#     """自定义 Swagger UI HTML，使用本地静态资源"""
+#     html_file = static_dir / "swagger-ui" / "index.html"
+#     if html_file.exists():
+#         logger.info(f"使用本地 Swagger UI: {html_file}")
+#         return HTMLResponse(content=html_file.read_text(encoding="utf-8"))
+#     # 如果本地文件不存在，回退到默认的 Swagger UI
+#     logger.warning(f"本地 Swagger UI 文件不存在: {html_file}，使用默认版本")
+#     from fastapi.openapi.docs import get_swagger_ui_html
+#     return get_swagger_ui_html(openapi_url=app.openapi_url, title=app.title + " - Swagger UI")
 
 # CORS middleware
 app.add_middleware(

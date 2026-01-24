@@ -104,36 +104,36 @@ async def get_current_user_optional(
         return None
 
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def register(
-    user_data: UserRegister,
-    auth_service: AuthService = Depends(get_auth_service),
-):
-    """Register a new user"""
-    try:
-        user = await auth_service.create_user(
-            username=user_data.username,
-            email=user_data.email,
-            password=user_data.password,
-            full_name=user_data.full_name,
-        )
-        return UserResponse(
-            id=user.id,
-            username=user.username,
-            email=user.email,
-            full_name=user.full_name,
-            avatar_url=user.avatar_url,
-            role_id=user.role_id,
-            is_active=user.is_active,
-            is_verified=user.is_verified,
-            created_at=user.created_at.isoformat(),
-            last_login=user.last_login.isoformat() if user.last_login else None,
-        )
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+# @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+# async def register(
+#     user_data: UserRegister,
+#     auth_service: AuthService = Depends(get_auth_service),
+# ):
+#     """Register a new user"""
+#     try:
+#         user = await auth_service.create_user(
+#             username=user_data.username,
+#             email=user_data.email,
+#             password=user_data.password,
+#             full_name=user_data.full_name,
+#         )
+#         return UserResponse(
+#             id=user.id,
+#             username=user.username,
+#             email=user.email,
+#             full_name=user.full_name,
+#             avatar_url=user.avatar_url,
+#             role_id=user.role_id,
+#             is_active=user.is_active,
+#             is_verified=user.is_verified,
+#             created_at=user.created_at.isoformat(),
+#             last_login=user.last_login.isoformat() if user.last_login else None,
+#         )
+#     except ValueError as e:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail=str(e)
+#         )
 
 
 @router.post("/login", response_model=TokenResponse)
