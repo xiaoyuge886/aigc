@@ -109940,3 +109940,38 @@ raw-githubusercontent-com-anthropics-claude-code-refs-heads-main-CHANGELOG:
   - skills
   title: Changelog
   url: https://raw.githubusercontent.com/anthropics/claude-code/refs/heads/main/CHANGELOG
+user-upload-2-057fe6c706e68581:
+  category: user-upload
+  conversation_turn_id: 98909d7fc6c6447b
+  description: User uploaded file (application/octet-stream)
+  doc_id: user-upload-2-057fe6c706e68581
+  file_size: 95678
+  file_type: application/octet-stream
+  hash: sha256:057fe6c706e68581
+  keywords:
+  - 智慧水务通搞
+  path: user-uploads/2/user-upload-2-057fe6c706e68581.md
+  session_id: null
+  source_type: upload
+  tags:
+  - user-upload
+  title: 智慧水务通搞.md
+  uploaded_at: '2026-02-05T03:59:46.874576+00:00'
+  user_id: 2
+user-upload-2-e2b3fd20508d1dca:
+  category: user-upload
+  description: User uploaded file (application/pdf)
+  doc_id: user-upload-2-e2b3fd20508d1dca
+  file_size: 709414
+  file_type: application/pdf
+  hash: sha256:e2b3fd20508d1dca
+  keywords:
+  - e2b3fd20508d1dca
+  path: user-uploads/2/user-upload-2-e2b3fd20508d1dca.pdf
+  source_type: upload
+  tags:
+  - user-upload
+  - pdf
+  title: user-upload-2-e2b3fd20508d1dca.pdf
+  uploaded_at: '2026-02-05T03:52:10.317334+00:00'
+  user_id: 2

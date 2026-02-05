@@ -94,3 +94,4 @@ scripts/debug/
 check_admin_scenario_config.py
 debug_scenario_matcher.py.claude/skills/docs-management/references/llms/
 .claude/settings.local.json
+backend/.claude/git_cache/

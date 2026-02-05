@@ -1,421 +1,330 @@
-# Task Plan: Agent OS V1.1 实施计划
-<!--
-  WHAT: Agent OS 完整实施路线图，基于 v0.9-feat-doc.md PRD 文档
-  WHY: 10 个核心功能需求（FR-1 到 FR-10）需要系统性拆解和执行
-  WHEN: 创建于 2026-01-24
--->
+# Task Plan - Agent OS V1.1 Implementation
 
-## Goal
-构建一个面向业务的 Agent OS V1.1，基于 Claude Agent SDK，实现目标理解、自主规划、Skill 驱动执行、人在回路、记忆系统和可视化展现的完整闭环。
+**Project:** Agent OS V1.1 - 基于 Claude Agent SDK 的业务级智能工作系统
 
-## Current Phase
-Phase 1: Requirements & Discovery
+**Goal:** 构建一个面向业务侧的 Agent OS，支持目标理解、规划、Skill 驱动执行、HITL、记忆系统和 A2UI 可视化
 
-## Phases
-
-### Phase 1: 需求分析与技术准备 ✅
-- [x] 理解 PRD 文档（v0.9-feat-doc.md）
-- [x] 分析现有系统架构
-- [x] 评估 Claude Agent SDK 能力（特别是 HITL 支持）
-- [x] 研究 planning-with-files 模式
-- [ ] 创建详细技术设计文档
-- [ ] 确定技术栈和依赖项
-- **Status**: in_progress
-
-### Phase 2: 核心基础设施（2-3周）
-- [ ] 数据库设计与迁移
-  - [ ] agent_runs 表
-  - [ ] memories 表（mem0）
-  - [ ] hitl_requests 表
-  - [ ] skills_registry 表
-  - [ ] agent_instances 表
-- [ ] 后端核心模块架构
-  - [ ] 创建 `/backend/services/agent_os/` 目录结构
-  - [ ] 实现状态机定义（state_machine.py）
-  - [ ] 实现基础数据模型（schemas.py）
-- [ ] API 端点框架
-  - [ ] 创建 `/backend/api/v1/agent_os.py`
-  - [ ] 实现基础 CRUD 端点
-- [ ] 前端组件架构
-  - [ ] 创建 AgentOS 相关组件目录
-  - [ ] 设计组件接口
-- **Status**: pending
-- **Dependencies**: Phase 1 完成
-
-### Phase 3: FR-1 目标理解与澄清（1-2周）
-- [ ] 实现 GoalUnderstandingService
-  - [ ] 目标结构化提取
-  - [ ] 约束条件识别
-  - [ ] 成功标准定义
-  - [ ] 置信度评估
-- [ ] 实现 HITL 确认机制
-  - [ ] 目标确认对话框
-  - [ ] 用户修正支持
-- [ ] API 端点
-  - [ ] POST /agent-os/goals/understand
-  - [ ] POST /agent-os/goals/confirm
-- [ ] 前端组件
-  - [ ] GoalUnderstandingDialog
-  - [ ] GoalClarificationForm
-- **Success Criteria**:
-  - ✅ 目标理解准确率 > 85%
-  - ✅ 置信度评估误差 < 15%
-  - ✅ 用户确认响应时间 < 2s
-- **Status**: pending
-- **Dependencies**: Phase 2 完成
-
-### Phase 4: FR-2 规划系统（2-3周）
-- [ ] 实现 PlannerService
-  - [ ] Skill 级计划生成
-  - [ ] DAG 执行图构建
-  - [ ] 并行执行路径优化
-  - [ ] 计划动态调整
-- [ ] 数据模型
-  - [ ] ExecutionPlan
-  - [ ] PlanNode
-  - [ ] PlanNodeType（SEQUENTIAL, PARALLEL, CONDITIONAL）
-- [ ] 计划可视化
-  - [ ] DAG 图生成（ECharts）
-  - [ ] 计划导出（JSON/Markdown）
-- [ ] API 端点
-  - [ ] POST /agent-os/plans/create
-  - [ ] GET /agent-os/plans/{plan_id}
-  - [ ] PUT /agent-os/plans/{plan_id}/adjust
-- [ ] 前端组件
-  - [ ] PlanVisualization（DAG 图）
-  - [ ] PlanEditPanel
-- **Success Criteria**:
-  - ✅ 计划生成成功率 > 90%
-  - ✅ DAG 构建无循环依赖
-  - ✅ 并行优化准确率 > 80%
-- **Status**: pending
-- **Dependencies**: Phase 3 完成
-
-### Phase 5: FR-5 状态管理与可解释性（1-2周）
-- [ ] 实现 AgentRunManager
-  - [ ] Agent Run 生命周期管理
-  - [ ] 状态机转换（7 种状态）
-  - [ ] 运行时状态追踪
-- [ ] 状态持久化
-  - [ ] 数据库存储
-  - [ ] 状态查询 API
-- [ ] 可解释性支持
-  - [ ] 执行轨迹记录
-  - [ ] 决策日志
-  - [ ] "为什么"解释生成
-- [ ] API 端点
-  - [ ] POST /agent-os/runs
-  - [ ] GET /agent-os/runs/{run_id}
-  - [ ] POST /agent-os/runs/{run_id}/pause
-  - [ ] POST /agent-os/runs/{run_id}/resume
-- [ ] 前端组件
-  - [ ] AgentStateDisplay
-  - [ ] ExecutionTimeline
-  - [ ] DecisionExplorer
-- **Success Criteria**:
-  - ✅ 状态转换准确率 100%
-  - ✅ 执行轨迹完整性 100%
-  - ✅ 状态查询延迟 < 500ms
-- **Status**: pending
-- **Dependencies**: Phase 2 完成
-
-### Phase 6: FR-4 人在回路 HITL（2-3周）
-- [ ] 实现 HITLHandler
-  - [ ] HITL 触发规则引擎
-  - [ ] 请求创建与路由
-  - [ ] 响应处理与执行
-- [ ] 集成 Claude Agent SDK HITL
-  - [ ] can_use_tool callback 实现
-  - [ ] Hook 系统集成（PreToolUse, PostToolUse）
-  - [ ] Control Protocol 处理
-- [ ] HITL 触发场景
-  - [ ] 目标理解确认
-  - [ ] 计划确认
-  - [ ] 关键决策点
-  - [ ] 危险操作
-  - [ ] 执行失败
-- [ ] API 端点
-  - [ ] POST /agent-os/hitl/respond
-  - [ ] GET /agent-os/hitl/requests/{request_id}
-- [ ] 前端组件
-  - [ ] HITLDialog（多种类型）
-  - [ ] HITLRequestQueue
-  - [ ] WebSocket 实时推送
-- [ ] 通信机制
-  - [ ] WebSocket 服务器
-  - [ ] SSE 支持（备选）
-  - [ ] 前端实时监听
-- **Success Criteria**:
-  - ✅ HITL 请求准确触发率 > 90%
-  - ✅ 响应延迟 < 1s
-  - ✅ 支持多种 HITL 类型
-- **Status**: pending
-- **Dependencies**: Phase 3, Phase 5 完成
-
-### Phase 7: FR-6 mem0 记忆系统（2-3周）
-- [ ] 技术选型
-  - [ ] 评估 mem0.ai vs 自建
-  - [ ] 决定实施方案
-- [ ] 实现 MemoryService
-  - [ ] Episodic Memory（单次 Run）
-  - [ ] Long-term Memory（跨任务）
-  - [ ] Procedural Memory（Skill 经验）
-- [ ] 向量存储
-  - [ ] Embedding 生成（OpenAI/Claude）
-  - [ ] 向量数据库（ChromaDB/Qdrant）
-  - [ ] 相似度检索
-- [ ] 记忆参与流程
-  - [ ] Planning 时检索相关记忆
-  - [ ] Skill 选择时参考经验
-  - [ ] Validation 时检查历史
-- [ ] API 端点
-  - [ ] POST /agent-os/memories
-  - [ ] GET /agent-os/memories/search
-  - [ ] GET /agent-os/runs/{run_id}/memories
-- [ ] 前端组件
-  - [ ] MemoryBrowser
-  - [ ] MemorySearch
-  - [ ] MemoryVisualization
-- **Success Criteria**:
-  - ✅ 记忆写入成功率 > 99%
-  - ✅ 检索准确率 > 75%
-  - ✅ 检索延迟 < 2s
-- **Status**: pending
-- **Dependencies**: Phase 5 完成
-
-### Phase 8: FR-3 Skill 驱动执行（2-3周）
-- [ ] 实现 SkillRuntime
-  - [ ] Skill Schema 定义
-  - [ ] Skill 执行引擎
-  - [ ] 输入/输出验证
-  - [ ] 失败处理与重试
-- [ ] Skill 管理器
-  - [ ] Skill 注册表
-  - [ ] Skill 发现与加载
-  - [ ] Skill 版本管理
-- [ ] 集成现有 Skills
-  - [ ] .claude/skills/ 目录集成
-  - [ ] MCP Servers 集成
-  - [ ] SDK MCP Servers 支持
-- [ ] API 端点
-  - [ ] GET /agent-os/skills
-  - [ ] POST /agent-os/skills/execute
-  - [ ] GET /agent-os/skills/{skill_id}
-- [ ] 前端组件
-  - [ ] SkillBrowser
-  - [ ] SkillExecutionLog
-- **Success Criteria**:
-  - ✅ Skill 执行成功率 > 95%
-  - ✅ 失败恢复率 > 80%
-  - ✅ 支持现有 Skill 无缝集成
-- **Status**: pending
-- **Dependencies**: Phase 5, Phase 7 完成
-
-### Phase 9: FR-7 多 Agent 协作（2-3周）
-- [ ] 实现 AgentCoordinator
-  - [ ] Agent 角色定义（PLANNER, EXECUTOR, VALIDATOR, ANALYZER）
-  - [ ] Agent 实例管理
-  - [ ] 事件驱动协调
-- [ ] A2A 通信
-  - [ ] Agent 间消息传递
-  - [ ] 事件广播
-  - [ ] 响应聚合
-- [ ] 任务委派
-  - [ ] 任务拆分
-  - [ ] Agent 选择
-  - [ ] 结果合并
-- [ ] API 端点
-  - [ ] POST /agent-os/agents
-  - [ ] GET /agent-os/agents/{agent_id}
-  - [ ] POST /agent-os/agents/{agent_id}/delegate
-- [ ] 前端组件
-  - [ ] MultiAgentView
-  - [ ] AgentCommunicationGraph
-- **Success Criteria**:
-  - ✅ Agent 协作成功率 > 80%
-  - ✅ 事件传递延迟 < 500ms
-  - ✅ 支持 4+ 并行 Agent
-- **Status**: pending
-- **Dependencies**: Phase 8 完成
-
-### Phase 10: FR-8 A2UI 展现层（2-3周）
-- [ ] 主界面设计
-  - [ ] 目标理解展示
-  - [ ] 执行计划可视化（DAG）
-  - [ ] Skill 轨迹展示
-  - [ ] Agent 状态展示
-  - [ ] 结果工件展示
-  - [ ] 记忆回放
-- [ ] 交互设计
-  - [ ] HITL 对话框
-  - [ ] 计划编辑器
-  - [ ] Agent 控制面板
-- [ ] 双向映射
-  - [ ] UI 事件 → Sub-Intent
-  - [ ] Intent → Action
-- [ ] 前端组件
-  - [ ] AgentOSDashboard
-  - [ ] PlanVisualization（React Flow / ECharts）
-  - [ ] SkillTrajectoryTimeline
-  - [ ] ArtifactViewer
-  - [ ] MemoryReplayPlayer
-- [ ] WebSocket 集成
-  - [ ] 实时状态更新
-  - [ ] 事件流推送
-- **Success Criteria**:
-  - ✅ UI 完整性 100%（所有核心功能可视化）
-  - ✅ 实时更新延迟 < 1s
-  - ✅ 用户交互响应 < 200ms
-- **Status**: pending
-- **Dependencies**: Phase 6, Phase 9 完成
-
-### Phase 11: FR-10 Skill Marketplace（2-3周）
-- [ ] Skill Online Builder
-  - [ ] 可视化 Skill 编辑器
-  - [ ] DSL 编辑器（YAML/JSON）
-  - [ ] Skill 模板库
-- [ ] Skill Debugger
-  - [ ] Sandbox 执行环境
-  - [ ] 断点调试
-  - [ ] 输入/输出测试
-  - [ ] HITL 模拟
-- [ ] Skill Registry
-  - [ ] Skill 注册 API
-  - [ ] 版本管理
-  - [ ] 依赖管理
-  - [ ] 热加载支持
-- [ ] Marketplace
-  - [ ] Skill 浏览与搜索
-  - [ ] 标签与分类
-  - [ ] 评分与评论
-  - [ ] 权限控制
-- [ ] API 端点
-  - [ ] POST /agent-os/skills/build
-  - [ ] POST /agent-os/skills/debug
-  - [ ] POST /agent-os/skills/publish
-  - [ ] GET /agent-os/marketplace/skills
-  - [ ] POST /agent-os/marketplace/skills/{skill_id}/install
-- [ ] 前端组件
-  - [ ] SkillBuilder
-  - [ ] SkillDebugger
-  - [ ] SkillMarketplace
-  - [ ] SkillInstaller
-- **Success Criteria**:
-  - ✅ Skill 构建成功率 > 90%
-  - ✅ 热加载成功率 100%
-  - ✅ Marketplace 功能完整
-- **Status**: pending
-- **Dependencies**: Phase 8 完成
-
-### Phase 12: FR-9 安全与可控（1-2周）
-- [ ] Sandbox 集成
-  - [ ] Docker 容器隔离
-  - [ ] 文件系统访问控制
-  - [ ] 网络访问控制
-- [ ] 权限管理
-  - [ ] 用户权限
-  - [ ] Skill 权限
-  - [ ] 资源配额
-- [ ] 审计日志
-  - [ ] 全链路日志记录
-  - [ ] 敏感操作审计
-  - [ ] 日志查询 API
-- [ ] API 端点
-  - [ ] GET /agent-os/audit/logs
-  - [ ] GET /agent-os/permissions
-- **Success Criteria**:
-  - ✅ Sandbox 隔离有效性 100%
-  - ✅ 审计日志完整性 100%
-- **Status**: pending
-- **Dependencies**: Phase 8, Phase 10 完成
-
-### Phase 13: 集成测试与优化（2-3周）
-- [ ] 端到端测试
-  - [ ] 完整 Agent Run 流程
-  - [ ] 多 Agent 协作流程
-  - [ ] HITL 流程
-  - [ ] Skill Marketplace 流程
-- [ ] 性能优化
-  - [ ] 数据库查询优化
-  - [ ] API 响应优化
-  - [ ] 前端渲染优化
-- [ ] 压力测试
-  - [ ] 并发 Agent Run
-  - [ ] 大量记忆检索
-  - [ ] WebSocket 连接
-- [ ] 用户验收测试
-  - [ ] 业务场景测试
-  - [ ] 易用性测试
-- **Success Criteria**:
-  - ✅ 端到端测试通过率 100%
-  - ✅ API 平均响应 < 500ms
-  - ✅ 支持 10+ 并发 Agent Run
-- **Status**: pending
-- **Dependencies**: Phase 12 完成
-
-### Phase 14: MVP 交付与文档（1-2周）
-- [ ] MVP 交付
-  - [ ] 单一业务场景验证
-  - [ ] 3-5 核心 Skill
-  - [ ] mem0 记忆完整
-  - [ ] A2UI 全流程展示
-  - [ ] Skill Marketplace 可用
-- [ ] 文档编写
-  - [ ] 系统架构文档
-  - [ ] API 文档
-  - [ ] 部署文档
-  - [ ] 用户手册
-  - [ ] 开发者指南
-- [ ] 部署准备
-  - [ ] Docker 镜像
-  - [ ] K8s 配置
-  - [ ] CI/CD 流程
-- **Status**: pending
-- **Dependencies**: Phase 13 完成
-
-## Key Questions
-
-1. **mem0 实施方案**：使用 mem0.ai 库还是自建？
-   - 优势对比
-   - 成本评估
-   - 集成复杂度
-
-2. **多 Agent 并发**：如何保证 10+ 并发 Agent 的性能？
-   - 资源隔离
-   - 负载均衡
-   - 降级策略
-
-3. **Skill 热加载**：如何在不停机的情况下动态加载 Skill？
-   - 动态导入机制
-   - 版本兼容性检查
-   - 回滚策略
-
-4. **Sandbox 隔离**：如何平衡安全性与性能？
-   - 容器开销
-   - 资源限制
-   - 通信优化
-
-## Decisions Made
-| Decision | Rationale |
-|----------|-----------|
-| 待定 | 待 Phase 1 完成后确定 |
-
-## Errors Encountered
-| Error | Attempt | Resolution |
-|-------|---------|------------|
-| (无错误) | - | - |
-
-## Notes
-- 本计划遵循 Planning-with-Files 模式
-- 每个阶段完成后立即更新 task_plan.md
-- 重大决策记录到 findings.md
-- 详细执行日志记录到 progress.md
-- 使用 3-Strike Error Protocol 处理失败
-
-## MVP Success Criteria (V1)
-- ✅ 单一业务场景完整 Run
-- ✅ 单 Agent Run 闭环完整
-- ✅ 3-5 核心 Skill 可用
+**MVP Success Criteria:**
+- ✅ 单一业务场景完整闭环
+- ✅ 3-5 个核心 Skill 可用
 - ✅ mem0 记忆写入与回放
 - ✅ A2UI 全流程展示
-- ✅ Skill 在线生成 / 调试 / Marketplace 可用
+- ✅ Skill Online Builder + Marketplace 基础功能
+
+---
+
+## Phase 1: 需求分析与技术调研 (COMPLETED)
+
+**Status:** ✅ Complete
+
+**Deliverables:**
+- [x] PRD 文档已分析
+- [x] 现有系统架构已评估
+- [x] Claude Agent SDK 集成方式已确认
+- [x] 技术栈决策已记录
+
+**Key Findings:**
+- 现有 FastAPI + React + Claude Agent SDK 架构良好
+- SDK 支持 can_use_tool callback 和 Hook System（HITL 基础）
+- 需要实现：Planning System, mem0 集成, A2UI, Skill Marketplace
+- WebSocket/Socket.IO 适合实时事件推送
+
+---
+
+## Phase 2: 核心抽象设计 (IN_PROGRESS)
+
+**Status:** 🔄 In Progress
+
+**Objectives:**
+- 定义 Agent Run, Skill, Memory 核心数据模型
+- 设计 Agent State Machine
+- 定义 A2UI Event Schema
+- 设计 mem0 集成接口
+
+**Tasks:**
+- [ ] 2.1 设计 Agent Run 数据模型（数据库表）
+  - `agent_runs` 表
+  - `agent_run_steps` 表
+  - `agent_run_artifacts` 表
+- [ ] 2.2 设计 Skill Schema
+  - `skills` 表（扩展现有）
+  - `skill_versions` 表
+  - `skill_marketplace` 表
+- [ ] 2.3 设计 mem0 集成
+  - Episodic Memory 表结构
+  - Long-term Memory 表结构
+  - 检索接口定义
+- [ ] 2.4 设计 Agent State Machine
+  - States: idle, planning, acting, waiting_approval, completed, failed
+  - Transitions: trigger conditions, actions
+- [ ] 2.5 设计 A2UI Event Schema
+  - Event types: goal_understood, plan_created, skill_call, etc.
+  - Event format: JSON schema
+
+**Files to Create:**
+- `backend/models/agent_run.py` - Agent Run 数据模型
+- `backend/models/skill.py` - Skill 数据模型
+- `backend/models/memory.py` - Memory 数据模型
+- `backend/services/agent_state_machine.py` - 状态机实现
+- `backend/services/a2ui_event_schema.py` - A2UI 事件定义
+
+---
+
+## Phase 3: 后端核心服务实现 (PENDING)
+
+**Status:** ⏳ Pending
+
+**Objectives:**
+- 实现 Agent Run 协调器
+- 实现 Planning System（基础版）
+- 实现 mem0 集成
+- 实现 Skill Runtime
+- 实现 A2UI Event Collector
+
+**Tasks:**
+
+### 3.1 Agent Run Coordinator
+- [ ] 创建 `AgentRunCoordinator` 类
+- [ ] 实现 run 生命周期管理
+- [ ] 集成 Claude SDK query
+- [ ] 实现状态机驱动
+
+### 3.2 Planning System (基础版)
+- [ ] 实现规则基础的 Planner
+  - 目标 → Skill 选择
+  - 依赖顺序分析
+  - 并行执行识别
+- [ ] 支持计划调整
+- [ ] 计划持久化
+
+### 3.3 mem0 集成
+- [ ] 选择 mem0.ai 或自建方案
+- [ ] 实现 Episodic Memory 写入
+  - 记录每个 Agent Run
+  - 保存步骤、决策、结果
+- [ ] 实现 Memory 检索
+  - 语义搜索
+  - 相关性排序
+- [ ] 集成到 Planning 和 Skill Selection
+
+### 3.4 Skill Runtime
+- [ ] 扩展现有 Skill 系统
+- [ ] 实现 Skill Schema 验证
+- [ ] 实现 Sandbox 集成（Docker）
+- [ ] 实现失败处理与重试
+- [ ] 实现热加载
+
+### 3.5 A2UI Event Collector
+- [ ] 创建 `A2UICollector` 类
+- [ ] 实现事件收集与格式化
+- [ ] 集成 Socket.IO 推送
+- [ ] 实现事件持久化
+
+**Files to Create:**
+- `backend/services/agent_run_coordinator.py`
+- `backend/services/planner.py`
+- `backend/services/memory_service.py`
+- `backend/services/skill_runtime.py`
+- `backend/services/a2ui_collector.py`
+
+---
+
+## Phase 4: API 层实现 (PENDING)
+
+**Status:** ⏳ Pending
+
+**Objectives:**
+- 暴露 Agent Run 管理 API
+- 暴露 Skill Marketplace API
+- 集成 WebSocket (Socket.IO)
+- 实现 HITL 接口
+
+**Tasks:**
+
+### 4.1 Agent Run APIs
+- [ ] `POST /api/v1/agent/runs` - 启动 Agent Run
+- [ ] `GET /api/v1/agent/runs/{run_id}` - 获取 Run 状态
+- [ ] `POST /api/v1/agent/runs/{run_id}/stop` - 停止 Run
+- [ ] `POST /api/v1/agent/runs/{run_id}/approve` - HITL 批准
+- [ ] `POST /api/v1/agent/runs/{run_id}/reject` - HITL 拒绝
+
+### 4.2 Skill Marketplace APIs
+- [ ] `GET /api/v1/skills` - 列出所有 Skills
+- [ ] `POST /api/v1/skills` - 创建 Skill
+- [ ] `GET /api/v1/skills/{skill_id}` - 获取 Skill 详情
+- [ ] `PUT /api/v1/skills/{skill_id}` - 更新 Skill
+- [ ] `DELETE /api/v1/skills/{skill_id}` - 删除 Skill
+- [ ] `POST /api/v1/skills/{skill_id}/debug` - 在线调试 Skill
+- [ ] `POST /api/v1/skills/{skill_id}/publish` - 发布到 Marketplace
+
+### 4.3 Memory APIs
+- [ ] `GET /api/v1/memory/search` - 搜索记忆
+- [ ] `POST /api/v1/memory` - 写入记忆
+- [ ] `GET /api/v1/memory/{memory_id}` - 获取记忆详情
+
+### 4.4 WebSocket (Socket.IO)
+- [ ] 集成 `python-socketio` 到 FastAPI
+- [ ] 实现 Socket.IO 事件处理器
+  - `join_agent_run` - 加入 Run 房间
+  - `leave_agent_run` - 离开 Run 房间
+  - `a2ui_event` - 接收 A2UI 事件
+  - `hitl_response` - HITL 响应
+
+**Files to Modify:**
+- `backend/main.py` - 添加 Socket.IO
+- `backend/api/v1/agent_runs.py` - Agent Run APIs
+- `backend/api/v1/skills.py` - Skill APIs
+- `backend/api/v1/memory.py` - Memory APIs
+
+---
+
+## Phase 5: 前端 A2UI 组件实现 (PENDING)
+
+**Status:** ⏳ Pending
+
+**Objectives:**
+- 实现 A2UI Dashboard
+- 实现各个可视化组件
+- 集成 Socket.IO 客户端
+- 实现 HITL 交互界面
+
+**Tasks:**
+
+### 5.1 A2UI 核心组件
+- [ ] `A2UIDashboard` - 主容器
+- [ ] `AgentStatusCard` - Agent 状态卡片
+- [ ] `ExecutionPlan` - 执行计划可视化
+- [ ] `SkillTimeline` - Skill 调用时间线
+- [ ] `ToolTrace` - 工具调用追踪
+- [ ] `ResultArtifacts` - 结果工件展示
+- [ ] `MemoryReplay` - 记忆回放
+
+### 5.2 HITL 交互组件
+- [ ] `HITLModal` - HITL 确认对话框
+- [ ] `ToolApprovalPanel` - 工具批准面板
+- [ ] `PlanAdjustmentPanel` - 计划调整面板
+
+### 5.3 Skill Marketplace UI
+- [ ] `SkillBrowser` - Skill 浏览器
+- [ ] `SkillBuilder` - Skill 在线编辑器
+- [ ] `SkillDebugger` - Skill 调试器
+
+### 5.4 Socket.IO 集成
+- [ ] 安装 `socket.io-client`
+- [ ] 创建 `a2uiService` - Socket.IO 服务封装
+- [ ] 实现事件监听与处理
+
+**Files to Create:**
+- `frontend/aigc-frontend/components/a2ui/A2UIDashboard.tsx`
+- `frontend/aigc-frontend/components/a2ui/AgentStatusCard.tsx`
+- `frontend/aigc-frontend/components/a2ui/ExecutionPlan.tsx`
+- `frontend/aigc-frontend/components/a2ui/SkillTimeline.tsx`
+- `frontend/aigc-frontend/components/a2ui/ToolTrace.tsx`
+- `frontend/aigc-frontend/components/a2ui/ResultArtifacts.tsx`
+- `frontend/aigc-frontend/components/a2ui/MemoryReplay.tsx`
+- `frontend/aigc-frontend/components/a2ui/HITLModal.tsx`
+- `frontend/aigc-frontend/services/a2uiService.ts`
+- `frontend/aigc-frontend/services/skillService.ts`
+
+---
+
+## Phase 6: Skill 开发 (MVP) (PENDING)
+
+**Status:** ⏳ Pending
+
+**Objectives:**
+- 开发 3-5 个核心 Skill
+- 验证 Skill Runtime
+- 支持在线调试
+
+**Tasks:**
+
+### 6.1 核心 Skill 开发
+- [ ] `DocumentAnalyzer` - 文档分析 Skill
+- [ ] `DataExtractor` - 数据抽取 Skill
+- [ ] `ReportGenerator` - 报告生成 Skill
+- [ ] `WebResearcher` - 网络研究 Skill
+- [ ] `FileOrganizer` - 文件整理 Skill
+
+### 6.2 Skill 在线工具
+- [ ] Skill Builder 可视化编辑器
+- [ ] Skill 调试器
+- [ ] Skill 测试框架
+
+**Files to Create:**
+- `.claude/skills/document_analyzer/`
+- `.claude/skills/data_extractor/`
+- `.claude/skills/report_generator/`
+
+---
+
+## Phase 7: 测试与集成 (PENDING)
+
+**Status:** ⏳ Pending
+
+**Objectives:**
+- 单元测试
+- 集成测试
+- 端到端测试
+- 性能测试
+
+**Tasks:**
+- [ ] 7.1 后端服务单元测试
+- [ ] 7.2 前端组件测试
+- [ ] 7.3 API 集成测试
+- [ ] 7.4 E2E 场景测试
+- [ ] 7.5 性能压测
+- [ ] 7.6 安全测试
+
+---
+
+## Phase 8: 部署与监控 (PENDING)
+
+**Status:** ⏳ Pending
+
+**Objectives:**
+- Docker 容器化
+- 生产环境部署
+- 监控与告警
+- 文档完善
+
+**Tasks:**
+- [ ] 8.1 更新 docker-compose 配置
+- [ ] 8.2 配置环境变量
+- [ ] 8.3 部署到生产环境
+- [ ] 8.4 配置日志收集
+- [ ] 8.5 配置监控指标
+- [ ] 8.6 编写用户文档
+- [ ] 8.7 编写开发者文档
+
+---
+
+## Errors Encountered
+
+| Error | Attempt | Resolution |
+|-------|---------|------------|
+| | | |
+
+---
+
+## Technical Decisions
+
+| Decision | Options | Choice | Rationale |
+|----------|---------|--------|-----------|
+| WebSocket 实现 | Socket.IO vs ws vs SSE | Socket.IO | 功能完整，自动重连，房间管理 |
+| mem0 实现 | mem0.ai vs 自建 | 待定 | 需要评估 |
+| 向量数据库 | ChromaDB vs Qdrant vs Pinecone | ChromaDB | 本地部署简单 |
+| 前端状态管理 | Redux vs Zustand vs Context | Zustand | 轻量 |
+| DAG 可视化 | React Flow vs ECharts vs D3 | ECharts | 已集成 |
+
+---
+
+## Next Steps
+
+1. **Complete Phase 2** - 设计核心抽象
+2. **Start Phase 3** - 实现后端核心服务
+3. **Implement MVP Skills** - 开发 3-5 个核心 Skill
+
+---
+
+*Last updated: 2026-01-26*

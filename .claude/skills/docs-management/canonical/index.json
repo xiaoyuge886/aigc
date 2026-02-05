@@ -10956,6 +10956,7 @@
   "code-claude-com-docs-en-amazon-bedrock": {
     "category": "installation",
     "description": "Before configuring Claude Code with Bedrock, ensure you have:",
+    "doc_map_category": "Deployment",
     "domain": "code.claude.com",
     "hash": "sha256:b57f9a2687ef34c9156a873bda76416093af0a9faa70a44a0c862a50d6dadce1",
     "keywords": [
@@ -11103,12 +11104,12 @@
       "security"
     ],
     "title": "Claude Code on Amazon Bedrock",
-    "url": "https://code.claude.com/docs/en/amazon-bedrock",
-    "doc_map_category": "Deployment"
+    "url": "https://code.claude.com/docs/en/amazon-bedrock"
   },
   "code-claude-com-docs-en-analytics": {
     "category": "monitoring",
     "description": "Claude Code provides an analytics dashboard that helps organizations understand developer usage patterns, track productivity metrics, and optimize their Claude Code adoption.",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:c1bbe8037696252d5a14ba900eb2c68f95bb92ca3a38b3ab9d5a00b5d77072e0",
     "keywords": [
@@ -11274,12 +11275,12 @@
       "monitoring"
     ],
     "title": "Analytics",
-    "url": "https://code.claude.com/docs/en/analytics",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/analytics"
   },
   "code-claude-com-docs-en-checkpointing": {
     "category": "guides",
     "description": "Claude Code automatically tracks Claude's file edits as you work, allowing you to quickly undo changes and rewind to previous states if anything gets off track.",
+    "doc_map_category": "Reference",
     "domain": "code.claude.com",
     "hash": "sha256:3412893eca2d799ac0f53886b7672e996a9e86126d353bfdbbc9240e639c957b",
     "keywords": [
@@ -11409,8 +11410,7 @@
       "reference"
     ],
     "title": "Checkpointing",
-    "url": "https://code.claude.com/docs/en/checkpointing",
-    "doc_map_category": "Reference"
+    "url": "https://code.claude.com/docs/en/checkpointing"
   },
   "code-claude-com-docs-en-chrome": {
     "category": "installation",
@@ -11680,6 +11680,7 @@
   "code-claude-com-docs-en-claude-code-on-the-web": {
     "category": "installation",
     "description": "<Note> Claude Code on the web is currently in research preview. </Note>",
+    "doc_map_category": "Getting started",
     "domain": "code.claude.com",
     "hash": "sha256:0e9c159b2d4396a507ba37e10db87ccd4da1c0425d6b53f5f218bbd14a2e8c3e",
     "keywords": [
@@ -11943,12 +11944,12 @@
       "testing"
     ],
     "title": "Claude Code on the web",
-    "url": "https://code.claude.com/docs/en/claude-code-on-the-web",
-    "doc_map_category": "Getting started"
+    "url": "https://code.claude.com/docs/en/claude-code-on-the-web"
   },
   "code-claude-com-docs-en-cli-reference": {
     "category": "api",
     "description": "| Command                         | Description                                    | Example                                           | | :------------------------------ |...",
+    "doc_map_category": "Reference",
     "domain": "code.claude.com",
     "hash": "sha256:4b3ab44ce77627dc513601c05897cd56fb1db7107bc6f5c0d5665f608380c83c",
     "keywords": [
@@ -12036,12 +12037,12 @@
       "prompt-engineering"
     ],
     "title": "CLI reference",
-    "url": "https://code.claude.com/docs/en/cli-reference",
-    "doc_map_category": "Reference"
+    "url": "https://code.claude.com/docs/en/cli-reference"
   },
   "code-claude-com-docs-en-common-workflows": {
     "category": "installation",
     "description": "Each task in this document includes clear instructions, example commands, and best practices to help you get the most from Claude Code.",
+    "doc_map_category": "Getting started",
     "domain": "code.claude.com",
     "hash": "sha256:5a3b795e8c5b95d08648e95e62c8df60830659dbdacae0ae4afb43a55f6967b2",
     "keywords": [
@@ -12470,11 +12471,11 @@
       "models"
     ],
     "title": "Common workflows",
-    "url": "https://code.claude.com/docs/en/common-workflows",
-    "doc_map_category": "Getting started"
+    "url": "https://code.claude.com/docs/en/common-workflows"
   },
   "code-claude-com-docs-en-costs": {
     "description": "Claude Code consumes tokens for each interaction. The average cost is \\$6 per developer per day, with daily costs remaining below \\$12 for 90% of users.",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:ac51c22d5dd6ee2a1ba3aa6e207e45229ade68a46da8dbcf6d92d3022f85de94",
     "keywords": [
@@ -12630,12 +12631,12 @@
       "reference"
     ],
     "title": "Manage costs effectively",
-    "url": "https://code.claude.com/docs/en/costs",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/costs"
   },
   "code-claude-com-docs-en-data-usage": {
     "category": "configuration",
     "description": "**Consumer users (Free, Pro, and Max plans)**: Starting August 28, 2025, we're giving you the choice to allow your data to be used to improve future Claude models.",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:c4d706a9c156f567899bfcfd00c179df3069b17e60fd4790abeb66fca24fc2a2",
     "keywords": [
@@ -12784,8 +12785,7 @@
       "security"
     ],
     "title": "Data usage",
-    "url": "https://code.claude.com/docs/en/data-usage",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/data-usage"
   },
   "code-claude-com-docs-en-desktop": {
     "category": "configuration",
@@ -12950,6 +12950,7 @@
   "code-claude-com-docs-en-devcontainer": {
     "category": "installation",
     "description": "The reference [devcontainer setup](https://github.com/anthropics/claude-code/tree/main/.devcontainer) and associated...",
+    "doc_map_category": "Deployment",
     "domain": "code.claude.com",
     "hash": "sha256:c36b41dda235ca4c6e7c8edcd809832ab3b2d9de926a8df5037028c68f94150a",
     "keywords": [
@@ -13099,8 +13100,7 @@
       "security"
     ],
     "title": "Development containers",
-    "url": "https://code.claude.com/docs/en/devcontainer",
-    "doc_map_category": "Deployment"
+    "url": "https://code.claude.com/docs/en/devcontainer"
   },
   "code-claude-com-docs-en-discover-plugins": {
     "category": "skills",
@@ -13393,6 +13393,7 @@
   "code-claude-com-docs-en-github-actions": {
     "category": "api",
     "description": "Claude Code GitHub Actions brings AI-powered automation to your GitHub workflow. With a simple `@claude` mention in any PR or issue, Claude can analyze your code, create pull requests, implement...",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:89634a8c16ccd2660b390d7261285e511895452a3eedb9fa6d90d63f1e100ec5",
     "keywords": [
@@ -13777,12 +13778,12 @@
       "installation"
     ],
     "title": "Claude Code GitHub Actions",
-    "url": "https://code.claude.com/docs/en/github-actions",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/github-actions"
   },
   "code-claude-com-docs-en-gitlab-ci-cd": {
     "category": "configuration",
     "description": "<Info> Claude Code for GitLab CI/CD is currently in beta. Features and functionality may evolve as we refine the experience.",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:f96ee45c9fecb2886d4cc36e399993c2f1697a0e44fca7cf4b2c6f1f7ef2c5e7",
     "keywords": [
@@ -14142,12 +14143,12 @@
       "deployment"
     ],
     "title": "Claude Code GitLab CI/CD",
-    "url": "https://code.claude.com/docs/en/gitlab-ci-cd",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/gitlab-ci-cd"
   },
   "code-claude-com-docs-en-google-vertex-ai": {
     "category": "configuration",
     "description": "Before configuring Claude Code with Vertex AI, ensure you have:",
+    "doc_map_category": "Deployment",
     "domain": "code.claude.com",
     "hash": "sha256:ea887a07b8d65289da0b435b9d416a612cebeaf0f47871eee3fde4ddf020e033",
     "keywords": [
@@ -14315,12 +14316,12 @@
       "troubleshooting"
     ],
     "title": "Claude Code on Google Vertex AI",
-    "url": "https://code.claude.com/docs/en/google-vertex-ai",
-    "doc_map_category": "Deployment"
+    "url": "https://code.claude.com/docs/en/google-vertex-ai"
   },
   "code-claude-com-docs-en-headless": {
     "category": "agents",
     "description": "The [Agent SDK](https://platform.claude.com/docs/en/agent-sdk/overview) gives you the same tools, agent loop, and context management that power Claude Code. It's available as a CLI for scripts and...",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:3b3fd5b137d4bb74e004c205b98d0720fccf0e8269bc6ce8621fee6da3c85be1",
     "keywords": [
@@ -14437,12 +14438,12 @@
       "sdk"
     ],
     "title": "Run Claude Code programmatically",
-    "url": "https://code.claude.com/docs/en/headless",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/headless"
   },
   "code-claude-com-docs-en-hooks": {
     "category": "api",
     "description": "<Tip> For a quickstart guide with examples, see [Get started with Claude Code hooks](/en/hooks-guide). </Tip>",
+    "doc_map_category": "Reference",
     "domain": "code.claude.com",
     "hash": "sha256:6b934f30c983a501ef64489005e5c866d1bd5dd95cc75e14d79699094bc80f61",
     "keywords": [
@@ -15044,12 +15045,12 @@
       "plugins"
     ],
     "title": "Hooks reference",
-    "url": "https://code.claude.com/docs/en/hooks",
-    "doc_map_category": "Reference"
+    "url": "https://code.claude.com/docs/en/hooks"
   },
   "code-claude-com-docs-en-hooks-guide": {
     "category": "guides",
     "description": "Claude Code hooks are user-defined shell commands that execute at various points in Claude Code's lifecycle. Hooks provide deterministic control over Claude Code's behavior, ensuring certain actions...",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:19e6d30899036fabcb1a04c936943b50fdfbacc18e27c6c841a369c867a28cd2",
     "keywords": [
@@ -15252,12 +15253,12 @@
       "troubleshooting"
     ],
     "title": "Get started with Claude Code hooks",
-    "url": "https://code.claude.com/docs/en/hooks-guide",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/hooks-guide"
   },
   "code-claude-com-docs-en-iam": {
     "category": "api",
     "description": "Setting up Claude Code requires access to Anthropic models. For teams, you can set up Claude Code access in one of four ways:",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:8ca6a48626fcdd40a43df2a6c5c50a36192f4ecbacb2359a0ee90a8050939e17",
     "keywords": [
@@ -15406,12 +15407,12 @@
       "installation"
     ],
     "title": "Identity and Access Management",
-    "url": "https://code.claude.com/docs/en/iam",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/iam"
   },
   "code-claude-com-docs-en-interactive-mode": {
     "category": "configuration",
     "description": "<Note> Keyboard shortcuts may vary by platform and terminal. Press `?` to see available shortcuts for your environment. For example, Option key combinations on macOS may require configuring your...",
+    "doc_map_category": "Reference",
     "domain": "code.claude.com",
     "hash": "sha256:41903eba6f86065149723ac3cca642874564f79c53f2bbf7c8bbfa40c3ec1a29",
     "keywords": [
@@ -15598,12 +15599,12 @@
       "configuration"
     ],
     "title": "Interactive mode",
-    "url": "https://code.claude.com/docs/en/interactive-mode",
-    "doc_map_category": "Reference"
+    "url": "https://code.claude.com/docs/en/interactive-mode"
   },
   "code-claude-com-docs-en-jetbrains": {
     "category": "installation",
     "description": "Claude Code integrates with JetBrains IDEs through a dedicated plugin, providing features like interactive diff viewing, selection context sharing, and more.",
+    "doc_map_category": "Configuration",
     "domain": "code.claude.com",
     "hash": "sha256:5b6e45265742bff4966b949b2f17615dbe76ebf6e4fd9b3918eb07dc19354b18",
     "keywords": [
@@ -15839,12 +15840,12 @@
       "troubleshooting"
     ],
     "title": "JetBrains IDEs",
-    "url": "https://code.claude.com/docs/en/jetbrains",
-    "doc_map_category": "Configuration"
+    "url": "https://code.claude.com/docs/en/jetbrains"
   },
   "code-claude-com-docs-en-legal-and-compliance": {
     "category": "compliance",
     "description": "Your use of Claude Code is subject to:",
+    "doc_map_category": "Resources",
     "domain": "code.claude.com",
     "hash": "sha256:03294e16a35d0a3f07b01cd61bd393a6a7691e800dba114e88ec889ab04f5c35",
     "keywords": [
@@ -15963,12 +15964,12 @@
       "security"
     ],
     "title": "Legal and compliance",
-    "url": "https://code.claude.com/docs/en/legal-and-compliance",
-    "doc_map_category": "Resources"
+    "url": "https://code.claude.com/docs/en/legal-and-compliance"
   },
   "code-claude-com-docs-en-llm-gateway": {
     "category": "api",
     "description": "LLM gateways provide a centralized proxy layer between Claude Code and model providers, often providing:",
+    "doc_map_category": "Deployment",
     "domain": "code.claude.com",
     "hash": "sha256:c8b3fb2a5182c25d58eebca099671bf53976c9889419056df53c63ee55f27180",
     "keywords": [
@@ -16078,12 +16079,12 @@
       "security"
     ],
     "title": "LLM gateway configuration",
-    "url": "https://code.claude.com/docs/en/llm-gateway",
-    "doc_map_category": "Deployment"
+    "url": "https://code.claude.com/docs/en/llm-gateway"
   },
   "code-claude-com-docs-en-mcp": {
     "category": "api",
     "description": "export const MCPServersTable = ({platform = \"all\"}) => { const ifYouAreAnAiAgentReadingThisYouShouldInsteadFetch = 'https://api.anthropic.com/mcp-registry/docs'; const [servers, setServers] =...",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:96d84afcc804eef1143aa098db83e2345f968c783b4f810a4c457a503c4a3b59",
     "keywords": [
@@ -16482,12 +16483,12 @@
       "mcp"
     ],
     "title": "Connect Claude Code to tools via MCP",
-    "url": "https://code.claude.com/docs/en/mcp",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/mcp"
   },
   "code-claude-com-docs-en-memory": {
     "category": "configuration",
     "description": "Claude Code can remember your preferences across sessions, like style guidelines and common commands in your workflow.",
+    "doc_map_category": "Configuration",
     "domain": "code.claude.com",
     "hash": "sha256:bfb0737ddfd8af370ca9574d85d10c84cf4091092b343af03cc3e218d09baa22",
     "keywords": [
@@ -16678,8 +16679,7 @@
       "testing"
     ],
     "title": "Manage Claude's memory",
-    "url": "https://code.claude.com/docs/en/memory",
-    "doc_map_category": "Configuration"
+    "url": "https://code.claude.com/docs/en/memory"
   },
   "code-claude-com-docs-en-microsoft-foundry": {
     "category": "api",
@@ -16812,6 +16812,7 @@
   "code-claude-com-docs-en-model-config": {
     "category": "configuration",
     "description": "For the `model` setting in Claude Code, you can configure either:",
+    "doc_map_category": "Configuration",
     "domain": "code.claude.com",
     "hash": "sha256:ba19a4a1cad941f0606c5d7094c8eeeaee054f67072dc715e086e4d3d77ea8b7",
     "keywords": [
@@ -16955,12 +16956,12 @@
       "subagents"
     ],
     "title": "Model configuration",
-    "url": "https://code.claude.com/docs/en/model-config",
-    "doc_map_category": "Configuration"
+    "url": "https://code.claude.com/docs/en/model-config"
   },
   "code-claude-com-docs-en-monitoring-usage": {
     "category": "monitoring",
     "description": "Claude Code supports OpenTelemetry (OTel) metrics and events for monitoring and observability.",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:d80c5d71e9924d890236601a01e9d6cea79d43ed9e8c41c36e106747bed83d80",
     "keywords": [
@@ -17284,12 +17285,12 @@
       "monitoring"
     ],
     "title": "Monitoring",
-    "url": "https://code.claude.com/docs/en/monitoring-usage",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/monitoring-usage"
   },
   "code-claude-com-docs-en-network-config": {
     "category": "configuration",
     "description": "Claude Code supports various enterprise network and security configurations through environment variables. This includes routing traffic through corporate proxy servers, trusting custom Certificate...",
+    "doc_map_category": "Deployment",
     "domain": "code.claude.com",
     "hash": "sha256:9024e9f000eae32010edb41e58215d558229c84adfeba1d8e5dd724389043758",
     "keywords": [
@@ -17402,12 +17403,12 @@
       "troubleshooting"
     ],
     "title": "Enterprise network configuration",
-    "url": "https://code.claude.com/docs/en/network-config",
-    "doc_map_category": "Deployment"
+    "url": "https://code.claude.com/docs/en/network-config"
   },
   "code-claude-com-docs-en-output-styles": {
     "category": "prompt-engineering",
     "description": "Output styles allow you to use Claude Code as any type of agent while keeping its core capabilities, such as running local scripts, reading/writing files, and tracking TODOs.",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:6457f8e1cffbbcb0a09d1623c044c5db9a442ed23f7ac64e06844bea0f149eca",
     "keywords": [
@@ -17552,12 +17553,12 @@
       "prompt-engineering"
     ],
     "title": "Output styles",
-    "url": "https://code.claude.com/docs/en/output-styles",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/output-styles"
   },
   "code-claude-com-docs-en-overview": {
     "category": "installation",
     "description": "Prerequisites:",
+    "doc_map_category": "Getting started",
     "domain": "code.claude.com",
     "hash": "sha256:9d04150bac34567f4b27444b5f4b43539bf43dfe71e6479efeb564a2c7809efe",
     "keywords": [
@@ -17638,12 +17639,12 @@
       "troubleshooting"
     ],
     "title": "Claude Code overview",
-    "url": "https://code.claude.com/docs/en/overview",
-    "doc_map_category": "Getting started"
+    "url": "https://code.claude.com/docs/en/overview"
   },
   "code-claude-com-docs-en-plugin-marketplaces": {
     "category": "configuration",
     "description": "A plugin marketplace is a catalog that lets you distribute plugins to others. Marketplaces provide centralized discovery, version tracking, automatic updates, and support for multiple source types...",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:ca89eb7f6c055aa0ada35043f394e363012b93428461e41ae06342884c0dd4ac",
     "keywords": [
@@ -18002,12 +18003,12 @@
       "hooks"
     ],
     "title": "Create and distribute a plugin marketplace",
-    "url": "https://code.claude.com/docs/en/plugin-marketplaces",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/plugin-marketplaces"
   },
   "code-claude-com-docs-en-plugins": {
     "category": "skills",
     "description": "Plugins let you extend Claude Code with custom functionality that can be shared across projects and teams. This guide covers creating your own plugins with slash commands, agents, Skills, hooks, and...",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:3f9f67dc213377a80a2c5048428ec7a469e67f69e1d6fb8e4ad5ab69f56a5072",
     "keywords": [
@@ -18247,12 +18248,12 @@
       "skills"
     ],
     "title": "Create plugins",
-    "url": "https://code.claude.com/docs/en/plugins",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/plugins"
   },
   "code-claude-com-docs-en-plugins-reference": {
     "category": "api",
     "description": "<Tip> Looking to install plugins? See [Discover and install plugins](/en/discover-plugins). For creating plugins, see [Plugins](/en/plugins). For distributing plugins, see [Plugin...",
+    "doc_map_category": "Reference",
     "domain": "code.claude.com",
     "hash": "sha256:d51bd482a097a329f6c9e4563d8d3d0fa65ea7a16d5de32d02ecb29bfe5b6425",
     "keywords": [
@@ -18744,12 +18745,12 @@
       "skills"
     ],
     "title": "Plugins reference",
-    "url": "https://code.claude.com/docs/en/plugins-reference",
-    "doc_map_category": "Reference"
+    "url": "https://code.claude.com/docs/en/plugins-reference"
   },
   "code-claude-com-docs-en-quickstart": {
     "category": "installation",
     "description": "This quickstart guide will have you using AI-powered coding assistance in just a few minutes. By the end, you'll understand how to use Claude Code for common development tasks.",
+    "doc_map_category": "Getting started",
     "domain": "code.claude.com",
     "hash": "sha256:31e5f9b68261cd560c63b22c0fdefab0926bac931b7ebe92b9276c80e9fcc1e3",
     "keywords": [
@@ -18927,12 +18928,12 @@
       "installation"
     ],
     "title": "Quickstart",
-    "url": "https://code.claude.com/docs/en/quickstart",
-    "doc_map_category": "Getting started"
+    "url": "https://code.claude.com/docs/en/quickstart"
   },
   "code-claude-com-docs-en-sandboxing": {
     "category": "configuration",
     "description": "Claude Code features native sandboxing to provide a more secure environment for agent execution while reducing the need for constant permission prompts. Instead of asking permission for each bash...",
+    "doc_map_category": "Deployment",
     "domain": "code.claude.com",
     "hash": "sha256:bcdc06de16c420371e610419230b3f8a6039df5f60b54b8a31a7f5c0a9dbdbec",
     "keywords": [
@@ -19212,8 +19213,7 @@
       "tools"
     ],
     "title": "Sandboxing",
-    "url": "https://code.claude.com/docs/en/sandboxing",
-    "doc_map_category": "Deployment"
+    "url": "https://code.claude.com/docs/en/sandboxing"
   },
   "code-claude-com-docs-en-sdk-migration-guide": {
     "category": "guides",
@@ -19392,6 +19392,7 @@
   "code-claude-com-docs-en-security": {
     "category": "configuration",
     "description": "Your code's security is paramount. Claude Code is built with security at its core, developed according to Anthropic's comprehensive security program. Learn more and access resources (SOC 2 Type 2...",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:6758412a44a262250ecbe4b35d02b1fbe5ad56622e63ad78474352f02b88c405",
     "keywords": [
@@ -19618,12 +19619,12 @@
       "security"
     ],
     "title": "Security",
-    "url": "https://code.claude.com/docs/en/security",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/security"
   },
   "code-claude-com-docs-en-settings": {
     "category": "configuration",
     "description": "Claude Code offers a variety of settings to configure its behavior to meet your needs. You can configure Claude Code by running the `/config` command when using the interactive REPL, which opens a...",
+    "doc_map_category": "Configuration",
     "domain": "code.claude.com",
     "hash": "sha256:a53ec5648f0dddd0c10ea99b1027b0bc752b24d7fddf4253215c29501eefb58e",
     "keywords": [
@@ -19939,12 +19940,12 @@
       "deployment"
     ],
     "title": "Claude Code settings",
-    "url": "https://code.claude.com/docs/en/settings",
-    "doc_map_category": "Configuration"
+    "url": "https://code.claude.com/docs/en/settings"
   },
   "code-claude-com-docs-en-setup": {
     "category": "installation",
     "description": "* **Operating Systems**: macOS 10.15+, Ubuntu 20.04+/Debian 10+, or Windows 10+ (with WSL 1, WSL 2, or Git for Windows) * **Hardware**: 4 GB+ RAM * **Software**: [Node.js...",
+    "doc_map_category": "Administration",
     "domain": "code.claude.com",
     "hash": "sha256:19f8fdc52ee223ad2a86b031f4bf147662a5cb77bf7050523414f0e5184aa721",
     "keywords": [
@@ -20163,12 +20164,12 @@
       "security"
     ],
     "title": "Set up Claude Code",
-    "url": "https://code.claude.com/docs/en/setup",
-    "doc_map_category": "Administration"
+    "url": "https://code.claude.com/docs/en/setup"
   },
   "code-claude-com-docs-en-skills": {
     "category": "skills",
     "description": "This guide shows you how to create, use, and manage Agent Skills in Claude Code. For background on how Skills work across Claude products, see [What are...",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:3b235f36f90f4caa5095bcef11ac7e07f6173f19ffff6f2d5b6aaf55bfe98305",
     "keywords": [
@@ -20567,8 +20568,7 @@
       "skills"
     ],
     "title": "Agent Skills",
-    "url": "https://code.claude.com/docs/en/skills",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/skills"
   },
   "code-claude-com-docs-en-slack": {
     "category": "installation",
@@ -20913,6 +20913,7 @@
   "code-claude-com-docs-en-slash-commands": {
     "category": "skills",
     "description": "| Command                   | Purpose                                                                                                                     | | :------------------------ |...",
+    "doc_map_category": "Reference",
     "domain": "code.claude.com",
     "hash": "sha256:a45c95d290277d1f80b1f9fb120e645194023b0ce4662ef331ccf59d7cbd2c0f",
     "keywords": [
@@ -21284,12 +21285,12 @@
       "skills"
     ],
     "title": "Slash commands",
-    "url": "https://code.claude.com/docs/en/slash-commands",
-    "doc_map_category": "Reference"
+    "url": "https://code.claude.com/docs/en/slash-commands"
   },
   "code-claude-com-docs-en-statusline": {
     "category": "models",
     "description": "Make Claude Code your own with a custom status line that displays at the bottom of the Claude Code interface, similar to how terminal prompts (PS1) work in shells like Oh-my-zsh.",
+    "doc_map_category": "Configuration",
     "domain": "code.claude.com",
     "hash": "sha256:4e2e31e7321b1299c645592026beb17a7441458b9fc32b66a2d811830ba50658",
     "keywords": [
@@ -21457,12 +21458,12 @@
       "models"
     ],
     "title": "Status line configuration",
-    "url": "https://code.claude.com/docs/en/statusline",
-    "doc_map_category": "Configuration"
+    "url": "https://code.claude.com/docs/en/statusline"
   },
   "code-claude-com-docs-en-sub-agents": {
     "category": "agents",
     "description": "Custom subagents in Claude Code are specialized AI assistants that can be invoked to handle specific types of tasks. They enable more efficient problem-solving by providing task-specific...",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:e7caa21fb064d2bd5c655b2bd10a074e08003ac08b50c17bf8d84366a11e6554",
     "keywords": [
@@ -21849,12 +21850,12 @@
       "skills"
     ],
     "title": "Subagents",
-    "url": "https://code.claude.com/docs/en/sub-agents",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/sub-agents"
   },
   "code-claude-com-docs-en-terminal-config": {
     "category": "configuration",
     "description": "Claude cannot control the theme of your terminal. That's handled by your terminal application. You can match Claude Code's theme to your terminal any time via the `/config` command.",
+    "doc_map_category": "Configuration",
     "domain": "code.claude.com",
     "hash": "sha256:dd803385fd46710016a9448f44c3e5940e1b0f7a3fee516b4e9653ae1310f4b9",
     "keywords": [
@@ -21941,12 +21942,12 @@
       "hooks"
     ],
     "title": "Optimize your terminal setup",
-    "url": "https://code.claude.com/docs/en/terminal-config",
-    "doc_map_category": "Configuration"
+    "url": "https://code.claude.com/docs/en/terminal-config"
   },
   "code-claude-com-docs-en-third-party-integrations": {
     "category": "api",
     "description": "This page provides an overview of available deployment options and helps you choose the right configuration for your organization.",
+    "doc_map_category": "Deployment",
     "domain": "code.claude.com",
     "hash": "sha256:9f295509998c49b26818d3f77fc7899f75a2fbfc5f56867f6ff60d46c4a4d7e8",
     "keywords": [
@@ -22247,12 +22248,12 @@
       "models"
     ],
     "title": "Enterprise deployment overview",
-    "url": "https://code.claude.com/docs/en/third-party-integrations",
-    "doc_map_category": "Deployment"
+    "url": "https://code.claude.com/docs/en/third-party-integrations"
   },
   "code-claude-com-docs-en-troubleshooting": {
     "category": "installation",
     "description": "You might encounter the following issues in WSL:",
+    "doc_map_category": "Build with Claude Code",
     "domain": "code.claude.com",
     "hash": "sha256:ce6a9638581ae4efba3cf10bc38ba1dd9bfb640227528dc2349cd11971ef2d87",
     "keywords": [
@@ -22545,12 +22546,12 @@
       "performance"
     ],
     "title": "Troubleshooting",
-    "url": "https://code.claude.com/docs/en/troubleshooting",
-    "doc_map_category": "Build with Claude Code"
+    "url": "https://code.claude.com/docs/en/troubleshooting"
   },
   "code-claude-com-docs-en-vs-code": {
     "category": "installation",
     "description": "<img src=\"https://mintcdn.com/claude-code/-YhHHmtSxwr7W8gy/images/vs-code-extension-interface.jpg?fit=max&auto=format&n=-YhHHmtSxwr7W8gy&q=85&s=300652d5678c63905e6b0ea9e50835f8\" alt=\"VS Code editor...",
+    "doc_map_category": "Configuration",
     "domain": "code.claude.com",
     "hash": "sha256:2310c6cb972f83069bac9a52e1130b52486e1cd2f29c5adabd128cfcc403c415",
     "keywords": [
@@ -22812,8 +22813,7 @@
       "troubleshooting"
     ],
     "title": "Use Claude Code in VS Code",
-    "url": "https://code.claude.com/docs/en/vs-code",
-    "doc_map_category": "Configuration"
+    "url": "https://code.claude.com/docs/en/vs-code"
   },
   "modelcontextprotocol-io-about-index": {
     "category": "models",
@@ -144349,5 +144349,46 @@
     ],
     "title": "Changelog",
     "url": "https://raw.githubusercontent.com/anthropics/claude-code/refs/heads/main/CHANGELOG"
+  },
+  "user-upload-2-057fe6c706e68581": {
+    "category": "user-upload",
+    "conversation_turn_id": "98909d7fc6c6447b",
+    "description": "User uploaded file (application/octet-stream)",
+    "doc_id": "user-upload-2-057fe6c706e68581",
+    "file_size": 95678,
+    "file_type": "application/octet-stream",
+    "hash": "sha256:057fe6c706e68581",
+    "keywords": [
+      "智慧水务通搞"
+    ],
+    "path": "user-uploads/2/user-upload-2-057fe6c706e68581.md",
+    "session_id": null,
+    "source_type": "upload",
+    "tags": [
+      "user-upload"
+    ],
+    "title": "智慧水务通搞.md",
+    "uploaded_at": "2026-02-05T03:59:46.874576+00:00",
+    "user_id": 2
+  },
+  "user-upload-2-e2b3fd20508d1dca": {
+    "category": "user-upload",
+    "description": "User uploaded file (application/pdf)",
+    "doc_id": "user-upload-2-e2b3fd20508d1dca",
+    "file_size": 709414,
+    "file_type": "application/pdf",
+    "hash": "sha256:e2b3fd20508d1dca",
+    "keywords": [
+      "e2b3fd20508d1dca"
+    ],
+    "path": "user-uploads/2/user-upload-2-e2b3fd20508d1dca.pdf",
+    "source_type": "upload",
+    "tags": [
+      "user-upload",
+      "pdf"
+    ],
+    "title": "user-upload-2-e2b3fd20508d1dca.pdf",
+    "uploaded_at": "2026-02-05T03:52:10.317334+00:00",
+    "user_id": 2
   }
 }

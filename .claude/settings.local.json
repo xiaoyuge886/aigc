@@ -51,7 +51,14 @@
       "Bash(git branch:*)",
       "Bash(ping:*)",
       "Bash(git reset:*)",
-      "Bash(read:*)"
+      "Bash(read:*)",
+      "Bash(npm run)",
+      "Bash(npx eslint:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzcwNzc1NDY5fQ.CC7r3AoPvMCVvMtebAjRnnudeY232UmMfKBKA-5f-Og\")",
+      "Bash(__NEW_LINE_3ac453f34117187e__ echo \"\")",
+      "Bash(git config:*)",
+      "Bash(GIT_CURL_VERBOSE=1 GIT_TRACE=1 git ls-remote:*)",
+      "Bash(tmutil listlocalsnapshots:*)"
     ]
   }
 }
