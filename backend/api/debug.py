@@ -1,11 +1,14 @@
 """
 Debug API - 调试和诊断接口
 """
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.responses import StreamingResponse
 from loguru import logger
 import platform
 import sys
 from datetime import datetime
+from typing import Optional, AsyncIterator
+from pydantic import BaseModel
 
 from models.schemas import HealthResponse
 
@@ -13,6 +16,14 @@ router = APIRouter(
     prefix="/api/v1/debug",
     tags=["debug"]
 )
+
+
+# Request models
+class SkillDebugStreamRequest(BaseModel):
+    skill_name: str
+    skill_content: str
+    test_query: str
+    session_id: Optional[str] = None
 
 
 @router.get("/system-info")
@@ -91,3 +102,139 @@ async def get_stats():
             "timestamp": datetime.now().isoformat()
         }
     }
+
+
+@router.post("/skill/stream")
+async def debug_skill_stream(request: SkillDebugStreamRequest):
+    """
+    调试技能（流式响应，支持多轮对话）
+
+    使用指定的技能内容处理测试查询，返回流式响应
+    用于调试和测试技能
+
+    多轮对话支持：
+        - 首次查询：session_id=null 或不提供，创建新会话
+        - 后续查询：传入返回的 session_id，继续对话
+    """
+    from services.agent_service import AgentService
+    from services.session_manager import SessionManager, get_session_manager
+    from services.database import DatabaseService, get_database_service
+    from models.schemas import StreamChunk, ContentBlock
+    from models.database import MessageDB
+    import uuid
+
+    async def event_generator() -> AsyncIterator[str]:
+        session_mgr = get_session_manager()
+        agent_service = AgentService()
+        db_service = get_database_service()
+
+        session_id = request.session_id
+        conversation_turn_id = uuid.uuid4().hex[:16]
+
+        try:
+            # 构造技能 system_prompt
+            system_prompt = f"""You are using the following skill:
+
+Skill Name: {request.skill_name}
+
+Skill Content:
+{request.skill_content}
+
+Use this skill's instructions to respond to the user's query."""
+
+            logger.info(f"[debug_skill_stream] Testing skill: {request.skill_name}")
+            logger.info(f"[debug_skill_stream] Query: {request.test_query}")
+            logger.info(f"[debug_skill_stream] Session ID: {session_id or 'new session'}")
+
+            # 如果没有 session_id，创建新会话
+            if not session_id:
+                session_id = str(uuid.uuid4())
+                logger.info(f"[debug_skill_stream] Created new session: {session_id}")
+
+            # 保存用户消息
+            user_message_id = await session_mgr.save_message(
+                session_id=session_id,
+                role="user",
+                message_type="text",
+                content=request.test_query,
+                conversation_turn_id=conversation_turn_id,
+            )
+            logger.info(f"[debug_skill_stream] Saved user message: {user_message_id}")
+
+            # 使用 query_in_session 进行多轮对话
+            message_count = 0
+            tool_use_index_map = {}
+            pending_tool_input_deltas = {}
+
+            # 创建 AgentConfig 传递 system_prompt
+            from models.platform import AgentConfig
+            agent_config = AgentConfig(
+                system_prompt=system_prompt,
+                model="sonnet"
+            )
+
+            async for msg in agent_service.query_in_session(
+                prompt=request.test_query,
+                session_id=session_id,
+                agent_config=agent_config,
+                include_partial_messages=True,
+            ):
+                message_count += 1
+
+                # 处理消息类型
+                if isinstance(msg, ContentBlock) and msg.type == "text_delta":
+                    # 处理增量流式文本片段
+                    chunk = StreamChunk(type="text_delta", data=msg)
+                    yield f"data: {chunk.model_dump_json()}\n\n"
+                elif isinstance(msg, ContentBlock) and msg.type == "tool_input_delta":
+                    # 处理工具输入增量
+                    index = msg.index
+                    if index not in pending_tool_input_deltas:
+                        pending_tool_input_deltas[index] = []
+
+                    pending_tool_input_deltas[index].append(msg)
+                    chunk = StreamChunk(type="tool_input_delta", data={"index": index, "delta": msg.delta})
+                    yield f"data: {chunk.model_dump_json()}\n\n"
+                else:
+                    chunk = StreamChunk(type="data", data=msg)
+                    yield f"data: {chunk.model_dump_json()}\n\n"
+
+                    # 处理 tool_use 消息，保存 tool_use_id
+                    if isinstance(msg, ContentBlock) and msg.type == "tool_use" and hasattr(msg, 'id') and hasattr(msg, 'index'):
+                        tool_use_id = msg.id
+                        index = msg.index
+                        tool_use_index_map[index] = tool_use_id
+                        logger.info(f"[debug_skill_stream] Mapped tool_use index {index} -> {tool_use_id}")
+
+            logger.info(f"[debug_skill_stream] Streamed {message_count} messages")
+
+            # 返回结果（包含 session_id）
+            result_chunk = StreamChunk(
+                type="result",
+                data={
+                    "session_id": session_id,
+                    "conversation_turn_id": conversation_turn_id,
+                    "skill_name": request.skill_name
+                }
+            )
+            yield f"data: {result_chunk.model_dump_json()}\n\n"
+
+            logger.info(f"[debug_skill_stream] Skill test completed")
+
+        except Exception as e:
+            logger.error(f"Error in skill debug stream: {e}", exc_info=True)
+            error_chunk = StreamChunk(
+                type="error",
+                data={"error": str(e), "skill_name": request.skill_name}
+            )
+            yield f"data: {error_chunk.model_dump_json()}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        }
+    )

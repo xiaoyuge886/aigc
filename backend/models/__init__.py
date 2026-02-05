@@ -28,7 +28,7 @@ from models.auth import (
 from models.database import (
     Base, RoleDB, UserDB, SessionDB, MessageDB, UserFileRelationshipDB,
     SystemDefaultConfigDB, UserScenarioConfigDB, SessionScenarioConfigDB,
-    BusinessScenarioDB,
+    BusinessScenarioDB, SkillDB,
     UserFeedbackDB, UserPreferencesCacheDB, SessionPreferencesDB, UserBehaviorStatsDB
 )
 
@@ -66,6 +66,7 @@ __all__ = [
     "UserScenarioConfigDB",
     "SessionScenarioConfigDB",
     "BusinessScenarioDB",
+    "SkillDB",
     "UserFeedbackDB",
     "UserPreferencesCacheDB",
     "SessionPreferencesDB",
