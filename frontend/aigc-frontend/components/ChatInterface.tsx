@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { Message, Sender, ResultInfo } from '../types';
 import { streamGeminiResponse } from '../services/geminiService';
-import { streamAgentQuery, deleteSession, getLocalSessionId, getConversationHistory, getFileContent, getSessionFiles, SessionFile } from '../services/agentService';
+import { streamAgentQuery, deleteSession, getLocalSessionId, clearLocalSessionId, getConversationHistory, getFileContent, getSessionFiles, SessionFile } from '../services/agentService';
 import { FilePreview } from './FilePreview';
 import { CodeViewer } from './CodeViewer';
 import { TodoList, TodoItem } from './TodoList';
@@ -105,6 +105,8 @@ interface ChatInterfaceProps {
   setIsWorkspaceOpen: (open: boolean) => void;
   backendProvider?: 'gemini' | 'claude';
   onSessionChange?: (sessionId: string | null) => void;
+  activeSkill?: { id: number; name: string; skillContent: string } | null;
+  onClearActiveSkill?: () => void;
 }
 
 
@@ -208,11 +210,13 @@ const MOCK_HISTORY_MESSAGES: Message[] = [
   }
 ];
 
-export const ChatInterface: React.FC<ChatInterfaceProps> = ({ 
-  isWorkspaceOpen, 
-  setIsWorkspaceOpen, 
+export const ChatInterface: React.FC<ChatInterfaceProps> = ({
+  isWorkspaceOpen,
+  setIsWorkspaceOpen,
   backendProvider = 'claude',
-  onSessionChange 
+  onSessionChange,
+  activeSkill,
+  onClearActiveSkill
 }) => {
   // 初始化消息为空数组，将从后端加载
   const [messages, setMessages] = useState<Message[]>([]);
@@ -604,6 +608,35 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     loadHistory();
   }, [onSessionChange]);
+
+  // 🔔 监听 activeSkill 变化，处理 skill 对话
+  useEffect(() => {
+    if (activeSkill) {
+      console.log('%c🎯 [Skill Chat] 启用技能对话:', 'color: #5856D6; font-weight: bold', {
+        skill_id: activeSkill.id,
+        skill_name: activeSkill.name,
+        skill_content_length: activeSkill.skillContent?.length || 0
+      });
+
+      // 清除当前会话，准备开始新的 skill 对话
+      clearLocalSessionId();
+      setSessionId(null);
+      setMessages([]);
+
+      // 添加技能对话的欢迎消息
+      setMessages([
+        {
+          id: 'm1',
+          text: `🎯 已启用技能：**${activeSkill.name}**\n\n您可以开始与此技能进行对话了。`,
+          sender: Sender.AI,
+          timestamp: new Date()
+        }
+      ]);
+    } else {
+      // activeSkill 被清除，恢复普通对话模式
+      console.log('%c🎯 [Skill Chat] 退出技能对话模式', 'color: #FF9500; font-weight: bold');
+    }
+  }, [activeSkill]);
 
   // 🔄 切换标签页时重置工具相关状态
   const prevActiveTabRef = useRef<'realtime' | 'browser' | 'files' | 'tools' | 'dataflow'>(activeTab);
@@ -2830,46 +2863,45 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 )}
               </div>
               
-              {/* Todo 列表显示 - 只在最新的AI消息下方显示统一的todos */}
+              {/* Todo 列表显示 - 每个有 TodoWrite 的 AI 消息都显示对应的 TodoList */}
               {(() => {
                 const isAIMessage = m.sender === Sender.AI;
                 const hasTodoWrite = isAIMessage && m.tool_calls && m.tool_calls.some(tc => isTodoTool(tc.tool_name));
-                
-                // 🔧 方案3：只在最新的AI消息下方显示统一的todos
-                // 判断是否是最新的有TodoWrite的AI消息
-                const isLatestAIMessageWithTodos = hasTodoWrite && index === latestAIMessageWithTodosIndex;
-                
-                if (isLatestAIMessageWithTodos && todos && todos.length > 0) {
-                  // 🔧 使用统一的 todos（通过 extractTodosFromToolCalls 提取）
-                  // 判断是否是最新的一条历史消息，如果是则自动展开
-                  const isLatestHistoryMessage = m.id === latestHistoryMessageIdWithTodos;
-                  const shouldAutoExpand = shouldAutoExpandTodos || isLatestHistoryMessage;
-                  
-                  // 🔧 使用稳定的key（只基于message_id），让React更新组件而不是重新挂载
-                  const todosKey = `${m.id}`;
-                  
-                  // 🔧 确保每次渲染都创建新的todos数组引用，让React检测到变化
-                  const todosWithNewRef = JSON.parse(JSON.stringify(todos));
-                  
-                  console.log('%c📋 [统一TodoList] 在最新AI消息下方渲染 TodoList', 'color: #34C759; font-weight: bold', {
-                    message_id: m.id,
-                    message_index: index,
-                    latestAIMessageWithTodosIndex: latestAIMessageWithTodosIndex,
-                    todos_count: todosWithNewRef.length,
-                    todos_statuses: todosWithNewRef.map((t: any) => `${t.content?.substring(0, 15)}:${t.status}`),
-                    todos_key: todosKey
-                  });
-                  
-                  return (
-                    <TodoList 
-                      key={todosKey}
-                      todos={todosWithNewRef}
-                      defaultExpanded={false}
-                      autoExpand={shouldAutoExpand}
-                    />
-                  );
+
+                if (hasTodoWrite) {
+                  // 🔧 为每个消息提取其自己的 todos
+                  const messageTodos = extractTodosFromToolCalls([m]);
+
+                  if (messageTodos && messageTodos.length > 0) {
+                    // 判断是否是最新的一条有 TodoWrite 的历史消息
+                    const isLatestHistoryMessage = m.id === latestHistoryMessageIdWithTodos;
+                    const shouldAutoExpand = shouldAutoExpandTodos || isLatestHistoryMessage;
+
+                    // 🔧 使用稳定的key（只基于message_id），让React更新组件而不是重新挂载
+                    const todosKey = `${m.id}`;
+
+                    console.log('%c📋 [TodoList] 渲染消息的 TodoList', 'color: #34C759; font-weight: bold', {
+                      message_id: m.id,
+                      message_index: index,
+                      is_latest: index === latestAIMessageWithTodosIndex,
+                      is_latest_history: isLatestHistoryMessage,
+                      should_auto_expand: shouldAutoExpand,
+                      todos_count: messageTodos.length,
+                      todos_statuses: messageTodos.map(t => `${t.content?.substring(0, 15)}:${t.status}`),
+                      todos_key: todosKey
+                    });
+
+                    return (
+                      <TodoList
+                        key={todosKey}
+                        todos={messageTodos}
+                        defaultExpanded={false}
+                        autoExpand={shouldAutoExpand}
+                      />
+                    );
+                  }
                 }
-                
+
                 return null;
               })()}
               

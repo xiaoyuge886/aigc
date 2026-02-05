@@ -29,12 +29,51 @@ class Settings(BaseSettings):
         description="Comma-separated list of allowed tools"
     )
 
-    # Working Directory
-    # 使用项目根目录下的 work_dir
-    # 所有文件操作都建议在 work_dir/ 目录下进行
+    # ============================================================================
+    # Working Directory Configuration
+    # ============================================================================
+
+    # Production working directory (生产环境工作目录)
+    # 用于对话环境的文件操作
     work_dir: Path = Field(
         default=Path(__file__).parent.parent.parent / "work_dir",
-        description="Working directory for file operations (项目根目录: aigc/work_dir)"
+        description="Production working directory (用于对话环境)"
+    )
+
+    # Debug working directory (调试环境工作目录)
+    # 用于调试环境的文件操作
+    debug_work_dir: Path = Field(
+        default=Path(__file__).parent.parent.parent / "debug_work_dir",
+        description="Debug working directory (用于调试环境)"
+    )
+
+    # ============================================================================
+    # Setting Sources Configuration (技能加载来源)
+    # ============================================================================
+
+    # Production setting sources (生产环境技能来源)
+    # 用于对话环境的技能加载
+    setting_sources: List[str] = Field(
+        default=["project"],
+        description="Production skill loading sources (用于对话环境)"
+    )
+
+    # Debug setting sources (调试环境技能来源)
+    # 用于调试环境的技能加载
+    debug_setting_sources: List[str] = Field(
+        default=["project"],
+        description="Debug skill loading sources (用于调试环境)"
+    )
+
+    # ============================================================================
+    # Online Debug Feature (在线调试功能 - 面向用户)
+    # ============================================================================
+
+    # Online debug max turns (在线调试最大对话轮次)
+    # 用户在测试技能时的轮次限制（通常比生产环境小，节省成本）
+    online_debug_max_turns: int = Field(
+        default=10,
+        description="Online debug maximum conversation turns (for user skill testing)"
     )
 
     @field_validator('work_dir', mode='after')
@@ -71,6 +110,40 @@ class Settings(BaseSettings):
 
         return v
 
+    @field_validator('debug_work_dir', mode='after')
+    @classmethod
+    def validate_debug_work_dir(cls, v: Path) -> Path:
+        """
+        验证调试环境工作目录
+        - 强制使用项目根目录下的 debug_work_dir
+        - 如果目录不存在，自动创建
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+
+        # 确保路径是绝对路径
+        if not v.is_absolute():
+            v = v.resolve()
+
+        # 强制目录名称必须是 debug_work_dir
+        if v.name != "debug_work_dir":
+            logger.warning(f"调试工作目录名称必须是 'debug_work_dir'，当前是 '{v.name}'，强制修正")
+            v = v.parent / "debug_work_dir"
+
+        # 自动创建目录（如果不存在）
+        try:
+            v.mkdir(parents=True, exist_ok=True)
+            logger.info(f"✅ 调试环境工作目录已准备就绪: {v}")
+        except Exception as e:
+            logger.error(f"❌ 无法创建调试工作目录 {v}: {e}")
+            # 如果创建失败，回退到临时目录
+            import tempfile
+            v = Path(tempfile.gettempdir()) / "aigc_debug_work_dir"
+            v.mkdir(exist_ok=True)
+            logger.warning(f"⚠️ 使用临时目录作为调试工作目录: {v}")
+
+        return v
+
     # Session Configuration
     session_timeout_seconds: int = Field(default=3600, description="Session timeout")
     max_concurrent_sessions: int = Field(default=100, description="Max concurrent sessions")
@@ -93,15 +166,25 @@ class Settings(BaseSettings):
         return [tool.strip() for tool in self.default_allowed_tools.split(",") if tool.strip()]
 
     def get_agent_options(self) -> dict:
-        """Get Claude Agent SDK options from settings"""
-        from claude_agent_sdk import ClaudeAgentOptions
-
+        """Get Claude Agent SDK options for production environment (对话环境)"""
         return {
             "allowed_tools": self.allowed_tools_list,
             "permission_mode": self.permission_mode,
             "max_turns": self.max_turns,
             "model": self.default_model,
             "cwd": str(self.work_dir),
+            "setting_sources": self.setting_sources,
+        }
+
+    def get_debug_agent_options(self) -> dict:
+        """Get Claude Agent SDK options for debug environment (调试环境)"""
+        return {
+            "allowed_tools": self.allowed_tools_list,
+            "permission_mode": self.permission_mode,
+            "max_turns": self.online_debug_max_turns,
+            "model": self.default_model,
+            "cwd": str(self.debug_work_dir),
+            "setting_sources": self.debug_setting_sources,
         }
 
 

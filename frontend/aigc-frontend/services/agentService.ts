@@ -553,6 +553,168 @@ export async function* streamAgentQuery(
   }
 }
 
+// 流式调试技能 - 复用 streamAgentQuery 的逻辑，但调用调试端点
+export async function* streamDebugSkill(
+  skillName: string,
+  skillContent: string,
+  testQuery: string,
+  skills?: string[],  // 新增：要加载的技能列表，如 ['skill-creator']
+  sessionId?: string,  // 新增：会话ID，用于多轮对话
+): AsyncGenerator<StreamChunk, void, unknown> {
+  const endpoint = '/api/v1/debug/skill/stream';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+  console.log('%c📤 发送调试请求:', 'color: #FF9500; font-weight: bold');
+  console.log('  Endpoint:', endpoint);
+  console.log('  Skill:', skillName);
+  console.log('  Skills to load:', skills || 'none');
+  console.log('  Session ID:', sessionId || '(new session)');
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        skill_name: skillName,
+        skill_content: skillContent,
+        test_query: testQuery,
+        skills: skills,  // 传递 skills 参数
+        session_id: sessionId,  // 传递 session_id（多轮对话）
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('无法获取响应流');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let hasReceivedTextDelta = false;
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        yield { text: '', isComplete: true };
+        break;
+      }
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || !trimmed.startsWith('data: ')) {
+          continue;
+        }
+
+        try {
+          const jsonStr = trimmed.slice(6);
+          const message: StreamMessage = JSON.parse(jsonStr);
+
+          if (message.type === 'text_delta') {
+            hasReceivedTextDelta = true;
+            const text = message.data.text || '';
+            if (text) {
+              yield { text };
+            }
+          } else if (message.type === 'data') {
+            const msgType = message.data?.type;
+
+            if (msgType === 'system') {
+              if (message.data.data?.session_id) {
+                yield {
+                  text: '',
+                  isComplete: false,
+                  sessionId: message.data.data.session_id,
+                };
+              }
+            } else if (msgType === 'assistant') {
+              if (message.data.content) {
+                const toolCalls: any[] = [];
+                let text = '';
+
+                for (const block of message.data.content) {
+                  if (block.type === 'text' && block.text && !hasReceivedTextDelta) {
+                    text += block.text;
+                  } else if (block.type === 'tool_use') {
+                    toolCalls.push({
+                      tool_use_id: block.tool_use_id,
+                      tool_name: block.tool_name,
+                      input: block.tool_input,
+                      status: 'running',
+                      timestamp: new Date().toLocaleTimeString('zh-CN')
+                    });
+                  }
+                }
+
+                if (!hasReceivedTextDelta && text) {
+                  yield { text, ...(toolCalls.length > 0 ? { toolCalls } : {}) };
+                } else if (toolCalls.length > 0) {
+                  yield { text: '', toolCalls };
+                }
+              }
+            } else if (msgType === 'result') {
+              const resultInfo: ResultInfo = {
+                subtype: message.data.subtype,
+                duration_ms: message.data.duration_ms,
+                duration_api_ms: message.data.duration_api_ms,
+                is_error: message.data.is_error,
+                num_turns: message.data.num_turns,
+                session_id: message.data.session_id,
+                total_cost_usd: message.data.total_cost_usd,
+                usage: message.data.usage,
+              };
+
+              yield {
+                text: '',
+                isComplete: true,
+                resultInfo,
+              };
+              break;
+            } else if (msgType === 'tool_start') {
+              yield {
+                text: '',
+                toolStart: {
+                  tool_use_id: message.data.tool_use_id,
+                  tool_name: message.data.tool_name,
+                  tool_input: message.data.tool_input,
+                  timestamp: new Date().toLocaleTimeString('zh-CN')
+                }
+              };
+            } else if (msgType === 'tool_result') {
+              yield {
+                text: '',
+                toolCalls: [{
+                  tool_use_id: message.data.tool_use_id,
+                  tool_name: 'Unknown',
+                  output: message.data.text,
+                  is_error: message.data.is_error,
+                  timestamp: new Date().toLocaleTimeString('zh-CN')
+                }]
+              };
+            }
+          }
+        } catch (e) {
+          console.warn('解析 SSE 数据失败:', e, trimmed);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('流式调试异常:', error);
+    yield {
+      text: '',
+      error: error instanceof Error ? error.message : '请求失败',
+    };
+  }
+}
+
 // 获取会话历史（旧格式）
 export async function getSessionHistory(sessionId: string, limit?: number) {
   const response = await apiClient.get(`/api/v1/session/${sessionId}/history${limit ? `?limit=${limit}` : ''}`);

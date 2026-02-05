@@ -128,6 +128,7 @@ class AgentConfig(BaseModel):
     custom_tools: Optional[Dict[str, Any]] = None
     setting_sources: Optional[List[str]] = None
     enabled_skill_ids: Optional[List[str]] = None  # 指定要启用的技能ID列表（用于精细控制）
+    add_dirs: Optional[List[str]] = None  # 额外的可访问目录（用于调试技能时只加载单个技能）
 
 
 # =========================================================================

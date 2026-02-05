@@ -627,3 +627,22 @@ def get_database_service() -> DatabaseService:
     if _db_service is None:
         _db_service = DatabaseService()
     return _db_service
+
+
+# FastAPI dependency for database sessions
+async def get_db():
+    """
+    FastAPI dependency for getting database sessions
+
+    Usage in API routes:
+        @router.get("/some-endpoint")
+        async def some_endpoint(db: AsyncSession = Depends(get_db)):
+            # Use db here
+            pass
+    """
+    db_service = get_database_service()
+    async with db_service.async_session() as session:
+        try:
+            yield session
+        finally:
+            pass  # Session will be automatically closed by context manager

@@ -2,10 +2,11 @@
 SQLAlchemy database models for session persistence
 """
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 from sqlalchemy import (
-    String, DateTime, Integer, Text, Boolean, JSON, ForeignKey
+    String, DateTime, Integer, Text, Boolean, JSON, ForeignKey, UniqueConstraint
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from passlib.context import CryptContext
@@ -351,40 +352,105 @@ class ConversationTurnConfigDB(Base):
 
 
 class SkillDB(Base):
-    """Skill template table"""
+    """技能表 - 极简设计
+
+    设计理念：
+    1. 技能存储在文件系统（.claude/skills/）
+    2. 数据库只存：名称、路径、状态、作者、使用次数
+    3. 通过 status 区分使用场景：
+       - draft: 草稿（用户创建，正在编辑）
+       - testing: 调试中（技能市场在线调试）
+       - published: 已发布（AI 对话可加载）
+       - official: 官方技能（系统预设）
+       - archived: 归档
+    """
     __tablename__ = "skills"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    # 移除 skill_id 字符串字段，统一使用整数 id
 
-    # Skill metadata
-    name: Mapped[str] = mapped_column(String(200), index=True)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    category: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, index=True)  # 分类：如 "analysis", "coding", "research" 等
-
-    # Skill content
-    skill_content: Mapped[str] = mapped_column(Text)  # Skill 内容（SKILL.md 的内容）
-    skill_config: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)  # Skill 配置（skill.json 的内容）
-
-    # Usage metadata
-    usage_count: Mapped[int] = mapped_column(Integer, default=0)  # 使用次数
-    is_default: Mapped[bool] = mapped_column(Boolean, default=False, index=True)  # 是否为默认技能
-
-    # Ownership and visibility
-    created_by: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
+    # 基本信息
+    name: Mapped[str] = mapped_column(
+        String(100), unique=True, index=True,
+        comment="技能名称（同目录名）"
     )
-    is_public: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+
+    # 文件路径（核心字段）
+    skill_path: Mapped[str] = mapped_column(
+        String(500), unique=True, index=True,
+        comment="技能目录路径，如：.claude/skills/{name}/"
+    )
+
+    # 简短描述（可选，用于列表展示）
+    description: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True,
+        comment="简短描述（用于列表展示）"
+    )
+
+    # 来源标识
+    source: Mapped[str] = mapped_column(
+        String(50), default='conversation', index=True,
+        comment="来源：github(GitHub拉取) | conversation(对话生成) | upload(手动上传) | official(官方预设)"
+    )
+
+    # ==================== 核心状态标识 ====================
+    status: Mapped[str] = mapped_column(
+        String(20), default='draft', index=True,
+        comment="状态：draft(草稿) | testing(调试中) | published(已发布) | official(官方) | archived(归档)"
+    )
+
+    # 所有权（NULL 表示官方技能）
+    author_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True,
+        comment="创建者 ID（NULL 表示官方技能）"
+    )
+
+    # 使用统计
+    usage_count: Mapped[int] = mapped_column(Integer, default=0, comment="使用次数")
 
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
-    creator: Mapped[Optional["UserDB"]] = relationship("UserDB", foreign_keys=[created_by])
+    creator: Mapped[Optional["UserDB"]] = relationship("UserDB", foreign_keys=[author_id])
 
     def __repr__(self):
-        return f"<SkillDB(id={self.id}, name={self.name})>"
+        return f"<SkillDB(id={self.id}, name={self.name}, status={self.status})>"
+
+    @property
+    def is_official(self) -> bool:
+        """是否为官方技能"""
+        return self.author_id is None or self.status == 'official'
+
+    @property
+    def can_load_in_chat(self) -> bool:
+        """是否可在 AI 对话中加载"""
+        return self.status in ('published', 'official')
+
+    @property
+    def can_debug_online(self) -> bool:
+        """是否可在线调试"""
+        return self.status in ('draft', 'testing')
+
+    def get_skill_dir(self) -> Path:
+        """获取技能目录路径"""
+        from pathlib import Path
+        return Path(self.skill_path)
+
+    def get_skill_file_path(self) -> Path:
+        """获取 SKILL.md 文件路径"""
+        return self.get_skill_dir() / "SKILL.md"
+
+    def get_skill_content(self) -> str:
+        """读取 SKILL.md 内容"""
+        try:
+            return self.get_skill_file_path().read_text(encoding='utf-8')
+        except FileNotFoundError:
+            return f"# 技能文件未找到\n\n技能路径：{self.skill_path}"
+
+    def is_available(self) -> bool:
+        """检查技能是否可用（目录和 SKILL.md 都存在）"""
+        return self.get_skill_file_path().exists()
 
 
 class UserFileRelationshipDB(Base):

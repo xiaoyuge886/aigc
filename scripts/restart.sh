@@ -23,11 +23,15 @@ echo ""
 # ========================================
 echo -e "${YELLOW}[1/3] 停止现有服务...${NC}"
 
-# 查找并停止后端服务
-BACKEND_PIDS=$(ps aux | grep "uvicorn main:app" | grep -v grep | awk '{print $2}')
+# 查找并停止后端服务（通过端口或进程名）
+BACKEND_PIDS=$(lsof -ti :8000 2>/dev/null)
+if [ -z "$BACKEND_PIDS" ]; then
+    # 如果端口查找失败，尝试进程名查找
+    BACKEND_PIDS=$(ps aux | grep -E "(uvicorn.*main:app|python.*main\.py)" | grep -v grep | awk '{print $2}')
+fi
 if [ -n "$BACKEND_PIDS" ]; then
-    echo -e "${YELLOW}发现运行中的后端服务，正在停止...${NC}"
-    echo "$BACKEND_PIDS" | xargs kill 2>/dev/null
+    echo -e "${YELLOW}发现运行中的后端服务 (PID: $BACKEND_PIDS)，正在停止...${NC}"
+    echo "$BACKEND_PIDS" | xargs kill -9 2>/dev/null
     sleep 1
     echo -e "${GREEN}✓ 后端服务已停止${NC}"
 else
@@ -90,9 +94,10 @@ echo -e "${YELLOW}[3/3] 重新启动服务...${NC}"
 echo ""
 
 # 调用启动脚本
-if [ -x "$SCRIPT_DIR/start.sh" ]; then
-    exec "$SCRIPT_DIR/start.sh"
+START_SCRIPT="$SCRIPT_DIR/scripts/start.sh"
+if [ -x "$START_SCRIPT" ]; then
+    exec "$START_SCRIPT"
 else
     echo -e "${YELLOW}start.sh 不可执行，尝试直接运行...${NC}"
-    bash "$SCRIPT_DIR/start.sh"
+    bash "$START_SCRIPT"
 fi

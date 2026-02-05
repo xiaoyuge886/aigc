@@ -4,6 +4,7 @@ Authentication service for user management and JWT tokens
 from datetime import datetime, timedelta
 from typing import Optional, List
 
+from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from loguru import logger
 from sqlalchemy import select
@@ -126,6 +127,69 @@ class AuthService:
 
         logger.debug(f"JWT token created for user_id={data.get('sub')}, expires={expire}")
         return encoded_jwt
+
+    async def get_current_user(self, token: str) -> Optional[UserDB]:
+        """
+        Get current user from JWT token
+
+        Args:
+            token: JWT access token
+
+        Returns:
+            UserDB object if token is valid, None otherwise
+
+        Raises:
+            HTTPException: If token is invalid or expired
+        """
+        try:
+            # Decode token
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            user_id: int = payload.get("sub")
+            if user_id is None:
+                logger.warning("JWT token missing 'sub' claim")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid authentication credentials",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
+            # Get user from database
+            user = await self.get_user_by_id(user_id)
+            if user is None:
+                logger.warning(f"User not found for user_id={user_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="User not found",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
+            if not user.is_active:
+                logger.warning(f"User account disabled: user_id={user_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="User account is disabled",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
+            logger.debug(f"User authenticated via token: user_id={user_id}, username={user.username}")
+            return user
+
+        except JWTError as e:
+            logger.warning(f"JWT decode error: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error in get_current_user: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Authentication failed",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
 
     async def get_user_by_id(self, user_id: int) -> Optional[UserDB]:
         """Get user by ID with role relationship loaded"""
@@ -274,3 +338,79 @@ def get_auth_service() -> AuthService:
         from services.database import get_database_service
         _auth_service = AuthService(get_database_service())
     return _auth_service
+
+
+# FastAPI dependencies for authentication
+from fastapi import Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Optional
+
+security = HTTPBearer()
+security_optional = HTTPBearer(auto_error=False)
+
+
+async def get_current_user_optional(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security_optional)
+) -> Optional[UserDB]:
+    """
+    Get current user from token (optional - returns None if no token)
+
+    Usage:
+        @router.get("/public-endpoint")
+        async def public_endpoint(current_user: Optional[UserDB] = Depends(get_current_user_optional)):
+            if current_user:
+                # User is logged in
+                pass
+            else:
+                # User is not logged in
+                pass
+    """
+    if not credentials:
+        return None
+
+    try:
+        auth_service = get_auth_service()
+        user = await auth_service.get_current_user(credentials.credentials)
+        return user
+    except Exception:
+        return None
+
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+) -> UserDB:
+    """
+    Get current user from token (required - raises 401 if no token or invalid)
+
+    Usage:
+        @router.get("/protected-endpoint")
+        async def protected_endpoint(current_user: UserDB = Depends(get_current_user)):
+            # User is authenticated
+            pass
+    """
+    if not credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    try:
+        auth_service = get_auth_service()
+        user = await auth_service.get_current_user(credentials.credentials)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return user
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
+        )

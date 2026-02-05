@@ -23,6 +23,7 @@ logger.info(f"Loaded environment variables from {env_path}")
 from core.config import settings
 from models.schemas import HealthResponse
 from api.v1 import router
+from api import debug as debug_router  # 新增：调试路由
 from services.session_manager import get_session_manager
 from services.database import get_database_service
 
@@ -231,6 +232,8 @@ async def global_exception_handler(request, exc):
 
 # Include routers
 app.include_router(router)
+# 新增：包含调试路由（独立调试系统）
+app.include_router(debug_router.router)
 
 
 # Root endpoint

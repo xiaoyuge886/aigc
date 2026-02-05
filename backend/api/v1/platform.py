@@ -1565,45 +1565,78 @@ async def create_skill(
     current_user: UserDB = Depends(get_current_user),
     config_manager: ConfigurationManager = Depends(get_configuration_manager),
 ):
-    """Create a new skill (admin only)"""
+    """Create a new skill (admin only)
+
+    Note: Using simplified SkillDB model where:
+    - Content is stored in file system (.claude/skills/{name}/)
+    - Database stores minimal metadata
+    - is_public maps to status field
+    - created_by maps to author_id
+    """
     if not is_admin_user(current_user):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only admins can create skills"
         )
-    
+
     try:
+        import json
+        from pathlib import Path
+
+        # Determine skill directory
+        skills_dir = Path(".claude/skills")
+        skill_dir = skills_dir / skill_data.name
+
+        # Create skill directory and files
+        skill_dir.mkdir(parents=True, exist_ok=True)
+
+        # Write skill.md
+        if skill_data.skill_content:
+            skill_md = skill_dir / "skill.md"
+            skill_md.write_text(skill_data.skill_content, encoding='utf-8')
+
+        # Write skill.json if config provided
+        if skill_data.skill_config:
+            skill_json = skill_dir / "skill.json"
+            skill_json.write_text(json.dumps(skill_data.skill_config, ensure_ascii=False), encoding='utf-8')
+
+        # Determine status from is_public and is_default
+        if skill_data.is_default:
+            status = 'official'
+        elif skill_data.is_public:
+            status = 'published'
+        else:
+            status = 'draft'
+
         async with config_manager.db_service.async_session() as session:
             from sqlalchemy import select, text
-            # 不再检查 skill_id，因为使用自增整数 id
             skill = SkillDB(
                 name=skill_data.name,
                 description=skill_data.description,
-                category=skill_data.category,
-                skill_content=skill_data.skill_content,
-                skill_config=skill_data.skill_config,
-                is_default=skill_data.is_default or False,
-                is_public=skill_data.is_public or False,
-                created_by=current_user.id,
+                skill_path=str(skill_dir),
+                status=status,
+                author_id=current_user.id,
             )
-            
+
             session.add(skill)
             await session.commit()
             await session.refresh(skill)
-            
+
             logger.info(f"Created skill id={skill.id} by user_id={current_user.id}")
-            
+
+            skill_is_public = skill.status in ['published', 'official']
+
             return SkillResponse(
                 id=skill.id,
                 name=skill.name,
                 description=skill.description,
-                category=skill.category,
-                skill_content=skill.skill_content,
-                skill_config=skill.skill_config,
+                category=None,  # Not stored in simplified model
+                skill_content=skill_data.skill_content or "",
+                skill_config=skill_data.skill_config,
                 usage_count=skill.usage_count,
-                is_default=skill.is_default,
-                created_by=skill.created_by,
-                is_public=skill.is_public,
+                is_default=(skill.status == 'official'),
+                created_by=skill.author_id,
+                is_public=skill_is_public,
                 created_at=skill.created_at.isoformat() + "Z",
                 updated_at=skill.updated_at.isoformat() + "Z",
             )
@@ -1624,30 +1657,44 @@ async def list_skills(
     current_user: Optional[UserDB] = Depends(get_current_user_optional),
     config_manager: ConfigurationManager = Depends(get_configuration_manager),
 ):
-    """List all skills (public ones or user's own)"""
+    """List all skills (public ones or user's own)
+
+    Note: Using simplified SkillDB model where:
+    - is_public is derived from status (published/official = public)
+    - created_by is author_id
+    - category is not stored (always None)
+    - skill_content and skill_config are loaded from file system
+    """
     try:
         async with config_manager.db_service.async_session() as session:
             from sqlalchemy import select, text, or_, func
+            import json
+            from pathlib import Path
+
             stmt = select(SkillDB)
-            
+
             # Count total skills in database (for debugging)
             total_count_stmt = select(func.count(SkillDB.id))
             total_count_result = await session.execute(total_count_stmt)
             total_skills_count = total_count_result.scalar()
             logger.info(f"[list_skills] Total skills in database: {total_skills_count}")
-            
-            # Filter by category if provided
+
+            # Note: category filter is ignored as SkillDB doesn't have category field
             if category:
-                stmt = stmt.where(SkillDB.category == category)
-            
+                logger.info(f"[list_skills] Category filter '{category}' ignored (not supported by simplified SkillDB)")
+
             # Filter by visibility
             is_admin = current_user and is_admin_user(current_user) if current_user else False
             logger.info(f"[list_skills] User: {current_user.id if current_user else 'anonymous'}, is_admin: {is_admin}, is_public param: {is_public}")
-            
+
             if is_admin:
                 # Admin can see all skills (unless is_public filter is explicitly set)
                 if is_public is not None:
-                    stmt = stmt.where(SkillDB.is_public == is_public)
+                    # Convert is_public to status filter
+                    if is_public:
+                        stmt = stmt.where(SkillDB.status.in_(['published', 'official']))
+                    else:
+                        stmt = stmt.where(SkillDB.status.notin_(['published', 'official']))
                     logger.info(f"[list_skills] Admin user with is_public filter: {is_public}")
                 else:
                     logger.info(f"[list_skills] Admin user - showing all skills (no filter)")
@@ -1656,50 +1703,68 @@ async def list_skills(
                 if current_user:
                     stmt = stmt.where(
                         or_(
-                            SkillDB.is_public == True,
-                            SkillDB.created_by == current_user.id
+                            SkillDB.status.in_(['published', 'official']),
+                            SkillDB.author_id == current_user.id
                         )
                     )
                     logger.info(f"[list_skills] Non-admin user {current_user.id} - showing public skills or own skills")
                 else:
                     # Anonymous users can only see public skills
-                    stmt = stmt.where(SkillDB.is_public == True)
+                    stmt = stmt.where(SkillDB.status.in_(['published', 'official']))
                     logger.info(f"[list_skills] Anonymous user - showing only public skills")
-            
-            # Count total skills before filtering (for debugging)
-            count_stmt = select(func.count(SkillDB.id))
-            if category:
-                count_stmt = count_stmt.where(SkillDB.category == category)
-            count_result = await session.execute(count_stmt)
+
+            # Execute count query
+            count_result = await session.execute(select(func.count(SkillDB.id)).where(stmt.whereclause))
             total_count = count_result.scalar()
-            logger.info(f"[list_skills] Total skills in database (category={category}): {total_count}")
-            
+            logger.info(f"[list_skills] Total skills matching filter: {total_count}")
+
             stmt = stmt.order_by(SkillDB.created_at.desc())
             result = await session.execute(stmt)
             skills = result.scalars().all()
             logger.info(f"[list_skills] Found {len(skills)} skills after filtering")
-            
-            # Log skill details for debugging
+
+            # Build response with file system data
+            response_data = []
             for s in skills:
-                logger.info(f"[list_skills] Skill: id={s.id}, name={s.name}, is_public={s.is_public}, created_by={s.created_by}")
-            
-        return [
-            SkillResponse(
-                id=s.id,
-                name=s.name,
-                    description=s.description,
-                    category=s.category,
-                    skill_content=s.skill_content,
-                    skill_config=s.skill_config,
-                    usage_count=s.usage_count,
-                    is_default=s.is_default,
-                    created_by=s.created_by,
-                    is_public=s.is_public,
-                    created_at=s.created_at.isoformat() + "Z",
-                    updated_at=s.updated_at.isoformat() + "Z",
+                # Determine if skill is public based on status
+                skill_is_public = s.status in ['published', 'official']
+
+                # Load skill content from file system
+                skill_content = ""
+                skill_config = None
+                skill_dir = Path(s.skill_path)
+                if skill_dir.exists():
+                    # Try to load skill.md
+                    skill_md = skill_dir / "skill.md"
+                    if skill_md.exists():
+                        skill_content = skill_md.read_text(encoding='utf-8')
+
+                    # Try to load skill.json for config
+                    skill_json = skill_dir / "skill.json"
+                    if skill_json.exists():
+                        try:
+                            skill_config = json.loads(skill_json.read_text(encoding='utf-8'))
+                        except Exception as e:
+                            logger.warning(f"[list_skills] Failed to load skill.json for {s.name}: {e}")
+
+                response_data.append(
+                    SkillResponse(
+                        id=s.id,
+                        name=s.name,
+                        description=s.description,
+                        category=None,  # Not stored in simplified model
+                        skill_content=skill_content,
+                        skill_config=skill_config,
+                        usage_count=s.usage_count,
+                        is_default=(s.status == 'official'),
+                        created_by=s.author_id,
+                        is_public=skill_is_public,
+                        created_at=s.created_at.isoformat() + "Z",
+                        updated_at=s.updated_at.isoformat() + "Z",
+                    )
                 )
-                for s in skills
-            ]
+
+            return response_data
     except Exception as e:
         logger.error(f"Error listing skills: {e}")
         raise HTTPException(
@@ -1714,46 +1779,71 @@ async def get_skill(
     current_user: Optional[UserDB] = Depends(get_current_user_optional),
     config_manager: ConfigurationManager = Depends(get_configuration_manager),
 ):
-    """Get a skill by id"""
+    """Get a skill by id
+
+    Note: Using simplified SkillDB model where content is loaded from file system
+    """
     try:
         async with config_manager.db_service.async_session() as session:
             from sqlalchemy import select, text
+            import json
+            from pathlib import Path
+
             stmt = select(SkillDB).where(
                 SkillDB.id == skill_id  # 使用整数ID查询
             )
             result = await session.execute(stmt)
             skill = result.scalar_one_or_none()
-            
+
             if not skill:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Skill with id={skill_id} not found"
                 )
-            
-            # Check permission
-            if not skill.is_public:
+
+            # Check permission - public skills are published/official
+            skill_is_public = skill.status in ['published', 'official']
+            if not skill_is_public:
                 if not current_user:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="Authentication required"
                     )
-                if not is_admin_user(current_user) and skill.created_by != current_user.id:
+                is_admin = is_admin_user(current_user)
+                is_creator = skill.author_id == current_user.id
+                if not (is_admin or is_creator):
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
                         detail="You don't have permission to access this skill"
                     )
-            
+
+            # Load skill content from file system
+            skill_content = ""
+            skill_config = None
+            skill_dir = Path(skill.skill_path)
+            if skill_dir.exists():
+                skill_md = skill_dir / "skill.md"
+                if skill_md.exists():
+                    skill_content = skill_md.read_text(encoding='utf-8')
+
+                skill_json = skill_dir / "skill.json"
+                if skill_json.exists():
+                    try:
+                        skill_config = json.loads(skill_json.read_text(encoding='utf-8'))
+                    except Exception as e:
+                        logger.warning(f"[get_skill] Failed to load skill.json for {skill.name}: {e}")
+
             return SkillResponse(
                 id=skill.id,
                 name=skill.name,
                 description=skill.description,
-                category=skill.category,
-                skill_content=skill.skill_content,
-                skill_config=skill.skill_config,
+                category=None,  # Not stored in simplified model
+                skill_content=skill_content,
+                skill_config=skill_config,
                 usage_count=skill.usage_count,
-                is_default=skill.is_default,
-                created_by=skill.created_by,
-                is_public=skill.is_public,
+                is_default=(skill.status == 'official'),
+                created_by=skill.author_id,
+                is_public=skill_is_public,
                 created_at=skill.created_at.isoformat() + "Z",
                 updated_at=skill.updated_at.isoformat() + "Z",
             )
@@ -1774,63 +1864,96 @@ async def update_skill(
     current_user: UserDB = Depends(get_current_user),
     config_manager: ConfigurationManager = Depends(get_configuration_manager),
 ):
-    """Update a skill (only creator or admin can update)"""
+    """Update a skill (only creator or admin can update)
+
+    Note: Using simplified SkillDB model where content is stored in file system
+    Only metadata fields are stored in database.
+    """
     try:
         async with config_manager.db_service.async_session() as session:
             from sqlalchemy import select, text
+            import json
+            from pathlib import Path
+
             stmt = select(SkillDB).where(
                 SkillDB.id == skill_id  # 使用整数ID查询
             )
             result = await session.execute(stmt)
             skill = result.scalar_one_or_none()
-            
+
             if not skill:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Skill with id={skill_id} not found"
                 )
-            
+
             # Check permission
             is_admin = is_admin_user(current_user)
-            is_creator = skill.created_by == current_user.id
+            is_creator = skill.author_id == current_user.id
             if not (is_admin or is_creator):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="You can only update skills you created"
                 )
-            
-            # Update fields
+
+            # Update database fields
             if skill_data.name is not None:
                 skill.name = skill_data.name
             if skill_data.description is not None:
                 skill.description = skill_data.description
-            if skill_data.category is not None:
-                skill.category = skill_data.category
-            if skill_data.skill_content is not None:
-                skill.skill_content = skill_data.skill_content
-            if skill_data.skill_config is not None:
-                skill.skill_config = skill_data.skill_config
-            if skill_data.is_default is not None:
-                skill.is_default = skill_data.is_default
+            # category, skill_content, skill_config, is_default are stored in file system
+            # is_public maps to status
             if skill_data.is_public is not None:
-                skill.is_public = skill_data.is_public
-            
+                # Map is_public to status
+                if skill_data.is_public and skill.status not in ['published', 'official']:
+                    skill.status = 'published'
+                elif not skill_data.is_public and skill.status in ['published']:
+                    skill.status = 'draft'
+
+            # Update file system content if provided
+            skill_dir = Path(skill.skill_path)
+            if skill_dir.exists():
+                if skill_data.skill_content is not None:
+                    skill_md = skill_dir / "skill.md"
+                    skill_md.write_text(skill_data.skill_content, encoding='utf-8')
+
+                if skill_data.skill_config is not None:
+                    skill_json = skill_dir / "skill.json"
+                    skill_json.write_text(json.dumps(skill_data.skill_config, ensure_ascii=False), encoding='utf-8')
+
             await session.commit()
             await session.refresh(skill)
-            
+
             logger.info(f"Updated skill id={skill_id} by user_id={current_user.id}")
-            
+
+            # Load updated content from file system
+            skill_content = ""
+            skill_config = None
+            if skill_dir.exists():
+                skill_md = skill_dir / "skill.md"
+                if skill_md.exists():
+                    skill_content = skill_md.read_text(encoding='utf-8')
+
+                skill_json = skill_dir / "skill.json"
+                if skill_json.exists():
+                    try:
+                        skill_config = json.loads(skill_json.read_text(encoding='utf-8'))
+                    except Exception as e:
+                        logger.warning(f"[update_skill] Failed to load skill.json for {skill.name}: {e}")
+
+            skill_is_public = skill.status in ['published', 'official']
+
             return SkillResponse(
                 id=skill.id,
                 name=skill.name,
                 description=skill.description,
-                category=skill.category,
-                skill_content=skill.skill_content,
-                skill_config=skill.skill_config,
+                category=None,  # Not stored in simplified model
+                skill_content=skill_content,
+                skill_config=skill_config,
                 usage_count=skill.usage_count,
-                is_default=skill.is_default,
-                created_by=skill.created_by,
-                is_public=skill.is_public,
+                is_default=(skill.status == 'official'),
+                created_by=skill.author_id,
+                is_public=skill_is_public,
                 created_at=skill.created_at.isoformat() + "Z",
                 updated_at=skill.updated_at.isoformat() + "Z",
             )
@@ -1850,7 +1973,10 @@ async def delete_skill(
     current_user: UserDB = Depends(get_current_user),
     config_manager: ConfigurationManager = Depends(get_configuration_manager),
 ):
-    """Delete a skill (only creator or admin can delete)"""
+    """Delete a skill (only creator or admin can delete)
+
+    Note: Using simplified SkillDB model (author_id instead of created_by)
+    """
     try:
         async with config_manager.db_service.async_session() as session:
             from sqlalchemy import select, text
@@ -1859,25 +1985,25 @@ async def delete_skill(
             )
             result = await session.execute(stmt)
             skill = result.scalar_one_or_none()
-            
+
             if not skill:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Skill with id={skill_id} not found"
                 )
-            
+
             # Check permission
             is_admin = is_admin_user(current_user)
-            is_creator = skill.created_by == current_user.id
+            is_creator = skill.author_id == current_user.id
             if not (is_admin or is_creator):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="You can only delete skills you created"
                 )
-            
+
             await session.delete(skill)
             await session.commit()
-            
+
             logger.info(f"Deleted skill id={skill_id} by user_id={current_user.id}")
     except HTTPException:
         raise

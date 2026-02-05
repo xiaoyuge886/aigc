@@ -9,6 +9,14 @@ export default defineConfig(({ mode }) => {
         port: 8888,
         host: '0.0.0.0',
         // 完全移除 CSP - 开发环境不需要
+        proxy: {
+          // 代理 API 请求到后端
+          '/api': {
+            target: 'http://localhost:8000',
+            changeOrigin: true,
+            secure: false,
+          },
+        },
       },
       plugins: [react()],
       define: {

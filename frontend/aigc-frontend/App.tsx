@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  User, LogOut, MessageSquare, DollarSign, BarChart3, Menu, X, Plus, Search
+  User, LogOut, MessageSquare, DollarSign, BarChart3, Menu, X, Plus, Search, Bug
 } from 'lucide-react';
 import { ChatInterface } from './components/ChatInterface';
 import { ChatWrapper } from './components/ChatWrapper';
 import { LandingPage } from './components/LandingPage';
 import { SkillMarket } from './components/SkillMarket';
+import { SkillMarketNexus } from './components/SkillMarketNexus';
 import { Editor } from './components/Editor';
 import { LoginPage } from './components/LoginPage';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -14,6 +15,8 @@ import { SessionHistory } from './components/SessionHistory';
 import { ScenarioEditor } from './components/ScenarioEditor';
 import { UserLogsPage } from './components/UserLogsPage';
 import { AdminUserLogsPage } from './components/AdminUserLogsPage';
+import { SkillDetailPage } from './pages/SkillDetailPage';
+import { DebugPage } from './components/DebugPage';
 import { HistoryItem, UserRole, Message } from './types';
 import { authService } from './services/authService';
 import { getLocalSessionId, clearLocalSessionId, getSessionsStats } from './services/agentService';
@@ -30,6 +33,8 @@ const App: React.FC = () => {
   const [adminDefaultSubTab, setAdminDefaultSubTab] = useState<'users' | 'usage' | 'audit' | 'resources'>('users'); // 管理中心的默认子标签
   const [resourceDefaultTab, setResourceDefaultTab] = useState<'prompts' | 'skills' | 'scenarios'>('prompts'); // 资源配置中心的默认标签
   const [viewingUserLogs, setViewingUserLogs] = useState<{ userId: number; username: string } | null>(null); // 正在查看的用户日志
+  const [viewingSkillDetail, setViewingSkillDetail] = useState<number | null>(null); // 正在查看的技能详情ID
+  const [activeSkillForChat, setActiveSkillForChat] = useState<{ id: number; name: string; skillContent: string } | null>(null); // 当前对话的技能
   const [stats, setStats] = useState([
     { label: '总会话', value: '0', icon: <MessageSquare size={16} /> },
     { label: '总消息', value: '0', icon: <BarChart3 size={16} /> },
@@ -42,6 +47,7 @@ const App: React.FC = () => {
     { label: 'AI 助手', id: 'ai' },
     { label: '编辑器',id: 'editor' },
     { label: '技能市场', id: 'market' },
+    { label: '调试系统', id: 'debug' },
   ];
 
   const adminNavItems = [
@@ -50,6 +56,7 @@ const App: React.FC = () => {
     { label: '编辑器',id: 'editor' },
     { label: '技能市场', id: 'market' },
     { label: '管理中心', id: 'admin' },
+    { label: '调试系统', id: 'debug' },
   ];
 
   // Admin 用户显示"管理中心"，普通用户显示基础导航
@@ -159,6 +166,9 @@ const App: React.FC = () => {
   const handleTabSwitch = (label: string) => {
     setActiveTab(label);
     setIsMobileMenuOpen(false);
+    // 切换标签页时，清除详情页和技能对话状态
+    setViewingSkillDetail(null);
+    setActiveSkillForChat(null);
   };
 
   const isPublicTab = activeTab === '首页';
@@ -168,6 +178,18 @@ const App: React.FC = () => {
   const shouldShowDesktopSidebar = isLoggedIn && isChatTab && !isWorkspaceOpen;
 
   const renderContent = () => {
+    // 如果正在查看技能详情，显示详情页面
+    if (viewingSkillDetail !== null) {
+      return (
+        <SkillDetailPage
+          skillId={viewingSkillDetail}
+          onBack={() => {
+            setViewingSkillDetail(null);
+          }}
+        />
+      );
+    }
+
     // 如果正在查看用户日志，显示日志页面
     if (viewingUserLogs) {
       return (
@@ -186,9 +208,11 @@ const App: React.FC = () => {
       case '首页':
         return <LandingPage onStartChat={handleStartChat} />;
       case '技能市场':
-        return <SkillMarket />;
+        return <SkillMarketNexus />;
       case '编辑器':
         return <Editor />;
+      case '调试系统':
+        return <DebugPage />;
       case '管理中心':
         // 只有 Admin 用户才能访问管理中心
         if (!isLoggedIn || currentUser?.role !== UserRole.Admin) {
@@ -239,10 +263,12 @@ const App: React.FC = () => {
         );
       case 'AI 助手':
         return (
-          <ChatInterface 
-            isWorkspaceOpen={isWorkspaceOpen} 
+          <ChatInterface
+            isWorkspaceOpen={isWorkspaceOpen}
             setIsWorkspaceOpen={setIsWorkspaceOpen}
             onSessionChange={setCurrentSessionId}
+            activeSkill={activeSkillForChat}
+            onClearActiveSkill={() => setActiveSkillForChat(null)}
           />
         );
       default:
@@ -279,12 +305,22 @@ const App: React.FC = () => {
           </button>
           
           <div className="flex items-center">
-            <div 
-              className="flex items-center justify-center w-8 h-8 bg-[#1D1D1F] rounded-lg text-white ml-2 md:ml-0 cursor-pointer hover:opacity-80 transition-opacity"
+            <div
+              className="flex items-center justify-center w-8 h-8 rounded-lg ml-2 md:ml-0 cursor-pointer hover:opacity-80 transition-opacity bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: 'url(/favicon.png)' }}
               onClick={() => handleTabSwitch('首页')}
             >
-              <span className="text-xs font-black italic tracking-tighter">X</span>
             </div>
+
+            {/* Logo 点击也返回首页并清除所有状态 */}
+            <button
+              onClick={() => {
+                handleTabSwitch('首页');
+              }}
+              className="ml-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              
+            </button>
             
           </div>
         </div>
@@ -384,6 +420,7 @@ const App: React.FC = () => {
                     storageArea: localStorage
                   }));
                   setCurrentSessionId(null);
+                  setActiveSkillForChat(null); // 清除技能对话状态
                 }}
                 className="
                   p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-[24px] 
