@@ -109958,6 +109958,24 @@ user-upload-2-057fe6c706e68581:
   title: 智慧水务通搞.md
   uploaded_at: '2026-02-05T03:59:46.874576+00:00'
   user_id: 2
+user-upload-2-8102faf8da2335ad:
+  category: user-upload
+  conversation_turn_id: fcfcca239de7480b
+  description: User uploaded file (application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  doc_id: user-upload-2-8102faf8da2335ad
+  file_size: 11130
+  file_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+  hash: sha256:8102faf8da2335ad
+  keywords:
+  - 自动生成尽调报告样板及基本要求
+  path: user-uploads/2/user-upload-2-8102faf8da2335ad.docx
+  session_id: 78b619ac-89c3-483b-a7ab-e511759ba064
+  source_type: upload
+  tags:
+  - user-upload
+  title: 自动生成尽调报告样板及基本要求.docx
+  uploaded_at: '2026-02-28T03:48:01.816611+00:00'
+  user_id: 2
 user-upload-2-e2b3fd20508d1dca:
   category: user-upload
   description: User uploaded file (application/pdf)

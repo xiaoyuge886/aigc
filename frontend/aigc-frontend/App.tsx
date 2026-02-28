@@ -47,7 +47,6 @@ const App: React.FC = () => {
     { label: 'AI 助手', id: 'ai' },
     { label: '编辑器',id: 'editor' },
     { label: '技能市场', id: 'market' },
-    { label: '调试系统', id: 'debug' },
   ];
 
   const adminNavItems = [
@@ -56,7 +55,6 @@ const App: React.FC = () => {
     { label: '编辑器',id: 'editor' },
     { label: '技能市场', id: 'market' },
     { label: '管理中心', id: 'admin' },
-    { label: '调试系统', id: 'debug' },
   ];
 
   // Admin 用户显示"管理中心"，普通用户显示基础导航
