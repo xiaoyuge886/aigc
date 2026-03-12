@@ -1,24 +1,24 @@
 /**
  * Resource Center Component
- * 
+ *
  * 资源配置中心，包含：
  * 1. 系统提示词列表
  * 2. 技能列表
- * 3. 业务场景列表
+ * 3. 能力包列表 (packages)
  */
 import React, { useState, useEffect } from 'react';
-import { FileText, Sparkles, Briefcase, Plus, Edit, Trash2, Search, X, Eye, EyeOff, Zap, ChevronRight, Star, Users, ArrowUpRight, Crown, Palette, Code2, GraduationCap, Megaphone, UserCircle } from 'lucide-react';
-import { 
-  platformService, 
-  SystemPrompt, 
-  SystemPromptCreate, 
-  Skill, 
-  SkillCreate, 
-  BusinessScenario,
-  BusinessScenarioCreate 
+import { FileText, Sparkles, Briefcase, Plus, Edit, Trash2, Search, X, Eye, EyeOff, Zap, ChevronRight, Star, Users, ArrowUpRight, Crown, Palette, Code2, GraduationCap, Megaphone, UserCircle, Package } from 'lucide-react';
+import {
+  platformService,
+  SystemPrompt,
+  SystemPromptCreate,
+  Skill,
+  SkillCreate,
+  CapabilityPackage,
+  CapabilityPackageCreate
 } from '../services/platformService';
 
-type ResourceType = 'prompts' | 'skills' | 'scenarios';
+type ResourceType = 'prompts' | 'skills' | 'packages';
 
 // 可用工具列表
 const AVAILABLE_TOOLS = [
@@ -34,14 +34,14 @@ const AVAILABLE_TOOLS = [
 ];
 
 interface ResourceCenterProps {
-  onEditScenario?: (scenarioId: number) => void; // 编辑业务场景回调（使用整数ID）
-  onCreateScenario?: () => void; // 创建业务场景回调
+  onEditPackage?: (packageId: number) => void; // 编辑能力包回调（使用整数ID）
+  onCreatePackage?: () => void; // 创建能力包回调
   defaultTab?: ResourceType; // 默认显示的标签
 }
 
-export const ResourceCenter: React.FC<ResourceCenterProps> = ({ 
-  onEditScenario,
-  onCreateScenario,
+export const ResourceCenter: React.FC<ResourceCenterProps> = ({
+  onEditPackage,
+  onCreatePackage,
   defaultTab = 'prompts'
 }) => {
   const [activeTab, setActiveTab] = useState<ResourceType>(defaultTab);
@@ -58,7 +58,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
   // Data states
   const [prompts, setPrompts] = useState<SystemPrompt[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [scenarios, setScenarios] = useState<BusinessScenario[]>([]);
+  const [packages, setPackages] = useState<CapabilityPackage[]>([]);
   
   // Dialog states
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -149,7 +149,6 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
     setLoading(true);
     setError(null);
     try {
-      // 总是加载skills，因为场景需要显示技能名称
       if (activeTab === 'prompts') {
         const data = await platformService.listSystemPrompts();
         setPrompts(data);
@@ -158,9 +157,9 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
       } else if (activeTab === 'skills') {
         const data = await platformService.listSkills();
         setSkills(data);
-      } else if (activeTab === 'scenarios') {
-        const data = await platformService.listScenarios(false);
-        setScenarios(data);
+      } else if (activeTab === 'packages') {
+        const data = await platformService.listPackages(false);
+        setPackages(data);
         const skillsData = await platformService.listSkills();
         setSkills(skillsData);
       }
@@ -172,30 +171,30 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
   };
 
   const handleCreate = async () => {
-    // 如果是业务场景，调用回调函数导航到新页面
-    if (activeTab === 'scenarios' && onCreateScenario) {
-      onCreateScenario();
+    // 如果是能力包，调用回调函数导航到新页面
+    if (activeTab === 'packages' && onCreatePackage) {
+      onCreatePackage();
       return;
     }
-    
+
     setSelectedItem(null);
     setFormData({});
     setFormErrors({});
     setSelectedPromptId('');
     setUseCustomPrompt(false);
-    
+
     setShowCreateDialog(true);
   };
 
   const handleEdit = async (item: any) => {
-    // 如果是业务场景，调用回调函数导航到新页面
-    if (activeTab === 'scenarios' && onEditScenario && item.id) {  // 使用整数ID
-      onEditScenario(item.id);
+    // 如果是能力包，调用回调函数导航到新页面
+    if (activeTab === 'packages' && onEditPackage && item.id) {
+      onEditPackage(item.id);
       return;
     }
-    
+
     setSelectedItem(item);
-    
+
     // 初始化表单数据
     if (activeTab === 'prompts') {
       setFormData({
@@ -216,10 +215,26 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
         is_default: item.is_default || false,
         is_public: item.is_public || false,
       });
-    } else if (activeTab === 'scenarios') {
-      // 检查系统提示词是否匹配已有的提示词
+    } else if (activeTab === 'packages') {
+      // 能力包初始化
+      setFormData({
+        name: item.name || '',
+        display_name: item.display_name || '',
+        description: item.description || '',
+        category: item.category || '',
+        skills: item.skills || [],
+        allowed_tools: item.allowed_tools || [],
+        mcp_servers: item.mcp_servers || {},
+        custom_prompt_extension: item.custom_prompt_extension || '',
+        plugin_path: item.plugin_path || '',
+        tags: item.tags || [],
+        is_public: item.is_public || false,
+        is_official: item.is_official || false,
+      });
+    } else if (activeTab === 'scenarios_legacy') {
+      // 旧场景逻辑 - 已弃用
       const matchingPrompt = prompts.find(p => p.content === item.system_prompt);
-      const promptId = matchingPrompt ? matchingPrompt.id : undefined;  // 使用整数ID
+      const promptId = matchingPrompt ? matchingPrompt.id : undefined;
       
       setFormData({
         // 移除 scenario_id 字段，使用自增整数 id
@@ -265,9 +280,9 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
       if (activeTab === 'prompts') {
         await platformService.deleteSystemPrompt(item.id);  // 使用整数ID
       } else if (activeTab === 'skills') {
-        await platformService.deleteSkill(item.id);  // 使用整数ID
-      } else if (activeTab === 'scenarios') {
-        await platformService.deleteScenario(item.id);  // 使用整数ID
+        await platformService.deleteSkill(item.id);
+      } else if (activeTab === 'packages') {
+        await platformService.deletePackage(item.id);
       }
       await loadData();
     } catch (err) {
@@ -289,7 +304,11 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
       }
       if (!formData.name?.trim()) errors.name = '名称不能为空';
       if (!formData.skill_content?.trim()) errors.skill_content = '技能内容不能为空';
-    } else if (activeTab === 'scenarios') {
+    } else if (activeTab === 'packages') {
+      // 能力包验证
+      if (!formData.name?.trim()) errors.name = '名称不能为空';
+      if (!formData.display_name?.trim()) errors.display_name = '显示名称不能为空';
+    } else if (activeTab === 'scenarios_legacy') {
       // 移除 scenario_id 验证，使用自增整数 id
       if (!formData.name?.trim()) errors.name = '名称不能为空';
       // 系统提示词：如果使用自定义提示词，需要检查 formData.system_prompt；如果使用下拉框选择，需要检查 selectedPromptId
@@ -406,16 +425,65 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
             console.log('[ResourceCenter] Skill updated successfully');
           }
         }
-      } else if (activeTab === 'scenarios') {
-        // allowed_tools 现在是数组，直接使用
-        const allowedTools = Array.isArray(formData.allowed_tools) && formData.allowed_tools.length > 0
-          ? formData.allowed_tools
-          : undefined;
-        // skills 现在已经是数组格式
+      } else if (activeTab === 'packages') {
+        // 能力包表单提交
         const skills = Array.isArray(formData.skills) && formData.skills.length > 0
           ? formData.skills
           : undefined;
-        
+        const allowedTools = Array.isArray(formData.allowed_tools) && formData.allowed_tools.length > 0
+          ? formData.allowed_tools
+          : undefined;
+
+        // 解析 mcp_servers JSON
+        let mcpServers: Record<string, any> | undefined;
+        if (formData.mcp_servers?.trim()) {
+          try {
+            mcpServers = JSON.parse(formData.mcp_servers);
+          } catch (e) {
+            setFormErrors({ mcp_servers: 'MCP服务器配置必须是有效的JSON格式' });
+            setSubmitting(false);
+            return;
+          }
+        }
+
+        if (showCreateDialog) {
+          await platformService.createPackage({
+            name: formData.name.trim(),
+            display_name: formData.display_name?.trim() || formData.name.trim(),
+            description: formData.description?.trim() || undefined,
+            category: formData.category?.trim() || undefined,
+            skills: skills,
+            allowed_tools: allowedTools,
+            mcp_servers: mcpServers,
+            custom_prompt_extension: formData.custom_prompt_extension?.trim() || undefined,
+            plugin_path: formData.plugin_path?.trim() || undefined,
+            is_public: formData.is_public || false,
+            is_official: formData.is_official || false,
+          });
+        } else {
+          await platformService.updatePackage(selectedItem.id, {
+            name: formData.name.trim(),
+            display_name: formData.display_name?.trim() || formData.name.trim(),
+            description: formData.description?.trim() || undefined,
+            category: formData.category?.trim() || undefined,
+            skills: skills,
+            allowed_tools: allowedTools,
+            mcp_servers: mcpServers,
+            custom_prompt_extension: formData.custom_prompt_extension?.trim() || undefined,
+            plugin_path: formData.plugin_path?.trim() || undefined,
+            is_public: formData.is_public,
+            is_official: formData.is_official,
+          });
+        }
+      } else if (activeTab === 'scenarios_legacy') {
+        // 旧场景逻辑 - 已弃用
+        const allowedTools = Array.isArray(formData.allowed_tools) && formData.allowed_tools.length > 0
+          ? formData.allowed_tools
+          : undefined;
+        const skills = Array.isArray(formData.skills) && formData.skills.length > 0
+          ? formData.skills
+          : undefined;
+
         // 解析 custom_tools JSON
         let customTools: Record<string, any> | undefined;
         if (formData.custom_tools?.trim()) {
@@ -427,7 +495,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
             return;
           }
         }
-        
+
         // 解析 workflow JSON
         let workflow: Record<string, any> | undefined;
         if (formData.workflow?.trim()) {
@@ -439,13 +507,13 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
             return;
           }
         }
-        
+
         // 确定系统提示词：如果使用下拉框选择，从 prompts 中获取；否则使用自定义输入
         let systemPrompt = '';
         if (useCustomPrompt) {
           systemPrompt = formData.system_prompt?.trim() || '';
         } else if (selectedPromptId) {
-          const selectedPrompt = prompts.find(p => p.prompt_id === selectedPromptId);
+          const selectedPrompt = prompts.find(p => p.id === parseInt(selectedPromptId));
           if (selectedPrompt) {
             systemPrompt = selectedPrompt.content;
           } else {
@@ -454,10 +522,9 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
             return;
           }
         }
-        
+
         if (showCreateDialog) {
           await platformService.createScenario({
-            // 移除 scenario_id 字段，使用自增整数 id
             name: formData.name.trim(),
             description: formData.description?.trim() || undefined,
             system_prompt: systemPrompt,
@@ -473,7 +540,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
             is_default: formData.is_default || false,
           });
         } else {
-          await platformService.updateScenario(selectedItem.id, {  // 使用整数ID
+          await platformService.updateScenario(selectedItem.id, {
             name: formData.name.trim(),
             description: formData.description?.trim() || undefined,
             system_prompt: systemPrompt,
@@ -511,7 +578,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
     let items: any[] = [];
     if (activeTab === 'prompts') items = prompts;
     else if (activeTab === 'skills') items = skills;
-    else if (activeTab === 'scenarios') items = scenarios;
+    else if (activeTab === 'packages') items = packages;
     
     // 技能列表：按分类筛选
     if (activeTab === 'skills' && activeCategory !== '全部') {
@@ -534,7 +601,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
   const tabs = [
     { id: 'prompts' as ResourceType, label: '系统提示词', icon: <FileText size={16} /> },
     { id: 'skills' as ResourceType, label: '技能列表', icon: <Sparkles size={16} /> },
-    { id: 'scenarios' as ResourceType, label: '业务场景', icon: <Briefcase size={16} /> },
+    { id: 'packages' as ResourceType, label: '能力包', icon: <Package size={16} /> },
   ];
 
   return (
@@ -574,7 +641,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
             <p className="text-sm text-gray-500 mt-1">
               {activeTab === 'prompts' && '管理系统提示词模板'}
               {activeTab === 'skills' && '管理技能模板'}
-              {activeTab === 'scenarios' && '管理业务场景模板'}
+              {activeTab === 'packages' && '管理能力包'}
             </p>
           </div>
           <button
@@ -763,7 +830,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
                   )}
                   
                   {/* 场景列表：显示 system_prompt 预览 */}
-                  {activeTab === 'scenarios' && item.system_prompt && (
+                  {activeTab === 'packages' && item.system_prompt && (
                     <div className="mb-3 p-2 bg-gray-50 rounded-lg border border-gray-200">
                       <p className="text-xs font-semibold text-gray-700 mb-1">系统提示词预览：</p>
                       <p className="text-xs text-gray-600 line-clamp-3 font-mono whitespace-pre-wrap">
@@ -1089,7 +1156,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
                 )}
 
                 {/* Business Scenario Form */}
-                {activeTab === 'scenarios' && (
+                {activeTab === 'packages' && (
                   <>
                     {/* 基本信息 */}
                     <div className="border-b border-gray-200 pb-4 mb-4">
@@ -1562,7 +1629,7 @@ export const ResourceCenter: React.FC<ResourceCenterProps> = ({
               </div>
 
               {/* 业务场景特有字段 */}
-              {activeTab === 'scenarios' && (
+              {activeTab === 'packages' && (
                 <>
                   <div className="border-b border-gray-200 pb-4">
                     <h4 className="text-sm font-bold text-gray-900 mb-3">工具和模型配置</h4>

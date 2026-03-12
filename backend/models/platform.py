@@ -129,6 +129,9 @@ class AgentConfig(BaseModel):
     setting_sources: Optional[List[str]] = None
     enabled_skill_ids: Optional[List[str]] = None  # 指定要启用的技能ID列表（用于精细控制）
     add_dirs: Optional[List[str]] = None  # 额外的可访问目录（用于调试技能时只加载单个技能）
+    # 新增： 插件配置
+    sdk_plugins: Optional[List[Dict[str, str]]] = None  # SDK plugins 参数： [{"type": "local", "path": "..."}]
+    plugin_ids: Optional[List[int]] = None  # 请求级指定的插件ID列表
 
 
 # =========================================================================
@@ -243,3 +246,133 @@ class UserScenarioConfigUpdate(BaseModel):
     """Update user scenario configuration request"""
     scenario_ids: Optional[List[int]] = Field(None, description="List of scenario IDs (integers) to enable for the user")
     user_custom_prompt: Optional[str] = Field(None, description="User custom prompt")
+
+
+# =========================================================================
+# Capability Package Models (能力包) ⭐ 核心功能
+# =========================================================================
+
+class CapabilityPackageCreate(BaseModel):
+    """Create capability package request"""
+    name: str = Field(..., description="Package identifier (e.g., 'data-analysis-pack')")
+    display_name: str = Field(..., description="Display name (e.g., '数据分析工具包')")
+    description: Optional[str] = Field(None, description="Package description")
+    version: Optional[str] = Field("1.0.0", description="Package version")
+    category: Optional[str] = Field(None, description="Category: analysis/development/automation")
+    is_public: bool = Field(False, description="Whether package is public")
+    is_official: bool = Field(False, description="Whether package is official")
+
+    # 能力定义
+    skills: Optional[List[str]] = Field(None, description="Skill names: ['data-analysis', 'echarts_chart']")
+    allowed_tools: Optional[List[str]] = Field(None, description="Allowed tools: ['Read', 'Write', 'Bash']")
+    mcp_servers: Optional[Dict[str, Any]] = Field(None, description="MCP server configs")
+    custom_prompt_extension: Optional[str] = Field(None, description="System prompt extension")
+    plugin_path: Optional[str] = Field(None, description="Plugin directory path for SDK loading")
+
+    # 元数据
+    icon_url: Optional[str] = Field(None, description="Icon URL")
+    tags: Optional[List[str]] = Field(None, description="Tags")
+
+
+class CapabilityPackageUpdate(BaseModel):
+    """Update capability package request"""
+    name: Optional[str] = None
+    display_name: Optional[str] = None
+    description: Optional[str] = None
+    version: Optional[str] = None
+    category: Optional[str] = None
+    is_public: Optional[bool] = None
+    is_official: Optional[bool] = None
+
+    # 能力定义
+    skills: Optional[List[str]] = None
+    allowed_tools: Optional[List[str]] = None
+    mcp_servers: Optional[Dict[str, Any]] = None
+    custom_prompt_extension: Optional[str] = None
+    plugin_path: Optional[str] = None
+
+    # 元数据
+    icon_url: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+
+class CapabilityPackageResponse(BaseModel):
+    """Capability package response"""
+    id: int
+    name: str
+    display_name: str
+    description: Optional[str] = None
+    version: Optional[str] = None
+    category: Optional[str] = None
+    is_public: bool
+    is_official: bool
+
+    # 能力定义
+    skills: Optional[List[str]] = None
+    allowed_tools: Optional[List[str]] = None
+    mcp_servers: Optional[Dict[str, Any]] = None
+    custom_prompt_extension: Optional[str] = None
+    plugin_path: Optional[str] = None
+
+    # 元数据
+    icon_url: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+    # 统计
+    usage_count: int = 0
+    author_id: Optional[int] = None
+    created_at: str
+    updated_at: str
+
+    class Config:
+        from_attributes = True
+
+
+# =========================================================================
+# User Capability Binding Models (用户能力绑定) ⭐ 核心功能
+# =========================================================================
+
+class UserCapabilityBindingCreate(BaseModel):
+    """Create user capability binding request (admin)"""
+    user_id: int = Field(..., description="User ID")
+    package_id: int = Field(..., description="Capability package ID")
+    is_enabled: bool = Field(True, description="Whether binding is enabled")
+
+
+class UserCapabilityBindingUpdate(BaseModel):
+    """Update user capability binding request"""
+    is_enabled: Optional[bool] = None
+
+
+class UserCapabilityBindingResponse(BaseModel):
+    """User capability binding response"""
+    id: int
+    user_id: int
+    package_id: int
+    package_name: Optional[str] = None  # 关联的能力包名称
+    package_display_name: Optional[str] = None  # 关联的能力包显示名称
+    is_enabled: bool
+    granted_at: str
+    granted_by: Optional[int] = None
+    usage_count: int = 0
+    last_used_at: Optional[str] = None
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
+
+class UserPackagesResponse(BaseModel):
+    """User's bound packages response"""
+    user_id: int
+    bindings: List[UserCapabilityBindingResponse]
+    available_packages: List[CapabilityPackageResponse]  # 所有可用能力包（用于选择）
+
+
+class ResolvePluginsResponse(BaseModel):
+    """Resolved plugins configuration response"""
+    skills: List[str] = []
+    allowed_tools: List[str] = []
+    mcp_servers: Dict[str, Any] = {}
+    custom_prompt_extension: str = ""
+    plugins: List[Dict[str, str]] = []  # SDK plugins 参数格式

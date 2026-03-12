@@ -3,14 +3,14 @@ Platform configuration API endpoints
 
 Provides user-level and scenario-based configuration management
 """
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import json
 from fastapi import APIRouter, Depends, HTTPException, status
 from loguru import logger
 
 from services.database import get_database_service, DatabaseService
 from services.configuration_manager import ConfigurationManager
-from services.scenario_provider import ScenarioProvider
+# ScenarioProvider 已删除 - 场景系统已移除
 from services.default_config import DefaultConfig
 from models.database import SystemDefaultConfigDB
 from sqlalchemy import select, text
@@ -2528,4 +2528,1016 @@ async def get_user_sessions(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get user sessions: {str(e)}"
+        )
+
+
+# =========================================================================
+# Phase 4: 能力包系统 API ⭐ 核心功能
+# =========================================================================
+
+from models.database import CapabilityPackageDB, UserCapabilityBindingDB
+from models.platform import (
+    CapabilityPackageCreate,
+    CapabilityPackageUpdate,
+    CapabilityPackageResponse,
+    UserCapabilityBindingCreate,
+    UserCapabilityBindingUpdate,
+    UserCapabilityBindingResponse,
+    UserPackagesResponse,
+    ResolvePluginsResponse,
+)
+from services.package_service import PackageService
+
+
+def get_package_service(
+    db_service: DatabaseService = Depends(get_database_service)
+) -> PackageService:
+    """Dependency: Get package service"""
+    return PackageService(db_service)
+
+
+# -------------------------------------------------------------------------
+# 能力包 CRUD API
+# -------------------------------------------------------------------------
+
+@router.get("/packages", response_model=dict)
+async def list_packages(
+    category: Optional[str] = None,
+    public_only: bool = True,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """
+    列出能力包
+
+    - 普通用户：只能看到公开的能力包 + 自己创建的
+    - 管理员：可以看到所有
+    """
+    try:
+        packages = await package_service.list_packages(
+            public_only=public_only,
+            category=category,
+            user_id=current_user.id if not is_admin_user(current_user) else None,
+        )
+
+        return {
+            "packages": [
+                CapabilityPackageResponse(
+                    id=pkg.id,
+                    name=pkg.name,
+                    display_name=pkg.display_name,
+                    description=pkg.description,
+                    version=pkg.version,
+                    category=pkg.category,
+                    is_public=pkg.is_public,
+                    is_official=pkg.is_official,
+                    skills=pkg.skill_list,
+                    allowed_tools=pkg.tool_list,
+                    mcp_servers=pkg.mcp_servers,
+                    custom_prompt_extension=pkg.custom_prompt_extension,
+                    plugin_path=pkg.plugin_path,
+                    icon_url=pkg.icon_url,
+                    tags=pkg.tags.get("tags", []) if pkg.tags and isinstance(pkg.tags, dict) else [],
+                    usage_count=pkg.usage_count,
+                    author_id=pkg.author_id,
+                    created_at=pkg.created_at.isoformat(),
+                    updated_at=pkg.updated_at.isoformat(),
+                )
+                for pkg in packages
+            ],
+            "total": len(packages),
+        }
+    except Exception as e:
+        logger.error(f"Error listing packages: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to list packages: {str(e)}"
+        )
+
+
+@router.get("/packages/{package_id}", response_model=CapabilityPackageResponse)
+async def get_package(
+    package_id: int,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """获取能力包详情"""
+    try:
+        pkg = await package_service.get_package(package_id)
+        if not pkg:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Package {package_id} not found"
+            )
+
+        # 权限检查：非公开的能力包只有创建者和管理员可以查看
+        if not pkg.is_public and pkg.author_id != current_user.id and not is_admin_user(current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to view this package"
+            )
+
+        return CapabilityPackageResponse(
+            id=pkg.id,
+            name=pkg.name,
+            display_name=pkg.display_name,
+            description=pkg.description,
+            version=pkg.version,
+            category=pkg.category,
+            is_public=pkg.is_public,
+            is_official=pkg.is_official,
+            skills=pkg.skill_list,
+            allowed_tools=pkg.tool_list,
+            mcp_servers=pkg.mcp_servers,
+            custom_prompt_extension=pkg.custom_prompt_extension,
+            plugin_path=pkg.plugin_path,
+            icon_url=pkg.icon_url,
+            tags=pkg.tags.get("tags", []) if pkg.tags and isinstance(pkg.tags, dict) else [],
+            usage_count=pkg.usage_count,
+            author_id=pkg.author_id,
+            created_at=pkg.created_at.isoformat(),
+            updated_at=pkg.updated_at.isoformat(),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get package: {str(e)}"
+        )
+
+
+def _read_directory_recursive(base_path, current_path, max_depth=10, current_depth=0):
+    """
+    递归读取目录结构
+
+    Args:
+        base_path: 基础路径（用于计算相对路径）
+        current_path: 当前要读取的路径
+        max_depth: 最大递归深度
+        current_depth: 当前递归深度
+    """
+    from pathlib import Path
+
+    if current_depth >= max_depth:
+        return []
+
+    files = []
+    try:
+        items = sorted(current_path.iterdir())
+    except PermissionError:
+        return []
+
+    for item in items:
+        # 跳过隐藏文件和目录
+        if item.name.startswith('.'):
+            continue
+
+        # 跳过 node_modules, __pycache__, .git 等常见目录
+        if item.is_dir() and item.name in ['node_modules', '__pycache__', '.git', 'dist', 'build', '.venv', 'venv']:
+            continue
+
+        relative_path = str(item.relative_to(base_path))
+
+        if item.is_file():
+            # 读取文件内容（限制大小）
+            try:
+                file_size = item.stat().st_size
+                if file_size < 100000:  # 100KB 限制
+                    # 尝试读取文本文件
+                    try:
+                        content = item.read_text(encoding='utf-8')
+                    except UnicodeDecodeError:
+                        # 二进制文件，显示提示
+                        content = f"[二进制文件，无法以文本形式显示]"
+                else:
+                    content = f"[文件过大，共 {file_size} 字节]"
+            except Exception as e:
+                content = f"[无法读取: {str(e)}]"
+                file_size = 0
+
+            files.append({
+                "name": item.name,
+                "type": "file",
+                "path": relative_path,
+                "content": content,
+                "size": file_size
+            })
+        else:
+            # 递归读取子目录
+            children = _read_directory_recursive(base_path, item, max_depth, current_depth + 1)
+            files.append({
+                "name": item.name,
+                "type": "folder",
+                "path": relative_path,
+                "children": children
+            })
+
+    return files
+
+
+@router.get("/packages/{package_id}/files")
+async def get_package_files(
+    package_id: int,
+    path: str = "",
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """
+    获取能力包的文件结构
+
+    如果能力包有 plugin_path，则读取该目录下的文件
+    否则返回基于数据库信息的模拟文件结构
+    """
+    try:
+        pkg = await package_service.get_package(package_id)
+        if not pkg:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Package {package_id} not found"
+            )
+
+        # 权限检查
+        if not pkg.is_public and pkg.author_id != current_user.id and not is_admin_user(current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to view this package"
+            )
+
+        # 如果有 plugin_path，读取真实文件
+        if pkg.plugin_path:
+            import os
+            from pathlib import Path
+
+            # 支持 ${CLAUDE_PLUGIN_ROOT} 变量
+            plugin_root = os.environ.get("CLAUDE_PLUGIN_ROOT", "/plugins")
+            actual_path = pkg.plugin_path.replace("${CLAUDE_PLUGIN_ROOT}", plugin_root)
+
+            # 如果是相对路径，相对于项目根目录
+            if not os.path.isabs(actual_path):
+                from core.config import settings
+                actual_path = str(settings.work_dir.parent / actual_path)
+
+            base_path = Path(actual_path)
+
+            if not base_path.exists():
+                return {
+                    "type": "error",
+                    "message": f"Plugin path not found: {pkg.plugin_path}",
+                    "files": []
+                }
+
+            # 递归读取所有文件
+            files = _read_directory_recursive(base_path, base_path)
+
+            return {
+                "type": "plugin",
+                "plugin_path": pkg.plugin_path,
+                "base_path": str(base_path),
+                "current_path": path,
+                "files": files
+            }
+
+        # 否则返回基于数据库的模拟文件结构
+        else:
+            return {
+                "type": "database",
+                "files": _generate_virtual_files(pkg)
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting package files: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get package files: {str(e)}"
+        )
+
+
+def _generate_virtual_files(pkg):
+    """基于数据库信息生成虚拟文件结构"""
+    files = []
+
+    # manifest.json
+    files.append({
+        "name": "manifest.json",
+        "type": "file",
+        "path": "manifest.json",
+        "content": json.dumps({
+            "name": pkg.name,
+            "display_name": pkg.display_name,
+            "version": pkg.version or "1.0.0",
+            "description": pkg.description,
+            "category": pkg.category,
+            "is_public": pkg.is_public,
+            "is_official": pkg.is_official,
+            "skills": pkg.skill_list,
+            "allowed_tools": pkg.tool_list,
+            "mcp_servers": pkg.mcp_servers,
+            "custom_prompt_extension": pkg.custom_prompt_extension,
+            "tags": pkg.tags.get("tags", []) if pkg.tags else []
+        }, ensure_ascii=False, indent=2)
+    })
+
+    # README.md
+    readme_content = f"""# {pkg.display_name}
+
+{pkg.description or '暂无描述'}
+
+## 基本信息
+
+- 版本: {pkg.version or '1.0.0'}
+- 分类: {pkg.category or '未分类'}
+- 创建时间: {pkg.created_at.strftime('%Y-%m-%d')}
+- 使用次数: {pkg.usage_count or 0}
+
+## 包含技能
+
+{(chr(10).join([f'- {s}' for s in pkg.skill_list]) if pkg.skill_list else '暂无')}
+
+## 允许工具
+
+{(chr(10).join([f'- {t}' for t in pkg.tool_list]) if pkg.tool_list else '暂无')}
+"""
+    files.append({
+        "name": "README.md",
+        "type": "file",
+        "path": "README.md",
+        "content": readme_content
+    })
+
+    # skills 文件夹
+    if pkg.skill_list:
+        skills_folder = {
+            "name": "skills",
+            "type": "folder",
+            "path": "skills",
+            "children": []
+        }
+        for skill in pkg.skill_list:
+            skills_folder["children"].append({
+                "name": f"{skill}.md",
+                "type": "file",
+                "path": f"skills/{skill}.md",
+                "content": f"# {skill}\n\n此技能定义文件。"
+            })
+        files.append(skills_folder)
+
+    # config 文件夹
+    config_folder = {
+        "name": "config",
+        "type": "folder",
+        "path": "config",
+        "children": []
+    }
+    config_folder["children"].append({
+        "name": "allowed_tools.json",
+        "type": "file",
+        "path": "config/allowed_tools.json",
+        "content": json.dumps({
+            "tools": pkg.tool_list or [],
+            "description": "允许使用的工具列表"
+        }, ensure_ascii=False, indent=2)
+    })
+
+    if pkg.mcp_servers:
+        config_folder["children"].append({
+            "name": "mcp_servers.json",
+            "type": "file",
+            "path": "config/mcp_servers.json",
+            "content": json.dumps(pkg.mcp_servers, ensure_ascii=False, indent=2)
+        })
+
+    files.append(config_folder)
+
+    return files
+
+
+@router.post("/packages", response_model=CapabilityPackageResponse, status_code=status.HTTP_201_CREATED)
+async def create_package(
+    package_data: CapabilityPackageCreate,
+    current_user: UserDB = Depends(get_current_user),
+    db_service: DatabaseService = Depends(get_database_service),
+):
+    """
+    创建能力包（管理员或高级用户）
+
+    只有管理员可以创建公开的或官方的能力包
+    """
+    # 权限检查：创建公开/官方能力包需要管理员权限
+    if (package_data.is_public or package_data.is_official) and not is_admin_user(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can create public or official packages"
+        )
+
+    try:
+        async with db_service.async_session() as session:
+            # 检查名称是否已存在
+            from sqlalchemy import select
+            stmt = select(CapabilityPackageDB).where(CapabilityPackageDB.name == package_data.name)
+            result = await session.execute(stmt)
+            if result.scalar_one_or_none():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Package with name '{package_data.name}' already exists"
+                )
+
+            # 创建能力包
+            pkg = CapabilityPackageDB(
+                name=package_data.name,
+                display_name=package_data.display_name,
+                description=package_data.description,
+                version=package_data.version or "1.0.0",
+                author_id=current_user.id,
+                is_public=package_data.is_public,
+                is_official=package_data.is_official,
+                category=package_data.category,
+                skills={"skills": package_data.skills} if package_data.skills else None,
+                allowed_tools={"tools": package_data.allowed_tools} if package_data.allowed_tools else None,
+                mcp_servers=package_data.mcp_servers,
+                custom_prompt_extension=package_data.custom_prompt_extension,
+                plugin_path=package_data.plugin_path,
+                icon_url=package_data.icon_url,
+                tags={"tags": package_data.tags} if package_data.tags else None,
+            )
+            session.add(pkg)
+            await session.commit()
+            await session.refresh(pkg)
+
+            logger.info(f"[Platform] Created package: {pkg.name} by user {current_user.id}")
+
+            return CapabilityPackageResponse(
+                id=pkg.id,
+                name=pkg.name,
+                display_name=pkg.display_name,
+                description=pkg.description,
+                version=pkg.version,
+                category=pkg.category,
+                is_public=pkg.is_public,
+                is_official=pkg.is_official,
+                skills=pkg.skill_list,
+                allowed_tools=pkg.tool_list,
+                mcp_servers=pkg.mcp_servers,
+                custom_prompt_extension=pkg.custom_prompt_extension,
+                plugin_path=pkg.plugin_path,
+                icon_url=pkg.icon_url,
+                tags=package_data.tags or [],
+                usage_count=pkg.usage_count,
+                author_id=pkg.author_id,
+                created_at=pkg.created_at.isoformat(),
+                updated_at=pkg.updated_at.isoformat(),
+            )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to create package: {str(e)}"
+        )
+
+
+@router.put("/packages/{package_id}", response_model=CapabilityPackageResponse)
+async def update_package(
+    package_id: int,
+    package_data: CapabilityPackageUpdate,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+    db_service: DatabaseService = Depends(get_database_service),
+):
+    """更新能力包（创建者或管理员）"""
+    try:
+        pkg = await package_service.get_package(package_id)
+        if not pkg:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Package {package_id} not found"
+            )
+
+        # 权限检查
+        if pkg.author_id != current_user.id and not is_admin_user(current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to update this package"
+            )
+
+        async with db_service.async_session() as session:
+            from sqlalchemy import select
+            stmt = select(CapabilityPackageDB).where(CapabilityPackageDB.id == package_id)
+            result = await session.execute(stmt)
+            pkg = result.scalar_one_or_none()
+
+            # 更新字段
+            if package_data.name is not None:
+                pkg.name = package_data.name
+            if package_data.display_name is not None:
+                pkg.display_name = package_data.display_name
+            if package_data.description is not None:
+                pkg.description = package_data.description
+            if package_data.version is not None:
+                pkg.version = package_data.version
+            if package_data.category is not None:
+                pkg.category = package_data.category
+            if package_data.is_public is not None:
+                if package_data.is_public and not is_admin_user(current_user):
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Only admins can make packages public"
+                    )
+                pkg.is_public = package_data.is_public
+            if package_data.is_official is not None and is_admin_user(current_user):
+                pkg.is_official = package_data.is_official
+            if package_data.skills is not None:
+                pkg.skills = {"skills": package_data.skills}
+            if package_data.allowed_tools is not None:
+                pkg.allowed_tools = {"tools": package_data.allowed_tools}
+            if package_data.mcp_servers is not None:
+                pkg.mcp_servers = package_data.mcp_servers
+            if package_data.custom_prompt_extension is not None:
+                pkg.custom_prompt_extension = package_data.custom_prompt_extension
+            if package_data.plugin_path is not None:
+                pkg.plugin_path = package_data.plugin_path
+            if package_data.icon_url is not None:
+                pkg.icon_url = package_data.icon_url
+            if package_data.tags is not None:
+                pkg.tags = {"tags": package_data.tags}
+
+            await session.commit()
+            await session.refresh(pkg)
+
+            logger.info(f"[Platform] Updated package: {pkg.name}")
+
+            return CapabilityPackageResponse(
+                id=pkg.id,
+                name=pkg.name,
+                display_name=pkg.display_name,
+                description=pkg.description,
+                version=pkg.version,
+                category=pkg.category,
+                is_public=pkg.is_public,
+                is_official=pkg.is_official,
+                skills=pkg.skill_list,
+                allowed_tools=pkg.tool_list,
+                mcp_servers=pkg.mcp_servers,
+                custom_prompt_extension=pkg.custom_prompt_extension,
+                plugin_path=pkg.plugin_path,
+                icon_url=pkg.icon_url,
+                tags=pkg.tags.get("tags", []) if pkg.tags else [],
+                usage_count=pkg.usage_count,
+                author_id=pkg.author_id,
+                created_at=pkg.created_at.isoformat(),
+                updated_at=pkg.updated_at.isoformat(),
+            )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update package: {str(e)}"
+        )
+
+
+@router.delete("/packages/{package_id}")
+async def delete_package(
+    package_id: int,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+    db_service: DatabaseService = Depends(get_database_service),
+):
+    """删除能力包（创建者或管理员）"""
+    try:
+        pkg = await package_service.get_package(package_id)
+        if not pkg:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Package {package_id} not found"
+            )
+
+        # 权限检查
+        if pkg.author_id != current_user.id and not is_admin_user(current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to delete this package"
+            )
+
+        async with db_service.async_session() as session:
+            from sqlalchemy import select, delete
+            stmt = delete(CapabilityPackageDB).where(CapabilityPackageDB.id == package_id)
+            await session.execute(stmt)
+            await session.commit()
+
+            logger.info(f"[Platform] Deleted package: {pkg.name}")
+
+            return {"success": True, "message": f"Package {pkg.name} deleted"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete package: {str(e)}"
+        )
+
+
+# -------------------------------------------------------------------------
+# 用户能力绑定 API
+# -------------------------------------------------------------------------
+
+@router.get("/users/me/packages", response_model=UserPackagesResponse)
+async def get_my_packages(
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """
+    获取当前用户绑定的能力包
+
+    返回：
+    - bindings: 用户已绑定的能力包列表
+    - available_packages: 所有可用能力包（用于选择）
+    """
+    try:
+        # 获取用户已绑定的能力包
+        bindings = await package_service.get_user_bindings(current_user.id, enabled_only=False)
+
+        binding_responses = []
+        for pkg, binding in bindings:
+            binding_responses.append(UserCapabilityBindingResponse(
+                id=binding.id,
+                user_id=binding.user_id,
+                package_id=binding.package_id,
+                package_name=pkg.name,
+                package_display_name=pkg.display_name,
+                is_enabled=binding.is_enabled,
+                granted_at=binding.granted_at.isoformat(),
+                granted_by=binding.granted_by,
+                usage_count=binding.usage_count,
+                last_used_at=binding.last_used_at.isoformat() if binding.last_used_at else None,
+                created_at=binding.created_at.isoformat(),
+            ))
+
+        # 获取所有可用能力包
+        available_packages = await package_service.list_packages(
+            public_only=True,
+            user_id=current_user.id,
+        )
+
+        available_responses = [
+            CapabilityPackageResponse(
+                id=pkg.id,
+                name=pkg.name,
+                display_name=pkg.display_name,
+                description=pkg.description,
+                version=pkg.version,
+                category=pkg.category,
+                is_public=pkg.is_public,
+                is_official=pkg.is_official,
+                skills=pkg.skill_list,
+                allowed_tools=pkg.tool_list,
+                mcp_servers=pkg.mcp_servers,
+                custom_prompt_extension=pkg.custom_prompt_extension,
+                plugin_path=pkg.plugin_path,
+                icon_url=pkg.icon_url,
+                tags=pkg.tags.get("tags", []) if pkg.tags and isinstance(pkg.tags, dict) else [],
+                usage_count=pkg.usage_count,
+                author_id=pkg.author_id,
+                created_at=pkg.created_at.isoformat(),
+                updated_at=pkg.updated_at.isoformat(),
+            )
+            for pkg in available_packages
+        ]
+
+        return UserPackagesResponse(
+            user_id=current_user.id,
+            bindings=binding_responses,
+            available_packages=available_responses,
+        )
+    except Exception as e:
+        logger.error(f"Error getting user packages: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get user packages: {str(e)}"
+        )
+
+
+@router.post("/users/me/packages/{package_id}/bind", response_model=UserCapabilityBindingResponse)
+async def bind_package_to_me(
+    package_id: int,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """
+    用户自己绑定能力包
+
+    注意：用户只能绑定公开的能力包
+    """
+    try:
+        # 检查能力包是否存在且公开
+        pkg = await package_service.get_package(package_id)
+        if not pkg:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Package {package_id} not found"
+            )
+
+        if not pkg.is_public and pkg.author_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only bind public packages"
+            )
+
+        # 绑定
+        binding = await package_service.bind_package_to_user(
+            user_id=current_user.id,
+            package_id=package_id,
+            granted_by=None,  # 用户自己绑定
+            is_enabled=True,
+        )
+
+        logger.info(f"[Platform] User {current_user.id} bound package {package_id}")
+
+        return UserCapabilityBindingResponse(
+            id=binding.id,
+            user_id=binding.user_id,
+            package_id=binding.package_id,
+            package_name=pkg.name,
+            package_display_name=pkg.display_name,
+            is_enabled=binding.is_enabled,
+            granted_at=binding.granted_at.isoformat(),
+            granted_by=binding.granted_by,
+            usage_count=binding.usage_count,
+            last_used_at=binding.last_used_at.isoformat() if binding.last_used_at else None,
+            created_at=binding.created_at.isoformat(),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error binding package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to bind package: {str(e)}"
+        )
+
+
+@router.delete("/users/me/packages/{package_id}/unbind")
+async def unbind_package_from_me(
+    package_id: int,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+    db_service: DatabaseService = Depends(get_database_service),
+):
+    """用户解绑能力包"""
+    try:
+        async with db_service.async_session() as session:
+            from sqlalchemy import select, delete
+            stmt = delete(UserCapabilityBindingDB).where(
+                UserCapabilityBindingDB.user_id == current_user.id,
+                UserCapabilityBindingDB.package_id == package_id,
+            )
+            result = await session.execute(stmt)
+            await session.commit()
+
+            if result.rowcount == 0:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Binding for package {package_id} not found"
+                )
+
+            logger.info(f"[Platform] User {current_user.id} unbound package {package_id}")
+
+            return {"success": True, "message": f"Package {package_id} unbound"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error unbinding package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to unbind package: {str(e)}"
+        )
+
+
+# -------------------------------------------------------------------------
+# 管理员 API：用户能力绑定管理
+# -------------------------------------------------------------------------
+
+@router.post("/admin/users/{user_id}/packages/{package_id}", response_model=UserCapabilityBindingResponse)
+async def admin_bind_package_to_user(
+    user_id: int,
+    package_id: int,
+    binding_data: Optional[UserCapabilityBindingCreate] = None,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """
+    管理员给用户授权能力包
+    """
+    if not is_admin_user(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can bind packages to users"
+        )
+
+    try:
+        # 检查能力包是否存在
+        pkg = await package_service.get_package(package_id)
+        if not pkg:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Package {package_id} not found"
+            )
+
+        # 绑定
+        is_enabled = binding_data.is_enabled if binding_data else True
+        binding = await package_service.bind_package_to_user(
+            user_id=user_id,
+            package_id=package_id,
+            granted_by=current_user.id,
+            is_enabled=is_enabled,
+        )
+
+        logger.info(f"[Platform] Admin {current_user.id} bound package {package_id} to user {user_id}")
+
+        return UserCapabilityBindingResponse(
+            id=binding.id,
+            user_id=binding.user_id,
+            package_id=binding.package_id,
+            package_name=pkg.name,
+            package_display_name=pkg.display_name,
+            is_enabled=binding.is_enabled,
+            granted_at=binding.granted_at.isoformat(),
+            granted_by=binding.granted_by,
+            usage_count=binding.usage_count,
+            last_used_at=binding.last_used_at.isoformat() if binding.last_used_at else None,
+            created_at=binding.created_at.isoformat(),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error admin binding package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to bind package: {str(e)}"
+        )
+
+
+@router.delete("/admin/users/{user_id}/packages/{package_id}")
+async def admin_unbind_package_from_user(
+    user_id: int,
+    package_id: int,
+    current_user: UserDB = Depends(get_current_user),
+    db_service: DatabaseService = Depends(get_database_service),
+):
+    """管理员解除用户能力包绑定"""
+    if not is_admin_user(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can unbind packages from users"
+        )
+
+    try:
+        async with db_service.async_session() as session:
+            from sqlalchemy import delete
+            stmt = delete(UserCapabilityBindingDB).where(
+                UserCapabilityBindingDB.user_id == user_id,
+                UserCapabilityBindingDB.package_id == package_id,
+            )
+            result = await session.execute(stmt)
+            await session.commit()
+
+            if result.rowcount == 0:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Binding for user {user_id} and package {package_id} not found"
+                )
+
+            logger.info(f"[Platform] Admin {current_user.id} unbound package {package_id} from user {user_id}")
+
+            return {"success": True, "message": f"Package {package_id} unbound from user {user_id}"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error admin unbinding package: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to unbind package: {str(e)}"
+        )
+
+
+@router.get("/admin/users/{user_id}/packages", response_model=UserPackagesResponse)
+async def admin_get_user_packages(
+    user_id: int,
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """管理员查看用户的能力包绑定"""
+    if not is_admin_user(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can view user packages"
+        )
+
+    try:
+        bindings = await package_service.get_user_bindings(user_id, enabled_only=False)
+
+        binding_responses = []
+        for pkg, binding in bindings:
+            binding_responses.append(UserCapabilityBindingResponse(
+                id=binding.id,
+                user_id=binding.user_id,
+                package_id=binding.package_id,
+                package_name=pkg.name,
+                package_display_name=pkg.display_name,
+                is_enabled=binding.is_enabled,
+                granted_at=binding.granted_at.isoformat(),
+                granted_by=binding.granted_by,
+                usage_count=binding.usage_count,
+                last_used_at=binding.last_used_at.isoformat() if binding.last_used_at else None,
+                created_at=binding.created_at.isoformat(),
+            ))
+
+        available_packages = await package_service.list_packages(public_only=False)
+
+        available_responses = [
+            CapabilityPackageResponse(
+                id=pkg.id,
+                name=pkg.name,
+                display_name=pkg.display_name,
+                description=pkg.description,
+                version=pkg.version,
+                category=pkg.category,
+                is_public=pkg.is_public,
+                is_official=pkg.is_official,
+                skills=pkg.skill_list,
+                allowed_tools=pkg.tool_list,
+                mcp_servers=pkg.mcp_servers,
+                custom_prompt_extension=pkg.custom_prompt_extension,
+                plugin_path=pkg.plugin_path,
+                icon_url=pkg.icon_url,
+                tags=pkg.tags.get("tags", []) if pkg.tags and isinstance(pkg.tags, dict) else [],
+                usage_count=pkg.usage_count,
+                author_id=pkg.author_id,
+                created_at=pkg.created_at.isoformat(),
+                updated_at=pkg.updated_at.isoformat(),
+            )
+            for pkg in available_packages
+        ]
+
+        return UserPackagesResponse(
+            user_id=user_id,
+            bindings=binding_responses,
+            available_packages=available_responses,
+        )
+    except Exception as e:
+        logger.error(f"Error getting user packages: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get user packages: {str(e)}"
+        )
+
+
+# -------------------------------------------------------------------------
+# 插件解析 API
+# -------------------------------------------------------------------------
+
+@router.post("/plugins/resolve", response_model=ResolvePluginsResponse)
+async def resolve_plugins(
+    plugin_ids: List[int],
+    current_user: UserDB = Depends(get_current_user),
+    package_service: PackageService = Depends(get_package_service),
+):
+    """
+    解析插件配置
+
+    用于调试和预览能力包的合并配置
+    """
+    try:
+        # 校验权限
+        is_valid, invalid_ids = await package_service.validate_plugin_access(
+            current_user.id, plugin_ids
+        )
+        if not is_valid:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"You don't have access to packages: {invalid_ids}"
+            )
+
+        config = await package_service.resolve_plugins(plugin_ids)
+
+        return ResolvePluginsResponse(
+            skills=config.get("skills", []),
+            allowed_tools=config.get("allowed_tools", []),
+            mcp_servers=config.get("mcp_servers", {}),
+            custom_prompt_extension=config.get("custom_prompt_extension", ""),
+            plugins=config.get("plugins", []),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error resolving plugins: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to resolve plugins: {str(e)}"
         )

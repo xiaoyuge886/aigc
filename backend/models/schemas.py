@@ -45,6 +45,10 @@ class AgentRequest(BaseModel):
         default=None,
         description="Optional file attachments (base64 encoded)"
     )
+    plugin_ids: Optional[List[int]] = Field(
+        default=None,
+        description="请求级指定的能力包ID列表（必须在用户绑定范围内）"
+    )
 
 
 class ToolDefinition(BaseModel):

@@ -3,29 +3,28 @@ import React, { useState, useEffect } from 'react';
 import {
   Users, BarChart, History, Shield, MoreHorizontal, Search,
   ArrowUpRight, ArrowDownRight, UserPlus, Filter, Download,
-  Activity, Cpu, CreditCard, ChevronRight, Settings, X, HelpCircle, FileText, ChevronDown, ChevronUp
+  Activity, Cpu, CreditCard, ChevronRight, Settings, X, HelpCircle, FileText, ChevronDown, ChevronUp, Package
 } from 'lucide-react';
 import { SystemUser, UserRole, UsageLog } from '../types';
 import { GlassCard } from './GlassCard';
 import { ResourceCenter } from './ResourceCenter';
 import { UserLogsDialog } from './UserLogsDialog';
-import { ScenarioSelector } from './ScenarioSelector';
 import { UserPromptEditor } from './UserPromptEditor';
 import { ToolSelector } from './ToolSelector';
 import { authService, User, RegisterRequest } from '../services/authService';
-import { platformService, UserConfig, UserConfigCreate, BusinessScenario, Skill } from '../services/platformService';
+import { platformService, UserConfig, UserConfigCreate } from '../services/platformService';
 
 interface AdminDashboardProps {
-  onEditScenario?: (scenarioId: number) => void;  // 使用整数ID
-  onCreateScenario?: () => void;
+  onEditPackage?: (packageId: number) => void;  // 编辑能力包
+  onCreatePackage?: () => void;  // 创建能力包
   defaultSubTab?: 'users' | 'usage' | 'audit' | 'resources'; // 默认显示的子标签
-  defaultResourceTab?: 'prompts' | 'skills' | 'scenarios'; // 资源配置中心的默认标签
+  defaultResourceTab?: 'prompts' | 'skills' | 'packages'; // 资源配置中心的默认标签
   onViewUserLogs?: (userId: number, username: string) => void; // 查看用户日志回调
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ 
-  onEditScenario,
-  onCreateScenario,
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({
+  onEditPackage,
+  onCreatePackage,
   defaultSubTab = 'users',
   defaultResourceTab,
   onViewUserLogs
@@ -57,17 +56,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedUserName, setSelectedUserName] = useState<string>('');
   const [userConfig, setUserConfig] = useState<UserConfig | null>(null);
-  const [scenarios, setScenarios] = useState<BusinessScenario[]>([]);
-  const [selectedScenarioIds, setSelectedScenarioIds] = useState<number[]>([]); // 改为多选，使用整数ID数组
-  const [userCustomPrompt, setUserCustomPrompt] = useState<string>('');
-  const [settingsTab, setSettingsTab] = useState<'scenarios' | 'prompt'>('scenarios'); // 场景配置或自定义规则
-  const [skills, setSkills] = useState<Skill[]>([]); // 可用技能列表
   const [loadingUserSettings, setLoadingUserSettings] = useState(false);
   const [savingUserSettings, setSavingUserSettings] = useState(false);
   const [userSettingsError, setUserSettingsError] = useState<string | null>(null);
-  const [showConfigPriorityHelp, setShowConfigPriorityHelp] = useState(false);
   const [showUserLogsDialog, setShowUserLogsDialog] = useState(false);
   const [selectedUserForLogs, setSelectedUserForLogs] = useState<{ id: number; username: string } | null>(null);
+
+  // 用户插件绑定对话框状态
+  const [showUserPluginsDialog, setShowUserPluginsDialog] = useState(false);
+  const [userPlugins, setUserPlugins] = useState<{bindings: any[], available_packages: any[]}>({bindings: [], available_packages: []});
+  const [loadingUserPlugins, setLoadingUserPlugins] = useState(false);
   const [configForm, setConfigForm] = useState<UserConfigCreate>({
     default_system_prompt: '',
     default_allowed_tools: [],
@@ -77,7 +75,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     work_dir: '',
     custom_tools: undefined,
     custom_skills: [],
-    associated_scenario_id: undefined,
   });
 
   // 加载用户列表
@@ -193,7 +190,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setLoadingUserSettings(true);
     setUserSettingsError(null);
     try {
-      // 加载用户配置（旧版，用于其他配置项）
+      // 加载用户配置
       const config = await platformService.getUserConfig(userId);
       setUserConfig(config);
       if (config) {
@@ -206,7 +203,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           work_dir: config.work_dir || '',
           custom_tools: config.custom_tools,
           custom_skills: config.custom_skills || [],
-          associated_scenario_id: config.associated_scenario_id,
         });
       } else {
         // 重置为默认值
@@ -219,51 +215,47 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           work_dir: '',
           custom_tools: undefined,
           custom_skills: [],
-          associated_scenario_id: undefined,
         });
       }
-
-      // 加载新的场景配置（多场景支持）
-      try {
-        const scenarioConfig = await platformService.getUserScenarioConfig(userId);
-        if (scenarioConfig && scenarioConfig.scenario_ids) {
-          // scenario_ids 应该是数组
-          const scenarioIds = Array.isArray(scenarioConfig.scenario_ids) 
-            ? scenarioConfig.scenario_ids 
-            : [];
-          setSelectedScenarioIds(scenarioIds);
-          setUserCustomPrompt(scenarioConfig.user_custom_prompt || '');
-        } else {
-          // 如果没有新配置，尝试从旧配置中读取（向后兼容）
-          if (config?.associated_scenario_id) {
-            setSelectedScenarioIds([config.associated_scenario_id]);
-          } else {
-            setSelectedScenarioIds([]);
-          }
-          setUserCustomPrompt('');
-        }
-      } catch (err) {
-        // 如果新API不存在或失败，使用旧配置（向后兼容）
-        console.warn('加载新场景配置失败，使用旧配置:', err);
-        if (config?.associated_scenario_id) {
-          setSelectedScenarioIds([config.associated_scenario_id]);
-        } else {
-          setSelectedScenarioIds([]);
-        }
-        setUserCustomPrompt('');
-      }
-
-      // 加载业务场景列表
-      const scenarioList = await platformService.listScenarios(false);
-      setScenarios(scenarioList);
-
-      // 加载技能列表
-      const skillsList = await platformService.listSkills();
-      setSkills(skillsList);
     } catch (err) {
       setUserSettingsError(err instanceof Error ? err.message : '加载用户设置失败');
     } finally {
       setLoadingUserSettings(false);
+    }
+  };
+
+  // 加载用户插件绑定
+  const loadUserPackages = async (userId: number) => {
+    setLoadingUserPlugins(true);
+    try {
+      const data = await platformService.getUserPackages(userId);
+      setUserPlugins(data);
+    } catch (err) {
+      console.error('Failed to load user packages:', err);
+    } finally {
+      setLoadingUserPlugins(false);
+    }
+  };
+
+  // 绑定插件到用户
+  const handleBindPackage = async (packageId: number) => {
+    if (!selectedUserForPlugins) return;
+    try {
+      await platformService.bindPackageToUser(selectedUserForPlugins.id, packageId);
+      await loadUserPackages(selectedUserForPlugins.id);
+    } catch (err) {
+      console.error('Failed to bind package:', err);
+    }
+  };
+
+  // 解绑用户插件
+  const handleUnbindPackage = async (packageId: number) => {
+    if (!selectedUserForPlugins) return;
+    try {
+      await platformService.unbindPackageFromUser(selectedUserForPlugins.id, packageId);
+      await loadUserPackages(selectedUserForPlugins.id);
+    } catch (err) {
+      console.error('Failed to unbind package:', err);
     }
   };
 
@@ -275,44 +267,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setUserSettingsError(null);
 
     try {
-      // 1. 保存用户配置（旧版配置项）
+      // 保存用户配置
       const configToSave = {
         ...configForm,
-        // 不再保存 associated_scenario_id 到旧配置，使用新配置
-        associated_scenario_id: undefined,
       };
-      
+
       if (userConfig) {
         await platformService.updateUserConfig(selectedUserId, configToSave);
       } else {
         await platformService.createUserConfig(selectedUserId, configToSave);
-      }
-      
-      // 2. 保存新的场景配置（多场景支持）
-      try {
-        await platformService.updateUserScenarioConfig(
-          selectedUserId,
-          selectedScenarioIds,
-          userCustomPrompt || undefined
-        );
-        console.log(`[AdminDashboard] Saved user scenario config: ${selectedScenarioIds.length} scenarios`);
-      } catch (err) {
-        console.warn('保存新场景配置失败:', err);
-        // 如果新API失败，尝试保存到旧配置（向后兼容）
-        if (selectedScenarioIds.length > 0) {
-          const fallbackConfig = {
-            ...configForm,
-            associated_scenario_id: selectedScenarioIds[0], // 只保存第一个场景
-          };
-          await platformService.updateUserConfig(selectedUserId, fallbackConfig);
-        }
       }
 
       // 关闭对话框
       setShowUserSettingsDialog(false);
       setSelectedUserId(null);
       setSelectedUserName('');
-      
+
       // 刷新用户列表
       await loadUsers();
     } catch (err) {
@@ -502,7 +472,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           >
                             <FileText size={20} />
                           </button>
-                          <button 
+                          <button
                             onClick={() => {
                               setSelectedUserId(user.id);
                               setSelectedUserName(user.username);
@@ -513,6 +483,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             title="用户设置"
                           >
                             <Settings size={20} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedUserForPlugins({ id: user.id, username: user.username });
+                              setShowUserPluginsDialog(true);
+                              loadUserPackages(user.id);
+                            }}
+                            className="p-2 text-gray-300 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition-all"
+                            title="插件管理"
+                          >
+                            <Package size={20} />
                           </button>
                         </div>
                       </td>
@@ -617,9 +598,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
         {activeSubTab === 'resources' && (
           <div className="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden p-6">
-            <ResourceCenter 
-              onEditScenario={onEditScenario}
-              onCreateScenario={onCreateScenario}
+            <ResourceCenter
+              onEditPackage={onEditPackage}
+              onCreatePackage={onCreatePackage}
               defaultTab={defaultResourceTab}
             />
           </div>
@@ -1024,100 +1005,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                     </div>
                   </div>
-
-                  {/* 场景配置和自定义规则标签页 */}
-                  <div className="space-y-6 border-t border-gray-100 pt-8">
-                    {/* 标签页切换 */}
-                    <div className="flex border-b border-gray-200">
-                      <button
-                        onClick={() => setSettingsTab('scenarios')}
-                        className={`px-6 py-3 text-sm font-black transition-all ${
-                          settingsTab === 'scenarios'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
-                            : 'text-gray-500 hover:text-gray-900'
-                        }`}
-                      >
-                        场景配置
-                      </button>
-                      <button
-                        onClick={() => setSettingsTab('prompt')}
-                        className={`px-6 py-3 text-sm font-black transition-all ${
-                          settingsTab === 'prompt'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
-                            : 'text-gray-500 hover:text-gray-900'
-                        }`}
-                      >
-                        自定义规则
-                      </button>
-                    </div>
-
-                    {/* 场景配置内容 */}
-                    {settingsTab === 'scenarios' && (
-                      <div className="space-y-4">
-                        <p className="text-sm text-gray-600">
-                          为当前用户选择启用的业务场景。可以选择多个场景，AI 将根据您的需求智能组合它们。
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {scenarios.length === 0 ? (
-                            <p className="text-sm text-gray-500 col-span-full">暂无可用业务场景</p>
-                          ) : (
-                            scenarios.map((scenario) => {
-                              const isSelected = selectedScenarioIds.includes(scenario.id);  // 使用整数ID
-                              return (
-                                <div
-                                  key={scenario.id}  // 使用整数ID作为key
-                                  onClick={() => {
-                                    if (isSelected) {
-                                      setSelectedScenarioIds(selectedScenarioIds.filter(id => id !== scenario.id));  // 使用整数ID
-                                    } else {
-                                      setSelectedScenarioIds([...selectedScenarioIds, scenario.id]);  // 使用整数ID
-                                    }
-                                  }}
-                                  className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                                    isSelected
-                                      ? 'border-blue-500 bg-blue-50 shadow-md'
-                                      : 'border-gray-300 hover:border-gray-400'
-                                  }`}
-                                >
-                                  <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                      <h4 className="font-semibold text-gray-800">{scenario.name}</h4>
-                                      {scenario.description && (
-                                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{scenario.description}</p>
-                                      )}
-                                    </div>
-                                    {isSelected && (
-                                      <div className="ml-2 text-blue-600">
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              );
-                            })
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 自定义规则内容 */}
-                    {settingsTab === 'prompt' && (
-                      <div className="space-y-4">
-                        <p className="text-sm text-gray-600">
-                          您可以在此添加自定义规则或指令，这些规则将与用户选择的场景 Prompt 合并，以更精确地指导 AI 行为。
-                        </p>
-                        <textarea
-                          value={userCustomPrompt}
-                          onChange={(e) => setUserCustomPrompt(e.target.value)}
-                          placeholder="例如：请始终使用中文回答，并且语气要活泼一些。"
-                          rows={10}
-                          className="w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm font-mono"
-                        />
-                      </div>
-                    )}
-                  </div>
                 </>
               )}
             </div>
@@ -1168,6 +1055,135 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             setSelectedUserForLogs(null);
           }}
         />
+      )}
+
+      {/* 用户插件管理对话框 */}
+      {showUserPluginsDialog && selectedUserForPlugins && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden animate-scale-in">
+            {/* 对话框头部 */}
+            <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-black text-gray-900">插件管理</h2>
+                <p className="text-gray-500 text-sm mt-1">
+                  为用户 <span className="font-bold text-purple-600">{selectedUserForPlugins.username}</span> 配置可用的插件
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowUserPluginsDialog(false);
+                  setSelectedUserForPlugins(null);
+                  setUserPlugins({ bindings: [], available_packages: [] });
+                }}
+                className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* 对话框内容 */}
+            <div className="flex-1 overflow-y-auto p-8">
+              {loadingUserPlugins ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* 已绑定插件 */}
+                  <div>
+                    <h3 className="text-sm font-black text-gray-700 mb-4 flex items-center space-x-2">
+                      <Package size={16} className="text-purple-600" />
+                      <span>已绑定插件 ({userPlugins.bindings.length})</span>
+                    </h3>
+                    {userPlugins.bindings.length === 0 ? (
+                      <p className="text-gray-400 text-sm text-center py-4 bg-gray-50 rounded-xl">
+                        暂未绑定任何插件
+                      </p>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3">
+                        {userPlugins.bindings.map((binding: any) => (
+                          <div key={binding.id} className="p-4 bg-purple-50 border border-purple-100 rounded-xl">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                  <Package size={18} className="text-purple-600" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-black text-gray-900">{binding.package_display_name || binding.package_name}</p>
+                                  <p className="text-xs text-gray-500">{binding.is_enabled ? '已启用' : '已禁用'}</p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => handleUnbindPackage(binding.package_id)}
+                                className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                title="解绑"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 可用插件 */}
+                  <div>
+                    <h3 className="text-sm font-black text-gray-700 mb-4 flex items-center space-x-2">
+                      <Package size={16} className="text-gray-400" />
+                      <span>可用插件 ({userPlugins.available_packages.length})</span>
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3 max-h-60 overflow-y-auto">
+                      {userPlugins.available_packages.map((pkg: any) => {
+                        const isBound = userPlugins.bindings.some((b: any) => b.package_id === pkg.id);
+                        return (
+                          <div key={pkg.id} className="p-4 bg-gray-50 border border-gray-100 rounded-xl">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                  <Package size={18} className="text-gray-600" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-black text-gray-900">{pkg.display_name || pkg.name}</p>
+                                  <p className="text-xs text-gray-500">{pkg.category || '通用'}</p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => handleBindPackage(pkg.id)}
+                                disabled={isBound}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                                  isBound
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                                }`}
+                              >
+                                {isBound ? '已绑定' : '绑定'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 对话框底部 */}
+            <div className="p-8 border-t border-gray-50 flex justify-end">
+              <button
+                onClick={() => {
+                  setShowUserPluginsDialog(false);
+                  setSelectedUserForPlugins(null);
+                  setUserPlugins({ bindings: [], available_packages: [] });
+                }}
+                className="px-6 py-3 text-sm font-black text-gray-600 hover:bg-gray-50 rounded-2xl transition-all"
+              >
+                关闭
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

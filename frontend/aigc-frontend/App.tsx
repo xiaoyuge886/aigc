@@ -6,13 +6,12 @@ import {
 import { ChatInterface } from './components/ChatInterface';
 import { ChatWrapper } from './components/ChatWrapper';
 import { LandingPage } from './components/LandingPage';
-import { SkillMarket } from './components/SkillMarket';
-import { SkillMarketNexus } from './components/SkillMarketNexus';
+import { CapabilityPackageList } from './components/CapabilityPackageList';
 import { Editor } from './components/Editor';
 import { LoginPage } from './components/LoginPage';
 import { AdminDashboard } from './components/AdminDashboard';
 import { SessionHistory } from './components/SessionHistory';
-import { ScenarioEditor } from './components/ScenarioEditor';
+// ScenarioEditor 已删除
 import { UserLogsPage } from './components/UserLogsPage';
 import { AdminUserLogsPage } from './components/AdminUserLogsPage';
 import { SkillDetailPage } from './pages/SkillDetailPage';
@@ -29,9 +28,9 @@ const App: React.FC = () => {
   const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const [editingScenarioId, setEditingScenarioId] = useState<string | null>(null); // 正在编辑的业务场景ID，null表示创建模式
+  const [editingPackageId, setEditingPackageId] = useState<number | null>(null); // 正在编辑的能力包ID，null表示创建模式
   const [adminDefaultSubTab, setAdminDefaultSubTab] = useState<'users' | 'usage' | 'audit' | 'resources'>('users'); // 管理中心的默认子标签
-  const [resourceDefaultTab, setResourceDefaultTab] = useState<'prompts' | 'skills' | 'scenarios'>('prompts'); // 资源配置中心的默认标签
+  const [resourceDefaultTab, setResourceDefaultTab] = useState<'prompts' | 'skills' | 'packages'>('prompts'); // 资源配置中心的默认标签
   const [viewingUserLogs, setViewingUserLogs] = useState<{ userId: number; username: string } | null>(null); // 正在查看的用户日志
   const [viewingSkillDetail, setViewingSkillDetail] = useState<number | null>(null); // 正在查看的技能详情ID
   const [activeSkillForChat, setActiveSkillForChat] = useState<{ id: number; name: string; skillContent: string } | null>(null); // 当前对话的技能
@@ -45,15 +44,13 @@ const App: React.FC = () => {
   const baseNavItems = [
     { label: '首页', id: 'home' },
     { label: 'AI 助手', id: 'ai' },
-    { label: '编辑器',id: 'editor' },
-    { label: '技能市场', id: 'market' },
+    { label: '能力包市场', id: 'packages' },
   ];
 
   const adminNavItems = [
     { label: '首页', id: 'home' },
     { label: 'AI 助手', id: 'ai' },
-    { label: '编辑器',id: 'editor' },
-    { label: '技能市场', id: 'market' },
+    { label: '能力包市场', id: 'packages' },
     { label: '管理中心', id: 'admin' },
   ];
 
@@ -205,8 +202,8 @@ const App: React.FC = () => {
     switch (activeTab) {
       case '首页':
         return <LandingPage onStartChat={handleStartChat} />;
-      case '技能市场':
-        return <SkillMarketNexus />;
+      case '能力包市场':
+        return <CapabilityPackageList />;
       case '编辑器':
         return <Editor />;
       case '调试系统':
@@ -223,34 +220,34 @@ const App: React.FC = () => {
             </div>
           );
         }
-        // 如果正在编辑业务场景，显示编辑页面
-        if (editingScenarioId !== null) {
+        // 如果正在编辑能力包，显示编辑页面
+        if (editingPackageId !== null) {
           return (
             <ScenarioEditor
-              scenarioId={editingScenarioId === '' ? undefined : editingScenarioId}
+              scenarioId={editingPackageId === 0 ? undefined : String(editingPackageId)}
               onBack={() => {
-                setEditingScenarioId(null);
+                setEditingPackageId(null);
                 setActiveTab('管理中心');
-                // 返回时自动切换到业务场景列表
+                // 返回时自动切换到能力包列表
                 setAdminDefaultSubTab('resources');
-                setResourceDefaultTab('scenarios');
+                setResourceDefaultTab('packages');
               }}
               onSave={() => {
                 // 保存成功后刷新数据（由 ResourceCenter 处理）
-                // 返回时自动切换到业务场景列表
+                // 返回时自动切换到能力包列表
                 setAdminDefaultSubTab('resources');
-                setResourceDefaultTab('scenarios');
+                setResourceDefaultTab('packages');
               }}
             />
           );
         }
         return (
           <AdminDashboard
-            onEditScenario={(scenarioId: string) => {
-              setEditingScenarioId(scenarioId);
+            onEditPackage={(packageId: number) => {
+              setEditingPackageId(packageId);
             }}
-            onCreateScenario={() => {
-              setEditingScenarioId(''); // 空字符串表示创建模式
+            onCreatePackage={() => {
+              setEditingPackageId(0); // 0 表示创建模式
             }}
             defaultSubTab={adminDefaultSubTab}
             defaultResourceTab={resourceDefaultTab}

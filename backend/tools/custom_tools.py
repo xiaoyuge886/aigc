@@ -565,6 +565,36 @@ def get_custom_tools_server():
     )
 
 
+def get_all_mcp_servers(include_playwright: bool = True) -> dict:
+    """
+    Get all MCP servers including custom tools and optional Playwright.
+
+    Args:
+        include_playwright: Whether to include Playwright MCP server (default: True)
+
+    Returns:
+        Dict of MCP server configurations that can be passed to ClaudeAgentOptions.mcp_servers
+
+    Example:
+        options = ClaudeAgentOptions(
+            mcp_servers=get_all_mcp_servers(include_playwright=True)
+        )
+    """
+    servers = {
+        "custom_tools": get_custom_tools_server()
+    }
+
+    if include_playwright:
+        # Playwright MCP server for browser automation
+        # 官方包名: https://github.com/microsoft/playwright-mcp
+        servers["playwright"] = {
+            "command": "npx",
+            "args": ["-y", "@playwright/mcp@latest"]
+        }
+
+    return servers
+
+
 # Example: How to use custom tools in your agent
 """
 from custom_tools import get_custom_tools_server

@@ -2,6 +2,7 @@
 import { apiClient } from './api';
 
 export type { SystemPrompt, SystemPromptCreate, SystemPromptUpdate, Skill, SkillCreate, SkillUpdate };
+export type { CapabilityPackage, CapabilityPackageCreate, CapabilityPackageUpdate, UserCapabilityBinding, UserCapabilityBindingCreate, UserCapabilityBindingUpdate };
 
 // User Configuration Types
 export interface UserConfig {
@@ -113,7 +114,7 @@ export interface SkillUpdate {
   is_public?: boolean;
 }
 
-// Business Scenario Types
+// Business Scenario Types (保留用于向后兼容)
 export interface BusinessScenario {
   id: number;  // 使用整数ID作为业务标识
   name: string;
@@ -171,6 +172,105 @@ export interface BusinessScenarioUpdate {
   work_dir?: string;
   is_public?: boolean;
   is_default?: boolean;
+}
+
+// =========================================================================
+// Capability Package Types (能力包) ⭐ 核心功能
+// =========================================================================
+
+export interface CapabilityPackage {
+  id: number;
+  name: string;
+  display_name: string;
+  description?: string;
+  version?: string;
+  category?: string;
+  is_public: boolean;
+  is_official: boolean;
+
+  // 能力定义
+  skills?: string[];
+  allowed_tools?: string[];
+  mcp_servers?: Record<string, any>;
+  custom_prompt_extension?: string;
+  plugin_path?: string;
+
+  // 元数据
+  icon_url?: string;
+  tags?: string[];
+
+  // 统计
+  usage_count?: number;
+  author_id?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CapabilityPackageCreate {
+  name: string;
+  display_name: string;
+  description?: string;
+  version?: string;
+  category?: string;
+  is_public?: boolean;
+  is_official?: boolean;
+
+  // 能力定义
+  skills?: string[];
+  allowed_tools?: string[];
+  mcp_servers?: Record<string, any>;
+  custom_prompt_extension?: string;
+  plugin_path?: string;
+
+  // 元数据
+  icon_url?: string;
+  tags?: string[];
+}
+
+export interface CapabilityPackageUpdate {
+  name?: string;
+  display_name?: string;
+  description?: string;
+  version?: string;
+  category?: string;
+  is_public?: boolean;
+  is_official?: boolean;
+
+  // 能力定义
+  skills?: string[];
+  allowed_tools?: string[];
+  mcp_servers?: Record<string, any>;
+  custom_prompt_extension?: string;
+  plugin_path?: string;
+
+  // 元数据
+  icon_url?: string;
+  tags?: string[];
+}
+
+// User Capability Binding Types
+export interface UserCapabilityBinding {
+  id: number;
+  user_id: number;
+  package_id: number;
+  package_name?: string;
+  package_display_name?: string;
+  is_enabled: boolean;
+  granted_at: string;
+  granted_by?: number;
+  usage_count: number;
+  last_used_at?: string;
+  created_at: string;
+}
+
+export interface UserCapabilityBindingCreate {
+  user_id: number;
+  package_id: number;
+  is_enabled?: boolean;
+}
+
+export interface UserCapabilityBindingUpdate {
+  is_enabled?: boolean;
 }
 
 class PlatformService {
@@ -597,6 +697,186 @@ class PlatformService {
     }
     return response.data?.preferences || null;
   }
+
+  // =========================================================================
+  // Capability Package APIs (能力包) ⭐ 核心功能
+  // =========================================================================
+
+  // 列出所有能力包
+  async listPackages(publicOnly: boolean = false): Promise<CapabilityPackage[]> {
+    const response = await apiClient.get<{ packages: CapabilityPackage[]; total: number }>(
+      `/api/v1/platform/packages?public_only=${publicOnly}`
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    return response.data?.packages || [];
+  }
+
+  // 获取能力包详情
+  async getPackage(packageId: number): Promise<CapabilityPackage> {
+    const response = await apiClient.get<CapabilityPackage>(
+      `/api/v1/platform/packages/${packageId}`
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    if (!response.data) {
+      throw new Error('获取能力包失败');
+    }
+    return response.data;
+  }
+
+  // 创建能力包
+  async createPackage(pkg: CapabilityPackageCreate): Promise<CapabilityPackage> {
+    const response = await apiClient.post<CapabilityPackage>(
+      '/api/v1/platform/packages',
+      pkg
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    if (!response.data) {
+      throw new Error('创建能力包失败');
+    }
+    return response.data;
+  }
+
+  // 更新能力包
+  async updatePackage(packageId: number, pkg: CapabilityPackageUpdate): Promise<CapabilityPackage> {
+    const response = await apiClient.put<CapabilityPackage>(
+      `/api/v1/platform/packages/${packageId}`,
+      pkg
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    if (!response.data) {
+      throw new Error('更新能力包失败');
+    }
+    return response.data;
+  }
+
+  // 删除能力包
+  async deletePackage(packageId: number): Promise<void> {
+    const response = await apiClient.delete(`/api/v1/platform/packages/${packageId}`);
+    if (response.error) {
+      throw new Error(response.error);
+    }
+  }
+
+  // =========================================================================
+  // User Capability Binding APIs (用户能力绑定)
+  // =========================================================================
+
+  // 获取用户的能力包绑定列表
+  async getUserPackages(userId: number): Promise<{
+    bindings: UserCapabilityBinding[];
+    available_packages: CapabilityPackage[];
+  }> {
+    const response = await apiClient.get<{
+      bindings: UserCapabilityBinding[];
+      available_packages: CapabilityPackage[];
+    }>(`/api/v1/platform/users/${userId}/packages`);
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    return response.data || { bindings: [], available_packages: [] };
+  }
+
+  // 绑定能力包给用户
+  async bindPackageToUser(userId: number, packageId: number): Promise<UserCapabilityBinding> {
+    const response = await apiClient.post<UserCapabilityBinding>(
+      `/api/v1/platform/users/${userId}/packages/${packageId}/bind`
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    if (!response.data) {
+      throw new Error('绑定能力包失败');
+    }
+    return response.data;
+  }
+
+  // 解绑用户的能力包
+  async unbindPackageFromUser(userId: number, packageId: number): Promise<void> {
+    const response = await apiClient.delete(
+      `/api/v1/platform/users/${userId}/packages/${packageId}/unbind`
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+  }
+
+  // 更新用户能力绑定状态
+  async updateUserPackageBinding(
+    userId: number,
+    packageId: number,
+    update: UserCapabilityBindingUpdate
+  ): Promise<UserCapabilityBinding> {
+    const response = await apiClient.put<UserCapabilityBinding>(
+      `/api/v1/platform/users/${userId}/packages/${packageId}`,
+      update
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    if (!response.data) {
+      throw new Error('更新能力包绑定失败');
+    }
+    return response.data;
+  }
+
+  // 获取当前用户可用的能力包
+  async getMyPackages(): Promise<{
+    bindings: UserCapabilityBinding[];
+    available_packages: CapabilityPackage[];
+  }> {
+    const response = await apiClient.get<{
+      bindings: UserCapabilityBinding[];
+      available_packages: CapabilityPackage[];
+    }>('/api/v1/platform/users/me/packages');
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    return response.data || { bindings: [], available_packages: [] };
+  }
+
+  // =========================================================================
+  // Package Files API (能力包文件)
+  // =========================================================================
+
+  // 获取能力包文件结构
+  async getPackageFiles(packageId: number, path?: string): Promise<{
+    type: 'plugin' | 'database';
+    plugin_path?: string;
+    base_path?: string;
+    current_path?: string;
+    files: PackageFile[];
+  }> {
+    const params = path ? `?path=${encodeURIComponent(path)}` : '';
+    const response = await apiClient.get<{
+      type: 'plugin' | 'database';
+      plugin_path?: string;
+      base_path?: string;
+      current_path?: string;
+      files: PackageFile[];
+    }>(`/api/v1/platform/packages/${packageId}/files${params}`);
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    return response.data || { type: 'database', files: [] };
+  }
+}
+
+// 能力包文件类型
+export interface PackageFile {
+  name: string;
+  type: 'file' | 'folder';
+  path: string;
+  content?: string;
+  size?: number;
+  children?: PackageFile[];
 }
 
 export const platformService = new PlatformService();

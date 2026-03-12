@@ -485,372 +485,46 @@ async def session_query_stream(
                 try:
                     config_manager = ConfigurationManager(db_service)
                     user_config = await config_manager.get_user_config(current_user.id)
-                    
-                    logger.info(f"[session_query_stream] Loading config for user_id={current_user.id}, username={current_user.username} (BEFORE query)")
-                    logger.info(f"[session_query_stream] User config found: {user_config is not None}")
-                    if user_config:
-                        logger.info(f"[session_query_stream] User config - system_prompt: {user_config.default_system_prompt[:100] if user_config.default_system_prompt else None}...")
-                    
+                    user_id = current_user.id
+
+                    logger.info(f"[session_query_stream] Loading config for user_id={user_id}, username={current_user.username}")
+
                     # Build request config from request parameters
                     request_config = {}
                     if request.system_prompt:
                         request_config["system_prompt"] = request.system_prompt
-                        logger.info(f"[session_query_stream] Request has system_prompt (will override user config)")
                     if request.allowed_tools:
                         request_config["allowed_tools"] = request.allowed_tools
                     if request.model:
                         request_config["model"] = request.model
-                    
-                    # Build session config
-                    session_config = request_config.copy()
-                    
-                    # Load scenario config if user has associated scenario
-                    # 优先级：请求参数 > 用户场景配置（UserScenarioConfigDB） > 用户配置关联的场景（UserConfigDB，向后兼容）
-                    scenario_config = None
-                    scenario_id = None
-                    user_id = current_user.id if current_user else None
-                    
-                    # 方案1：从请求参数中获取 scenario_id（如果前端传递，优先级最高）
-                    if hasattr(request, 'scenario_id') and request.scenario_id:
-                        scenario_id = request.scenario_id
-                        logger.info(f"[session_query_stream] Found scenario_id in request: {scenario_id}")
-                    
-                    # 方案2：从用户场景配置中获取场景列表（新方式，支持多场景）
-                    # 如果用户配置了多个场景，根据用户输入智能匹配最合适的场景
-                    user_scenario_ids = None
-                    if not scenario_id and user_id:
-                        try:
-                            from models.database import UserScenarioConfigDB
-                            async with db_service.async_session() as session:
-                                stmt = select(UserScenarioConfigDB).where(
-                                    UserScenarioConfigDB.user_id == user_id
-                                )
-                                result = await session.execute(stmt)
-                                user_scenario_config = result.scalar_one_or_none()
-                                
-                                if user_scenario_config and user_scenario_config.scenario_ids:
-                                    try:
-                                        scenario_ids = json.loads(user_scenario_config.scenario_ids)
-                                        if scenario_ids and len(scenario_ids) > 0:
-                                            user_scenario_ids = scenario_ids
-                                            logger.info(f"[session_query_stream] Found scenario_ids in UserScenarioConfigDB: {scenario_ids}")
-                                            
-                                            # 如果只有一个场景，直接使用
-                                            if len(scenario_ids) == 1:
-                                                scenario_id = scenario_ids[0]
-                                                logger.info(f"[session_query_stream] Only one scenario configured, using: {scenario_id}")
-                                            # 如果有多个场景，且用户提供了查询内容，进行智能匹配
-                                            elif len(scenario_ids) > 1 and request.prompt:
-                                                logger.info(f"[session_query_stream] Multiple scenarios configured ({len(scenario_ids)}), will use intelligent matching based on user query")
-                                                # 场景匹配逻辑将在后面执行（在 system_prompt is None 时）
-                                            # 如果有多个场景但没有用户查询，使用第一个（向后兼容）
-                                            else:
-                                                scenario_id = scenario_ids[0]
-                                                logger.info(f"[session_query_stream] Multiple scenarios configured but no user query, using first: {scenario_id}")
-                                    except json.JSONDecodeError:
-                                        logger.warning(f"[session_query_stream] Failed to parse scenario_ids JSON: {user_scenario_config.scenario_ids}")
-                        except Exception as e:
-                            logger.warning(f"[session_query_stream] Failed to load UserScenarioConfigDB: {e}")
-                    
-                    # 方案3：从用户配置中获取关联的场景（旧方式，向后兼容）
-                    if not scenario_id and user_config and user_config.associated_scenario_id:
-                        scenario_id = user_config.associated_scenario_id
-                        logger.info(f"[session_query_stream] Found associated_scenario_id in user config (backward compatibility): {scenario_id}")
-                    
-                    # 加载场景配置（如果还没有通过智能匹配加载）
-                    matched_scenario_config = None  # 初始化变量
-                    scenario_config = None  # 初始化场景配置变量
-                    
-                    # ========== 智能场景匹配（在 merge_agent_config 之前执行） ==========
-                    # 如果用户配置了多个场景，且还没有选择场景，进行智能匹配
-                    if request.prompt and user_scenario_ids and len(user_scenario_ids) > 1 and not scenario_id:
-                        try:
-                            from services.scenario_matcher import ScenarioMatcher
-                            matcher = ScenarioMatcher(db_service, agent_service)
-                            
-                            # 只从用户配置的场景列表中进行匹配
-                            logger.info(f"[session_query_stream] 🔍 开始智能匹配场景，从用户配置的 {len(user_scenario_ids)} 个场景中选择: {user_scenario_ids}")
-                            
-                            # 获取这些场景的详细信息
-                            available_scenarios = []
-                            for sid in user_scenario_ids:
-                                try:
-                                    scenario_info = await config_manager.get_business_scenario(sid)
-                                    if scenario_info:
-                                        available_scenarios.append({
-                                            "id": scenario_info.id,  # 使用整数ID
-                                            "name": scenario_info.name,
-                                            "description": scenario_info.description or "",
-                                            "category": scenario_info.category or "",
-                                            "meta": getattr(scenario_info, 'meta', None) or {},
-                                            "is_default": getattr(scenario_info, 'is_default', False),
-                                        })
-                                except Exception as e:
-                                    logger.warning(f"[session_query_stream] Failed to load scenario {sid} for matching: {e}")
-                            
-                            if available_scenarios:
-                                # 使用 ScenarioMatcher 的模型匹配能力，但只从用户配置的场景中选择
-                                matched_scenario = await matcher._match_with_model(
-                                    request.prompt,
-                                    available_scenarios,
-                                    agent_service
-                                )
-                                
-                                if matched_scenario:
-                                    scenario_id = matched_scenario.get("id")  # 使用整数ID
-                                    scenario_name = matched_scenario.get("name", "未知场景")
-                                    logger.info(
-                                        f"[session_query_stream] ✅ 智能匹配到场景: "
-                                        f"{scenario_name} "
-                                        f"(id: {scenario_id})"
-                                    )
-                                    
-                                    # 立即加载匹配的场景配置
-                                    try:
-                                        matched_scenario_config = await config_manager.get_business_scenario(scenario_id)
-                                        if matched_scenario_config:
-                                            scenario_config = matched_scenario_config  # 设置场景配置
-                                            logger.info(
-                                                f"[session_query_stream] ✅ 已加载智能匹配的场景配置: "
-                                                f"{matched_scenario_config.name}"
-                                            )
-                                            # 打印详细报告
-                                            logger.info("=" * 80)
-                                            logger.info("📋 智能场景匹配详细报告")
-                                            logger.info("=" * 80)
-                                            logger.info(f"🎯 选中的场景名称: {matched_scenario_config.name}")
-                                            logger.info(f"🆔 场景ID: {matched_scenario_config.id}")
-                                            logger.info(f"📝 场景描述: {matched_scenario_config.description or '无描述'}")
-                                            logger.info(f"🏷️  场景分类: {matched_scenario_config.category or '无分类'}")
-                                            
-                                            # 打印场景的 system_prompt
-                                            if matched_scenario_config.system_prompt:
-                                                prompt_preview = matched_scenario_config.system_prompt[:200] + "..." if len(matched_scenario_config.system_prompt) > 200 else matched_scenario_config.system_prompt
-                                                logger.info(f"💬 场景 System Prompt (长度: {len(matched_scenario_config.system_prompt)}):")
-                                                logger.info(f"   {prompt_preview}")
-                                            else:
-                                                logger.info("💬 场景 System Prompt: 无")
-                                            
-                                            # 打印 Skills
-                                            if matched_scenario_config.skills:
-                                                logger.info(f"🛠️  场景 Skills ({len(matched_scenario_config.skills)}个): {matched_scenario_config.skills}")
-                                            else:
-                                                logger.info("🛠️  场景 Skills: 无")
-                                            
-                                            # 打印 Custom Tools (MCP)
-                                            if matched_scenario_config.custom_tools:
-                                                logger.info(f"🔧 场景 Custom Tools (MCP): {matched_scenario_config.custom_tools}")
-                                            else:
-                                                logger.info("🔧 场景 Custom Tools (MCP): 无")
-                                            
-                                            # 打印 Allowed Tools
-                                            if matched_scenario_config.allowed_tools:
-                                                try:
-                                                    # allowed_tools 是 JSON 字符串，需要解析
-                                                    tools_list = json.loads(matched_scenario_config.allowed_tools) if isinstance(matched_scenario_config.allowed_tools, str) else matched_scenario_config.allowed_tools
-                                                    logger.info(f"✅ 场景 Allowed Tools ({len(tools_list)}个): {tools_list}")
-                                                except (json.JSONDecodeError, TypeError) as e:
-                                                    logger.warning(f"⚠️  场景 Allowed Tools 解析失败: {e}, 原始值: {matched_scenario_config.allowed_tools}")
-                                                    logger.info(f"✅ 场景 Allowed Tools (原始值): {matched_scenario_config.allowed_tools}")
-                                            else:
-                                                logger.info("✅ 场景 Allowed Tools: 无")
-                                            
-                                            logger.info("=" * 80)
-                                    except Exception as e:
-                                        logger.warning(f"[session_query_stream] 加载智能匹配场景配置失败: {e}")
-                                else:
-                                    # 如果模型没有匹配到，使用第一个场景（默认场景）
-                                    scenario_id = user_scenario_ids[0]
-                                    logger.info(f"[session_query_stream] 模型未匹配到场景，使用第一个场景: {scenario_id}")
-                                    
-                                    # 加载第一个场景的配置
-                                    try:
-                                        matched_scenario_config = await config_manager.get_business_scenario(scenario_id)
-                                        if matched_scenario_config:
-                                            scenario_config = matched_scenario_config
-                                            logger.info(
-                                                f"[session_query_stream] ✅ 已加载默认场景配置: "
-                                                f"{matched_scenario_config.name}"
-                                            )
-                                    except Exception as e:
-                                        logger.warning(f"[session_query_stream] 加载默认场景配置失败: {e}")
-                        except Exception as e:
-                            logger.warning(f"[session_query_stream] 智能场景匹配失败: {e}, 使用第一个场景", exc_info=True)
-                            if user_scenario_ids:
-                                scenario_id = user_scenario_ids[0]
-                                # 加载第一个场景的配置
-                                try:
-                                    matched_scenario_config = await config_manager.get_business_scenario(scenario_id)
-                                    if matched_scenario_config:
-                                        scenario_config = matched_scenario_config
-                                except Exception as e2:
-                                    logger.warning(f"[session_query_stream] 加载默认场景配置失败: {e2}")
-                    
-                    # 如果已经有明确的 scenario_id，加载场景配置
-                    if scenario_id and not scenario_config:
-                        try:
-                            scenario_config = await config_manager.get_business_scenario(scenario_id)
-                            if scenario_config:
-                                logger.info(f"[session_query_stream] ✅ Loaded scenario config: id={scenario_config.id}, name={scenario_config.name}")
-                                logger.info(f"[session_query_stream] Scenario allowed_tools: {scenario_config.allowed_tools}")
-                                logger.info(f"[session_query_stream] Scenario custom_tools: {scenario_config.custom_tools}")
-                                logger.info(f"[session_query_stream] Scenario skills: {scenario_config.skills}")
-                            else:
-                                logger.warning(f"[session_query_stream] Scenario not found: id={scenario_id}")
-                        except Exception as e:
-                            logger.error(f"[session_query_stream] Failed to load scenario config: {e}", exc_info=True)
-                    elif not scenario_id:
-                        logger.info(f"[session_query_stream] No scenario_id provided (neither in request nor user config), will try auto-match if user_query provided")
-                    
-                    # Merge configurations（在智能匹配之后）
+
+                    # Merge configurations (使用能力包模式)
                     agent_config, config_sources = config_manager.merge_agent_config(
                         request_config=request_config,
-                        session_config=session_config,
                         user_config=user_config,
-                        scenario_config=scenario_config,  # 传递场景配置（可能来自智能匹配）
+                        user_id=user_id,
+                        plugin_ids=request.plugin_ids,
                     )
-                    
-                    # 如果 system_prompt 为 None，使用 prompt_composer 生成默认的 system_prompt
-                    # 核心原则0：不改变现有问答逻辑，只是增强默认行为
+
+                    # 如果 system_prompt 为 None，使用 prompt_composer 生成
+                    # 注意: 能力包的 prompt 扩展由 SDK plugins 自动处理，这里只组合基础 prompt
                     if agent_config.system_prompt is None:
                         try:
                             prompt_composer = PromptComposer(db_service)
-                            
-                            # 如果没有通过用户配置场景匹配，尝试全局自动匹配
-                            if request.prompt and not scenario_config and not scenario_id:
-                                try:
-                                    from services.scenario_matcher import ScenarioMatcher
-                                    matcher = ScenarioMatcher(db_service, agent_service)
-                                    matched_scenario = await matcher.match_scenario(
-                                        request.prompt, 
-                                        user_id,
-                                        agent_service=agent_service
-                                    )
-                                    if matched_scenario:
-                                        scenario_id = matched_scenario.get("id")  # 使用整数ID
-                                        scenario_name = matched_scenario.get("name", "未知场景")
-                                        logger.info(
-                                            f"[session_query_stream] ✅ 自动匹配到场景: "
-                                            f"{scenario_name} "
-                                            f"(scenario_id: {scenario_id})"
-                                        )
-                                        
-                                        # 立即加载匹配的场景配置
-                                        try:
-                                            matched_scenario_config = await config_manager.get_business_scenario(scenario_id)
-                                            if matched_scenario_config:
-                                                scenario_config = matched_scenario_config
-                                                logger.info(
-                                                    f"[session_query_stream] ✅ 已加载匹配场景配置: "
-                                                    f"{matched_scenario_config.name}"
-                                                )
-                                                # 重新合并配置
-                                                agent_config, config_sources = config_manager.merge_agent_config(
-                                                    request_config=request_config,
-                                                    session_config=session_config,
-                                                    user_config=user_config,
-                                                    scenario_config=scenario_config,
-                                                )
-                                        except Exception as e:
-                                            logger.warning(f"[session_query_stream] 加载匹配场景配置失败: {e}")
-                                except Exception as e:
-                                    logger.warning(f"[session_query_stream] 场景匹配失败: {e}")
-                            
-                            # 如果匹配到场景并成功加载配置，打印详细报告
-                            if scenario_config:
-                                # ========== 场景匹配详细报告 ==========
-                                logger.info("=" * 80)
-                                logger.info("📋 场景匹配详细报告")
-                                logger.info("=" * 80)
-                                logger.info(f"🎯 选中的场景名称: {scenario_config.name}")
-                                logger.info(f"🆔 场景ID: {scenario_config.id}")
-                                logger.info(f"📝 场景描述: {scenario_config.description or '无描述'}")
-                                logger.info(f"🏷️  场景分类: {scenario_config.category or '无分类'}")
-                                
-                                # 打印场景的 system_prompt
-                                if scenario_config.system_prompt:
-                                    prompt_preview = scenario_config.system_prompt[:200] + "..." if len(scenario_config.system_prompt) > 200 else scenario_config.system_prompt
-                                    logger.info(f"💬 场景 System Prompt (长度: {len(scenario_config.system_prompt)}):")
-                                    logger.info(f"   {prompt_preview}")
-                                else:
-                                    logger.info("💬 场景 System Prompt: 无")
-                                
-                                # 打印 Skills
-                                if scenario_config.skills:
-                                    logger.info(f"🛠️  场景 Skills ({len(scenario_config.skills)}个):")
-                                    for skill in scenario_config.skills:
-                                        logger.info(f"   - {skill}")
-                                else:
-                                    logger.info("🛠️  场景 Skills: 无")
-                                
-                                # 打印 MCP (custom_tools)
-                                if scenario_config.custom_tools:
-                                    logger.info(f"🔌 场景 MCP Tools (custom_tools):")
-                                    tools_str = json.dumps(scenario_config.custom_tools, indent=2, ensure_ascii=False)
-                                    # 如果太长，只显示前500字符
-                                    if len(tools_str) > 500:
-                                        tools_str = tools_str[:500] + "..."
-                                    logger.info(f"   {tools_str}")
-                                else:
-                                    logger.info("🔌 场景 MCP Tools: 无")
-                                
-                                # 打印其他重要参数
-                                logger.info("⚙️  其他场景参数:")
-                                logger.info(f"   - allowed_tools: {scenario_config.allowed_tools or '无'}")
-                                logger.info(f"   - recommended_model: {scenario_config.recommended_model or '无'}")
-                                logger.info(f"   - permission_mode: {scenario_config.permission_mode or '无'}")
-                                logger.info(f"   - max_turns: {scenario_config.max_turns or '无'}")
-                                logger.info(f"   - work_dir: {scenario_config.work_dir or '无'}")
-                                if scenario_config.workflow:
-                                    logger.info(f"   - workflow: {json.dumps(scenario_config.workflow, ensure_ascii=False)[:200]}...")
-                                else:
-                                    logger.info(f"   - workflow: 无")
-                                
-                                # 打印合并后的配置来源
-                                logger.info("📊 配置来源 (优先级从高到低):")
-                                for key, source in config_sources.items():
-                                    logger.info(f"   - {key}: {source}")
-                                
-                                # 打印最终应用的配置摘要
-                                logger.info("✅ 最终应用的配置摘要:")
-                                logger.info(f"   - system_prompt 长度: {len(agent_config.system_prompt) if agent_config.system_prompt else 0}")
-                                logger.info(f"   - allowed_tools: {agent_config.allowed_tools or '无'}")
-                                logger.info(f"   - model: {agent_config.model or '无'}")
-                                logger.info(f"   - enabled_skill_ids: {agent_config.enabled_skill_ids or '无'}")
-                                logger.info(f"   - custom_tools: {'有' if agent_config.custom_tools else '无'}")
-                                logger.info("=" * 80)
-                                # ========== 场景匹配详细报告结束 ==========
-                            
-                            # 组合 prompt
-                            # 如果已经匹配到场景并加载了配置，则不再自动匹配（避免重复）
-                            auto_match = not scenario_config
                             composed_prompt = await prompt_composer.compose_base_prompt(
                                 user_id=user_id,
                                 session_id=session_id,
-                                user_query=request.prompt if request.prompt else None,
-                                auto_match_scenario=auto_match,
-                                agent_service=agent_service
                             )
                             if composed_prompt:
-                                # 如果已经通过场景配置设置了 system_prompt，优先使用场景的 system_prompt
-                                # 否则使用组合的 prompt（包含场景详情）
-                                if scenario_config and scenario_config.system_prompt:
-                                    # 场景有自己的 system_prompt，使用场景的 prompt + 组合 prompt 的场景列表
-                                    agent_config.system_prompt = f"{scenario_config.system_prompt}\n\n{composed_prompt}"
-                                    config_sources["system_prompt"] = "SCENARIO_WITH_COMPOSED"
-                                    logger.info(f"[session_query_stream] ✅ 使用场景 system_prompt + 组合 prompt (length: {len(agent_config.system_prompt)})")
-                                else:
-                                    # 使用组合的 prompt
-                                    agent_config.system_prompt = composed_prompt
-                                    config_sources["system_prompt"] = "DEFAULT_COMPOSED"
-                                    logger.info(f"[session_query_stream] ✅ Generated default system_prompt using PromptComposer (length: {len(composed_prompt)})")
+                                agent_config.system_prompt = composed_prompt
+                                config_sources["system_prompt"] = "COMPOSED"
+                                logger.info(f"[session_query_stream] ✅ Generated system_prompt (length: {len(composed_prompt)})")
                         except Exception as e:
-                            logger.warning(f"[session_query_stream] Failed to generate default system_prompt using PromptComposer: {e}, will use AgentService default")
-                            # 继续使用 AgentService 的默认值，不影响现有逻辑
-                    
-                    logger.info(f"[session_query_stream] ✅ Applied platform configuration for user_id={current_user.id} BEFORE query")
-                    
-                    # Save configuration log for this conversation turn
+                            logger.warning(f"[session_query_stream] Failed to compose prompt: {e}")
+
+                    logger.info(f"[session_query_stream] ✅ Applied configuration for user_id={user_id}")
+
+                    # Save configuration log
                     try:
                         final_config_dict = {
                             "system_prompt": agent_config.system_prompt,
@@ -863,28 +537,21 @@ async def session_query_stream(
                             "enabled_skill_ids": agent_config.enabled_skill_ids,
                             "custom_tools": agent_config.custom_tools,
                         }
-                        
-                        # Get scenario info
-                        scenario_id_value = scenario_config.id if scenario_config else None  # 使用整数 id 而不是 scenario_id
-                        scenario_name_value = scenario_config.name if scenario_config else None
-                        
-                        # Save to database (will update session_id later when session is created)
+
                         await db_service.save_conversation_turn_config(
                             conversation_turn_id=conversation_turn_id,
-                            session_id=session_id or "",  # Will be updated when session is created
+                            session_id=session_id or "",
                             user_id=current_user.id,
                             final_config=final_config_dict,
                             config_sources=config_sources,
-                            scenario_id=scenario_id_value,
-                            scenario_name=scenario_name_value,
+                            scenario_id=None,
+                            scenario_name=None,
                         )
-                        logger.info(f"[session_query_stream] ✅ Saved configuration log for conversation_turn_id={conversation_turn_id}")
                     except Exception as e:
-                        logger.error(f"[session_query_stream] Failed to save configuration log: {e}", exc_info=True)
-                        # Don't fail the request if config logging fails
+                        logger.error(f"[session_query_stream] Failed to save config log: {e}")
+
                 except Exception as e:
-                    logger.error(f"[session_query_stream] ❌ Failed to load platform configuration for user_id={current_user.id}: {e}", exc_info=True)
-                    # Continue with default configuration (backward compatible)
+                    logger.error(f"[session_query_stream] ❌ Failed to load config: {e}", exc_info=True)
 
             # ==================== File Upload and Reference Processing ====================
             # 文件处理逻辑：如果失败，不影响核心对话功能，继续使用原始 prompt

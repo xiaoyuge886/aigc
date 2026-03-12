@@ -3,7 +3,7 @@ SQLAlchemy database models for session persistence
 """
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import (
     String, DateTime, Integer, Text, Boolean, JSON, ForeignKey, UniqueConstraint
@@ -694,27 +694,212 @@ class UserPreferencesCacheDB(Base):
 class SessionPreferencesDB(Base):
     """会话偏好表"""
     __tablename__ = "session_preferences"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     session_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("sessions.session_id", ondelete="CASCADE"), unique=True, index=True
     )
-    
+
     # 会话偏好
     preferences: Mapped[dict] = mapped_column(
         JSON,
         comment="会话偏好（JSON格式）：临时偏好、会话上下文偏好等"
     )
-    
+
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     # Relationships
     session: Mapped["SessionDB"] = relationship("SessionDB")
-    
+
     def __repr__(self):
         return f"<SessionPreferencesDB(session_id={self.session_id})>"
+
+
+# =========================================================================
+# Phase 4: 能力包系统 - 数据库模型
+# =========================================================================
+
+class CapabilityPackageDB(Base):
+    """能力包表 - 打包 skill、tools、MCP 为可独立管理的单元
+
+    设计理念：
+    1. 将 skill、tools、MCP 打包成能力包
+    2. 用户直接绑定能力包，实现细粒度权限控制
+    3. 支持请求级能力注入
+    """
+    __tablename__ = "capability_packages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    # 基本信息
+    name: Mapped[str] = mapped_column(
+        String(100), unique=True, index=True,
+        comment="能力包标识符，如 data-analysis-pack"
+    )
+    display_name: Mapped[str] = mapped_column(
+        String(200),
+        comment="显示名称，如 数据分析工具包"
+    )
+    description: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True,
+        comment="能力包描述"
+    )
+    version: Mapped[str] = mapped_column(
+        String(20), default="1.0.0",
+        comment="版本号"
+    )
+
+    # 所有权
+    author_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True,
+        comment="创建者ID（NULL表示系统预设）"
+    )
+    is_public: Mapped[bool] = mapped_column(
+        Boolean, default=False, index=True,
+        comment="是否公开（所有用户可见）"
+    )
+    is_official: Mapped[bool] = mapped_column(
+        Boolean, default=False,
+        comment="是否官方能力包"
+    )
+    category: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True, index=True,
+        comment="分类：analysis/development/automation 等"
+    )
+
+    # 能力定义
+    skills: Mapped[Optional[dict]] = mapped_column(
+        JSON, nullable=True,
+        comment="技能列表：{\"skills\": [\"data-analysis\", \"echarts_chart\"]}"
+    )
+    allowed_tools: Mapped[Optional[dict]] = mapped_column(
+        JSON, nullable=True,
+        comment="允许的工具：[\"Read\", \"Write\", \"Bash\"]"
+    )
+    mcp_servers: Mapped[Optional[dict]] = mapped_column(
+        JSON, nullable=True,
+        comment="MCP服务器配置：{\"server_name\": {...}}"
+    )
+    custom_prompt_extension: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True,
+        comment="系统提示词扩展"
+    )
+
+    # 插件路径（用于SDK加载）
+    plugin_path: Mapped[Optional[str]] = mapped_column(
+        String(500), nullable=True,
+        comment="插件目录路径，用于SDK plugins参数"
+    )
+
+    # 元数据
+    icon_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    tags: Mapped[Optional[dict]] = mapped_column(
+        JSON, nullable=True,
+        comment="标签：[\"data\", \"chart\", \"report\"]"
+    )
+
+    # 统计
+    usage_count: Mapped[int] = mapped_column(Integer, default=0, comment="使用次数")
+
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    author: Mapped[Optional["UserDB"]] = relationship("UserDB", foreign_keys=[author_id])
+    user_bindings: Mapped[List["UserCapabilityBindingDB"]] = relationship(
+        "UserCapabilityBindingDB", back_populates="package", cascade="all, delete-orphan"
+    )
+    user_bindings: Mapped[list["UserCapabilityBindingDB"]] = relationship(
+        "UserCapabilityBindingDB", back_populates="package", cascade="all, delete-orphan"
+    )
+
+    def __repr__(self):
+        return f"<CapabilityPackageDB(id={self.id}, name={self.name})>"
+
+    @property
+    def skill_list(self) -> list:
+        """获取技能名称列表"""
+        if not self.skills:
+            return []
+        if isinstance(self.skills, dict):
+            return self.skills.get("skills", [])
+        return self.skills if isinstance(self.skills, list) else []
+
+    @property
+    def tool_list(self) -> list:
+        """获取工具名称列表"""
+        if not self.allowed_tools:
+            return []
+        if isinstance(self.allowed_tools, list):
+            return self.allowed_tools
+        if isinstance(self.allowed_tools, dict):
+            return self.allowed_tools.get("tools", [])
+        return []
+
+
+class UserCapabilityBindingDB(Base):
+    """用户能力绑定表 - 核心权限控制
+
+    设计理念：
+    1. 用户只能使用已绑定的能力包
+    2. 请求时系统自动校验 plugin_ids 是否在绑定范围内
+    3. 后台管理员配置绑定关系
+    """
+    __tablename__ = "user_capability_bindings"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    # 外键
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True,
+        comment="用户ID"
+    )
+    package_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("capability_packages.id", ondelete="CASCADE"), index=True,
+        comment="能力包ID"
+    )
+
+    # 绑定状态
+    is_enabled: Mapped[bool] = mapped_column(
+        Boolean, default=True,
+        comment="是否启用"
+    )
+
+    # 授权信息
+    granted_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow,
+        comment="授权时间"
+    )
+    granted_by: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True,
+        comment="授权管理员ID"
+    )
+
+    # 使用统计
+    usage_count: Mapped[int] = mapped_column(Integer, default=0, comment="使用次数")
+    last_used_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user: Mapped["UserDB"] = relationship("UserDB", foreign_keys=[user_id])
+    package: Mapped["CapabilityPackageDB"] = relationship(
+        "CapabilityPackageDB", back_populates="user_bindings"
+    )
+    granted_by_user: Mapped[Optional["UserDB"]] = relationship("UserDB", foreign_keys=[granted_by])
+
+    # 唯一约束
+    __table_args__ = (
+        UniqueConstraint("user_id", "package_id", name="uq_user_package"),
+    )
+
+    def __repr__(self):
+        return f"<UserCapabilityBindingDB(user_id={self.user_id}, package_id={self.package_id})>"
 
 
 class UserBehaviorStatsDB(Base):
