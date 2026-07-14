@@ -25,9 +25,7 @@ AIGC 智能 Agent 平台是一个强大的 AI 应用框架，通过集成 Claude
 
 ## 先睹为快
 
-![AIGC 平台首页](http://yiqixueba.top:19000/agentic/index.png)
-
-![AIGC 平台对话](http://yiqixueba.top:19000/agentic/chat.png)
+![AIGC 平台对话](resource/chat.jpg)
 
 ---
 
@@ -362,6 +360,9 @@ curl -X POST http://localhost:8000/api/v1/session/query \
 - **Issues**: [GitHub Issues](https://github.com/your-org/aigc-platform/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/your-org/aigc-platform/discussions)
 - **Email**: support@aigc-platform.dev
+- **微信**: 扫描下方二维码添加微信
+
+![微信联系方式](resource/wechat.jpeg)
 
 ---
 
