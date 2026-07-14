@@ -26,6 +26,10 @@ AIGC 智能 Agent 平台是一个强大的 AI 应用框架，通过集成 Claude
 ## 先睹为快
 
 ![AIGC 平台对话](resource/chat.jpg)
+![AIGC 智囊图](resource/smart_group.png)
+![AIGC 智囊图](resource/tools.png)
+
+
 
 ---
 
@@ -215,19 +219,8 @@ cp .env.example .env
 
 ## 📖 核心功能使用指南
 
-### 1. 技能星系使用
 
-```typescript
-// 在聊天界面中启用技能
-import { SkillGalaxy } from './components/SkillGalaxy';
-
-<SkillGalaxy
-  onSkillSelect={(skill) => console.log('选中技能:', skill)}
-  activeSkills={['data-analysis', 'echarts_chart']}
-/>
-```
-
-### 2. 创建自定义场景
+### 1. 创建自定义场景
 
 通过管理员控制台创建场景：
 
@@ -244,7 +237,7 @@ scenario = {
 }
 ```
 
-### 3. API 调用示例
+### 2. API 调用示例
 
 ```bash
 # 创建会话
